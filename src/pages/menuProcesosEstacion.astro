@@ -1,0 +1,385 @@
+---
+export const prerender = false;
+
+import Layout from '../layouts/LayoutMenu.astro';
+import NavBarMenu from '../components/NavBarMenu.astro';
+import ProcessTracker from '../components/ProcessTracker.svelte';
+import MenuHerramientas from "../components/MenuHerramientas.astro";
+
+// El middleware ya ha verificado la sesión.
+const user = Astro.locals.user;
+if (!user) {
+  // Aunque el middleware ya se encarga, esto es un fallback de seguridad.
+  return Astro.redirect('/');
+}
+
+
+
+// 1. Leer parámetros de la URL
+const station = Astro.url.searchParams.get('station');
+const date = Astro.url.searchParams.get('date');
+
+const formattedDate = date 
+    ? new Date(date + 'T06:00:00Z').toLocaleDateString("es-MX", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+    })
+    : "Fecha no disponible";
+
+let content: any;
+let pageTitle = "Menú de Procesos";
+
+
+let resumenProcesos = null;
+
+
+if (!station || !date) {
+  content = { error: 'Faltan parámetros en la URL. Por favor, vuelve al dashboard e inténtalo de nuevo.' };
+} else {
+  try {
+    // 2. Llamar a nuestro proxy de API
+    const response = await fetch(`${Astro.url.origin}/api/procesoDia?station=${station}&date=${date}`);
+    const data = await response.json();
+
+    if (!response.ok || !data.Correct) {
+      content = { error: data.ErrorMessage || 'Ocurrió un error al cargar los datos del proceso.' };
+    } else {
+      content = data.Object; // Obtenemos el objeto principal con todos los datos
+      resumenProcesos = data.Object.resumenProcesos;
+      pageTitle = `Procesos para Estación ${station} - ${formattedDate}`;
+    }
+  } catch (e) {
+    console.error("Error fetching process data:", e);
+    content = { error: 'No se pudo conectar con el servidor para obtener los datos.' };
+  }
+}
+
+interface MenuItem {
+  title: string;
+  description: string;
+  icon: string;
+  link: string;
+  modalSide?: 'left' | 'right' | 'center' | 'mov';
+  isOpen?: boolean;
+  sugerencia?: boolean;
+  backgroundColor?: string;
+  iconColor?: string;
+  textColor?: string;
+}
+const items: MenuItem[] = [
+  {
+    title: "Relacion de Facturas",
+    description: "Relacion de Facturas VDM con Ingresos",
+    icon: "receipt",
+    link: "/estacion/est_valija_12RelacionFacturasIngresos", // Asegúrate de que esta ruta sea correcta
+    modalSide: "mov" as const,
+    isOpen: false,
+    sugerencia: true,
+    backgroundColor: "#1e293b",
+    iconColor: "white",
+    textColor: "white",
+  },
+  {
+    title: "Ayuda",
+    description: "Ayuda",
+    icon: "receipt",
+    link: "/estacion/form_ayuda",
+    modalSide: "center" as const,
+    isOpen: false,
+    backgroundColor: "oklch(0.637 0.237 25.331)",
+    iconColor: "white",
+    textColor: "white",
+  },
+  {
+    title: "zzzz",
+    description: "zzzz",
+    icon: "logout",
+    link: "/zzzz",
+    modalSide: "center" as const,
+    isOpen: false,
+    backgroundColor: "oklch(0.637 0.237 25.331)",
+    iconColor: "white",
+    textColor: "white",
+  },
+
+];
+
+
+
+
+---
+
+<Layout title={pageTitle}>
+  <NavBarMenu station={station} date={date} />
+  <main class="">
+  
+    <div id="resizable-container" style="display: flex; width: 100%; height: 91dvh; position: relative;">
+      <div
+        id="left-panel" class="bg-white"
+        style="width: 30%; height: 91dvh; overflow-y: auto; padding: 0px; position: relative;"
+      >
+        <div class="mx-auto bg-white p-3">
+          <!-- <div class="flex items-center mb-6 w-full"> -->
+            <!-- <h1 class="text-2xl font-bold uppercase">Resumen de Pólizas</h1> -->
+            <!-- <ResumenProcesosModal
+              data={JSON.stringify(resumenProcesos)}
+              buttonText=""
+              client:load
+              buttonClass="ml-4 bg-gray-500 hover:bg-gray-600 text-white font-medium py-1.5 px-4 rounded transition"
+            /> -->
+          <!-- </div> -->
+  
+          <form id="formulario" class="space-y-8 ">
+            <div
+              class="bg-white rounded-xl  mb-6 "
+            >
+              <div
+                id="resumen-procesos-header"
+                class="cursor-pointer flex justify-between items-center p-3 rounded-lg hover:bg-gray-50"
+              >
+                <h2 class="font-bold text-gray-800">Resumen de procesos</h2>
+                <span id="resumen-procesos-icon" class="text-gray-500">▼</span>
+              </div>
+              <div
+                id="resumen-procesos-content"
+                class="overflow-hidden transition-all duration-300 ease-in-out text-sm max-h-[1000px] pb-2"
+                style="max-height: 1000px;"
+              >
+                {
+                  resumenProcesos.procesos.map((proceso: any) => {
+                    const subprocesos = proceso.subprocesos || {};
+                    const totalPasos = Object.keys(subprocesos).length;
+  
+                    let ultimoCompletado = 0;
+                    Object.entries(subprocesos).forEach(
+                      ([_, completado], index) => {
+                        if (completado) ultimoCompletado = index + 1;
+                      },
+                    );
+  
+                    return (
+                      <div class="">
+                        <ProcessTracker
+                          titulo={proceso.titulo}
+                          estado={proceso.estado}
+                          pasoActual={ultimoCompletado}
+                          totalPasos={totalPasos}
+                          subprocesos={subprocesos}
+                          client:load
+                        />
+                      </div>
+                    );
+                  })
+                }
+              </div>
+            </div>
+  
+            <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
+              <label
+                for="observaciones"
+                class="block font-medium text-sm mb-2 text-gray-800"
+                >Observaciones:</label
+              >
+              <textarea
+                id="observaciones"
+                class="w-full border border-gray-300 rounded p-2 text-sm"
+                rows="4"
+                placeholder="Escriba aquí..."></textarea>
+            </div>
+  
+            <div
+              class="bg-gray-50 p-4 rounded-xl border border-gray-200 grid grid-cols-1 md:grid-cols-2 gap-4"
+            >
+              <div>
+                <label class="block font-medium mb-2 text-gray-800"
+                  >Nombre y firma del verificador:</label
+                >
+                <input
+                  type="text"
+                  value="LUIS ALVARO VILLEGAS"
+                  disabled
+                  class="w-full bg-gray-200 border border-gray-300 rounded p-2"
+                />
+              </div>
+            </div>
+  
+            <div class="flex items-center justify-center bg-gray-100">
+              <a 
+                href="/estacion/boton_Master"
+                class="inline-block bg-blue-500 text-white px-6 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300"
+              >
+                Confirmar
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+  
+      <div id="resizer" class="bg-gray-800" style="width: 10px; cursor: col-resize; height: 100%; position: relative; z-index: 10;" title="Arrastrar para ajustar">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 2px; height: 30px; background-color: #999;"></div>
+      </div>
+      <div
+        id="modal-container"
+        style="flex: 1; height: 100%; overflow-y: hidden; padding: 5px; background-color: #d4d4d4;"
+      >
+        <div class="bg-white px-5 py-2 rounded-lg border border-gray-200">
+          <h2 class="text-lg font-semibold">Menu de opciones.</h2>
+          <p class="text-gray-600">
+            Si necesitas ayuda con algun proceso selecciona un botón.
+          </p>
+        </div>
+        <MenuHerramientas items={items} />
+      </div>
+    </div>
+  <style>
+    #left-panel{
+      min-width: 400px;
+    }
+  </style>
+    <script>
+      import { modalRightArea } from "../components/utils/modalRightArea_estacion";
+      import { initializeDivider } from "../components/utils/divisor";
+      
+      const params = new URLSearchParams(window.location.search);
+      const station = params.get('station');
+      const date = params.get('date');
+      
+      document.addEventListener("DOMContentLoaded", () => {
+        modalRightArea(station || '', date || '');
+        
+        // Inicializar el divisor con las opciones personalizadas
+        initializeDivider({
+          resizerId: 'resizer',
+          leftPanelId: 'left-panel',
+          containerId: 'resizable-container',
+          minWidth: 30,
+          maxWidth: 90
+        });
+      });
+  
+  
+  
+  
+      // prueba
+      function initResumenProcesos() {
+        const header = document.getElementById("resumen-procesos-header");
+        const content = document.getElementById("resumen-procesos-content");
+        const icon = document.getElementById("resumen-procesos-icon");
+  
+        if (!header || !content || !icon) return;
+  
+        let isOpen = true;
+        content.style.maxHeight = content.scrollHeight + "px";
+        content.classList.add("pb-2");
+        icon.textContent = "▲";
+  
+        header.addEventListener("click", () => {
+          isOpen = !isOpen;
+  
+          if (isOpen) {
+            content.style.maxHeight = content.scrollHeight + "px";
+            content.classList.add("pb-2");
+            icon.textContent = "▲";
+          } else {
+            content.style.maxHeight = "0";
+            content.classList.remove("pb-2");
+            icon.textContent = "▼";
+          }
+        });
+      }
+  
+      document.addEventListener("DOMContentLoaded", () => {
+        initResumenProcesos();
+      });
+  
+      function calcularDiferencia() {
+        const importeTrasladoInput = document.getElementById("importeTraslado");
+        const importeResumenInput = document.getElementById("importeResumen");
+        const diferenciaInput = document.getElementById("diferencia");
+  
+        if (!importeTrasladoInput || !importeResumenInput || !diferenciaInput)
+          return;
+  
+        const importeTraslado = parseFloat(importeTrasladoInput.value) || 0;
+        const importeResumen = parseFloat(importeResumenInput.value) || 0;
+        const diferencia = importeTraslado - importeResumen;
+  
+        diferenciaInput.value = diferencia.toFixed(2);
+  
+        if (diferencia === 0) {
+          diferenciaInput.classList.remove("text-red-600", "text-green-600");
+          diferenciaInput.classList.add("text-gray-600");
+        } else if (diferencia > 0) {
+          diferenciaInput.classList.remove("text-red-600", "text-gray-600");
+          diferenciaInput.classList.add("text-green-600");
+        } else {
+          diferenciaInput.classList.remove("text-green-600", "text-gray-600");
+          diferenciaInput.classList.add("text-red-600");
+        }
+      }
+  
+      document.addEventListener("DOMContentLoaded", () => {
+        const importeTrasladoInput = document.getElementById("importeTraslado");
+        const importeResumenInput = document.getElementById("importeResumen");
+  
+        if (importeTrasladoInput)
+          importeTrasladoInput.addEventListener("input", calcularDiferencia);
+        if (importeResumenInput)
+          importeResumenInput.addEventListener("input", calcularDiferencia);
+      });
+    </script>
+    
+    
+
+  
+  
+  
+  
+  </main>
+
+
+
+
+
+<script>
+  // Este script se ejecuta en el navegador del cliente después de que la página carga.
+    document.addEventListener('DOMContentLoaded', () => {
+    try {
+      // 1. Recuperar el NICKNAME de la sesión activa desde localStorage
+      const nickname = localStorage.getItem('nickname');
+      const nicknameElement = document.getElementById('navbar-nickname');
+
+      if (nickname && nicknameElement) {
+        nicknameElement.textContent = `Sesión: ${nickname}`;
+      } else if (nicknameElement) {
+        nicknameElement.textContent = 'Sesión no encontrada';
+      }
+
+      // 2. Recuperar los DATOS COMPLETOS del usuario consultado desde sessionStorage
+      const userDataString = sessionStorage.getItem('userData');
+      const fullnameElement = document.getElementById('navbar-fullname');
+      
+      if (userDataString && fullnameElement) {
+        const userData = JSON.parse(userDataString);
+        if (userData.c_Nombre) {
+          fullnameElement.textContent = `Usuario: ${userData.c_Nombre} ${userData.c_ApellidoPat} ${userData.c_ApellidoMat}`;
+        }
+      } else if (fullnameElement) {
+        fullnameElement.textContent = ''; // Ocultar si no hay datos
+      }
+
+    } catch (error) {
+      console.error('Error al actualizar datos de sesión en la UI:', error);
+    }
+  });
+</script>
+
+
+
+
+
+
+
+</Layout>

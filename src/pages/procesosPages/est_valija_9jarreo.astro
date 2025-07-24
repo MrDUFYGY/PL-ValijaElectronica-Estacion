@@ -1,0 +1,253 @@
+---
+import Layout from "../../layouts/LayoutRigth.astro";
+import "../../styles/global.css";
+import HuellaConfirmacion from "../../components/ConfirmHuella.astro";
+export const prerender = false;
+
+---
+
+<Layout>
+    <!-- Sección de inicio de sesión -->
+    <div
+        id="login-section"
+        class="flex flex-col items-center justify-center h-screen"
+    >
+        <h1 class="text-2xl font-bold mb-4">Bienvenido</h1>
+        <button
+            id="btn-login"
+            class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors text-lg font-medium"
+        >
+            Iniciar sesión
+        </button>
+    </div>
+
+    <!-- Sección principal, oculta hasta iniciar sesión -->
+    <div id="main-section" class="hidden">
+        <div class="flex flex-col space-y-4">
+            <h1 class="text-2xl font-bold">Jarreo de Documentos</h1>
+            <p class="text-gray-600">
+                Complete los siguientes pasos de documentación
+            </p>
+        </div>
+        <!-- Barra de progreso fija -->
+        <div class="sticky top-0 z-50 bg-white py-4">
+            <div class="w-full bg-gray-200 rounded-full h-4">
+                <div
+                    id="progress-bar"
+                    class="bg-yellow-400 h-4 rounded-full transition-all duration-500 ease-in-out"
+                    style="width: 0%"
+                >
+                </div>
+            </div>
+        </div>
+        <!-- Paso 0: Textarea de Envío -->
+        <div class="mt-6 space-y-6">
+            <div
+                class="border border-dashed border-gray-300 rounded-md p-4 bg-gray-50"
+            >
+                <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Envío</label
+                >
+                <div class="flex space-x-4">
+                    <textarea
+                        id="input-envio"
+                        rows="4"
+                        maxlength="500"
+                        class="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Escriba su mensaje de envío..."></textarea>
+                    <div
+                        class="flex-shrink-0 w-64 p-3 bg-yellow-50 border border-yellow-200 rounded-md"
+                    >
+                        <p class="text-sm font-medium text-yellow-800 mb-1">
+                            Datos necesarios:
+                        </p>
+                        <ul
+                            class="text-xs text-yellow-700 list-disc pl-4 space-y-1"
+                        >
+                            <li>Cantidad</li>
+                            <li>Por quién</li>
+                            <li>Causa</li>
+                        </ul>
+                        <p class="text-xs italic text-yellow-600 mt-2">
+                            Estos datos son esenciales para justificar
+                            correctamente la salida y entrada de producto.
+                        </p>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center mt-2">
+                    <span id="char-count" class="text-sm text-gray-500"
+                        >0 / 100 caracteres</span
+                    >
+                    <button
+                        id="btn-enviar"
+                        class="bg-blue-600 text-white px-4 py-1 rounded-md hover:bg-blue-700 transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled
+                    >
+                        Enviar
+                    </button>
+                </div>
+                <div
+                    id="envio-estado"
+                    class="hidden mt-4 flex items-center justify-center space-x-2"
+                >
+                    <div class="spinner"></div>
+                    <span class="text-blue-600 font-semibold">Enviando...</span>
+                </div>
+            </div>
+
+            <!-- Paso 1: Subida inicial PDF -->
+            <div
+                id="seccion-pdf1"
+                class="border border-dashed border-gray-300 rounded-md p-4 bg-gray-50"
+            >
+                <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Archivo PDF inicial</label
+                >
+                <input
+                    type="file"
+                    id="input-pdf1"
+                    accept=".pdf"
+                    class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                />
+                <p class="text-xs text-gray-400 italic mt-1">
+                    Suba un archivo PDF
+                </p>
+            </div>
+
+            <!-- Paso 2: Subida de ticket PDF, oculto inicialmente -->
+            <div
+                id="seccion-ticket2"
+                class="hidden border border-dashed border-gray-300 rounded-md p-4 bg-gray-50"
+            >
+                <label class="block text-sm font-medium text-gray-700 mb-2"
+                    >Archivo Ticket</label
+                >
+                <input
+                    type="file"
+                    id="input-ticket2"
+                    accept=".pdf"
+                    class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                />
+                <p class="text-xs text-gray-400 italic mt-1">
+                    Suba el ticket en PDF
+                </p>
+            </div>
+
+            <!-- Paso 3: Veeder Root -->
+            <div
+                id="veeder-root"
+                class="hidden text-green-700 font-semibold text-xl"
+            >
+                ✅ Veeder Root confirmado
+            </div>
+        </div>
+        <br />
+
+        <HuellaConfirmacion />
+    </div>
+
+        <!--Estilos de TAILWINDCSS-->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- //////////////////////////////////////////////////////////////// --> 
+     
+    <script type="module">
+        const loginBtn = document.getElementById("btn-login");
+        const loginSection = document.getElementById("login-section");
+        const mainSection = document.getElementById("main-section");
+
+        const pdf1Input = document.getElementById("input-pdf1");
+        const ticket2Input = document.getElementById("input-ticket2");
+        const seccionTicket2 = document.getElementById("seccion-ticket2");
+        const veederRoot = document.getElementById("veeder-root");
+
+        const envioTextarea = document.getElementById("input-envio");
+        const envioEstado = document.getElementById("envio-estado");
+        const charCount = document.getElementById("char-count");
+        const btnEnviar = document.getElementById("btn-enviar");
+
+        const progressBar = document.getElementById("progress-bar");
+
+        let progress = {
+            envio: false,
+            pdf1: false,
+            ticket: false,
+        };
+
+        function updateProgressBar() {
+            const values = Object.values(progress);
+            const completed = values.filter(Boolean).length;
+            const percentage = (completed / values.length) * 100;
+            progressBar.style.width = `${percentage}%`;
+            if (percentage === 100) {
+                progressBar.classList.remove("bg-yellow-400");
+                progressBar.classList.add("bg-green-500");
+            }
+        }
+
+        loginBtn.addEventListener("click", () => {
+            loginSection.classList.add("hidden");
+            mainSection.classList.remove("hidden");
+        });
+
+        envioTextarea.addEventListener("input", (e) => {
+            const currentLength = e.target.value.trim().length;
+            charCount.textContent = `${currentLength} / 100 caracteres`;
+            btnEnviar.disabled = currentLength < 100;
+            progress.envio = currentLength >= 100;
+            updateProgressBar();
+        });
+
+        btnEnviar.addEventListener("click", () => {
+            envioTextarea.disabled = true;
+            btnEnviar.disabled = true;
+            envioEstado.classList.remove("hidden");
+            setTimeout(() => {
+                envioEstado.classList.add("hidden");
+                envioTextarea.disabled = false;
+            }, 5000);
+        });
+
+        pdf1Input.addEventListener("change", (e) => {
+            const file = e.target.files[0];
+            if (file && file.type === "application/pdf") {
+                seccionTicket2.classList.remove("hidden");
+                progress.pdf1 = true;
+                updateProgressBar();
+            }
+        });
+
+        ticket2Input.addEventListener("change", (e) => {
+            const file = e.target.files[0];
+            if (file && file.type === "application/pdf") {
+                veederRoot.classList.remove("hidden");
+                progress.ticket = true;
+                updateProgressBar();
+            }
+        });
+    </script>
+
+    <link
+        href="https://fonts.googleapis.com/icon?family=Material+Icons"
+        rel="stylesheet"
+    />
+
+    <style>
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</Layout>

@@ -1,0 +1,30 @@
+---
+import NavBarRigth from './NavBarRigth.astro';
+const { station, date } = Astro.props;
+---
+
+<div id="contenido-a-mostrar" style="display: none;">
+  <slot name="contenido">
+    <NavBarRigth station={station} date={date} />
+  </slot>
+</div>
+
+<script is:inline>
+  // Función para detectar si estamos en un iframe
+  function isInIframe() {
+    try {
+      return window.self !== window.top;
+    } catch (e) {
+      return true;
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('contenido-a-mostrar');
+    
+    // Solo mostramos si NO estamos en un iframe
+    if (!isInIframe()) {
+      container.style.display = 'block';
+    }
+  });
+</script>

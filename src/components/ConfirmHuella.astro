@@ -1,0 +1,160 @@
+---
+interface Props {
+  procesoConfirmado?: string;
+  componentId?: string;
+}
+
+// Generar un ID único para este componente si no se proporciona uno
+const { procesoConfirmado = '', componentId = 'huella_' + Math.random().toString(36).substring(2, 10) } = Astro.props;
+---
+<div class="mb-[2rem] fixed bottom-0 left-1/2 transform -translate-x-1/2 z-50">
+  <!-- Botón para abrir el diálogo de subida -->
+  <button onclick="document.getElementById('{componentId}_showUploadConfirmDialog').click()" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+    Confirmar con Huella
+  </button>
+  <button id="{componentId}_showUploadConfirmDialog" class="hidden" style="display: none;"></button>
+
+</div>
+
+  <!-- Modal: Confirmación de subida -->
+  <div id="{componentId}_upload-confirm-dialog" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 max-w-md w-full relative z-50">
+      <h3 class="text-lg font-semibold mb-4">Confirmar con Huella</h3>
+      <p class="text-gray-700 mb-6">¿Deseas confirmar la subida del archivo? Se requerirá verificación con huella digital.</p>
+      <div class="flex justify-end space-x-4">
+        <button id="{componentId}_cancel-upload" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">Cancelar</button>
+        <button id="{componentId}_confirm-upload" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Confirmar con Huella</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Huella digital -->
+  <div id="{componentId}_fingerprint-dialog" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 max-w-md w-full relative z-50">
+      <h3 class="text-lg font-semibold mb-4">Validación de Huella Digital</h3>
+      <div class="text-center mb-6">
+        <button id="{componentId}_fingerprint-button" class="w-32 h-32 mx-auto border-2 border-dashed border-gray-300 rounded-full flex items-center justify-center hover:bg-gray-100 focus:outline-none transition-colors">
+          <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+        </button>
+        <p class="mt-2 text-gray-600">Coloque su dedo en el lector de huella</p>
+        <p class="mt-1 text-sm text-blue-600">Haga clic en la huella para confirmar</p>
+      </div>
+      <div class="flex justify-end space-x-4">
+        <button id="{componentId}_cancel-fingerprint" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+
+
+  
+  <!-- Modal: Proceso Terminado -->
+  <div id="{componentId}_process-completed-dialog" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 max-w-md w-full relative z-50">
+      <!-- Botón de cierre en forma de equis -->
+      <button id="{componentId}_reload-page" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 focus:outline-none" aria-label="Cerrar">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+      <h3 class="text-lg font-semibold mb-4">Proceso Completado</h3>
+      <div class="text-center mb-6">
+        <div class="w-16 h-16 mx-auto bg-green-100 rounded-full flex items-center justify-center mb-4">
+          <svg class="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <p class="text-gray-700">¡El proceso se ha completado con éxito!</p>
+        <p id="proceso-confirmado-text" class="mt-2 font-medium text-gray-800">{procesoConfirmado}</p>
+      </div>
+    </div>
+  </div>
+
+
+  
+
+  <!-- Scripts -->
+  <script type="text/javascript">
+    // Obtener el ID del componente
+    const componentId = '{componentId}';
+    
+    // Cierra todos los modales
+    function closeAllModals() {
+      document.getElementById(componentId + '_upload-confirm-dialog').classList.add('hidden');
+      document.getElementById(componentId + '_fingerprint-dialog').classList.add('hidden');
+      document.getElementById(componentId + '_process-completed-dialog').classList.add('hidden');
+    }
+
+    // Muestra el modal de confirmación de subida
+    function showUploadConfirmDialog() {
+      closeAllModals();
+      document.getElementById(componentId + '_upload-confirm-dialog').classList.remove('hidden');
+    }
+
+    // Muestra el modal de huella digital
+    function showFingerprintDialog() {
+      closeAllModals();
+      document.getElementById(componentId + '_fingerprint-dialog').classList.remove('hidden');
+    }
+    
+    // Muestra el modal de proceso completado
+    function showProcessCompletedDialog() {
+      closeAllModals();
+      document.getElementById(componentId + '_process-completed-dialog').classList.remove('hidden');
+    }
+    
+    // Función para cerrar la ventana o iframe
+    function closeWindowOrIframe() {
+      // Si estamos en un iframe, cerramos el iframe
+      if (window.self !== window.top) {
+        // Enviar mensaje al padre para cerrar el iframe
+        window.parent.postMessage('closeIframe', '*');
+      } else {
+        // Si estamos en una ventana completa, cerramos la ventana o redirigimos
+        window.close();
+        // Si window.close() no funciona (por políticas del navegador), redirigimos
+        setTimeout(function() {
+          window.location.href = '/';
+        }, 300);
+      }
+    }
+    
+    // Función para recargar la página principal (no solo el iframe)
+    function reloadPage() {
+      // Si estamos en un iframe, recargamos la ventana principal
+      if (window.self !== window.top) {
+        window.parent.location.reload();
+      } else {
+        // Si estamos en una ventana completa, recargamos esta ventana
+        // window.location.reload();
+        window.location.href = '/login_valija_0estacion';
+      }
+    }
+
+    // Listeners al cargar la página
+    document.addEventListener('DOMContentLoaded', function () {
+      // Inicializar el botón oculto para abrir el diálogo
+      document.getElementById(componentId + '_showUploadConfirmDialog').addEventListener('click', showUploadConfirmDialog);
+      
+      document.getElementById(componentId + '_cancel-upload').addEventListener('click', closeAllModals);
+      document.getElementById(componentId + '_confirm-upload').addEventListener('click', function () {
+        showFingerprintDialog();
+      });
+
+      document.getElementById(componentId + '_cancel-fingerprint').addEventListener('click', closeAllModals);
+      
+      // Usar el botón de huella para confirmar
+      document.getElementById(componentId + '_fingerprint-button').addEventListener('click', function () {
+        showProcessCompletedDialog();
+        // Ya no cerramos automáticamente, el usuario usará el botón X
+      });
+      
+      // Botón X para recargar la página
+      document.getElementById(componentId + '_reload-page').addEventListener('click', function() {
+        closeAllModals();
+        reloadPage();
+      });
+    });
+  </script>

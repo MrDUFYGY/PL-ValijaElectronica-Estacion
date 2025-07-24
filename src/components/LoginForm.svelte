@@ -1,5 +1,4 @@
 <script>
-  // Valores por defecto para facilitar las pruebas
   let employeeId = 'HD003';
   let password = 'CGPcgp01';
   
@@ -11,9 +10,9 @@
     errorMessage = '';
 
     try {
-      // Codificamos la contraseña a Base64 antes de enviarla
       const encodedPassword = btoa(password);
 
+      // 1. LOGIN EXTERNO
       const response = await fetch('/api/login', {
         method: 'POST',
         headers: {
@@ -28,18 +27,31 @@
 
       const data = await response.json();
 
-      // Verificamos si el login fue exitoso Y si recibimos un token de sesión
-      if (data.Exitoso && data.sessionId) {
-        // Guardamos el token en el almacenamiento de la sesión del navegador
-        sessionStorage.setItem('sessionId', data.sessionId);
+      if (data.Exitoso) {
+        // 2. LOGIN DIRECTO AL BACKEND C# PARA SESIÓN
+        const responseSesion = await fetch('https://localhost:44345/api/Valija/AddLogin', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            UserName: employeeId,
+            Password: encodedPassword,
+            Estaciones: data.Estaciones
+          }),
+          credentials: 'include'
+        });
 
-        // Redirigimos al usuario al panel de control
-        window.location.href = '/dashboard';
-
+        const dataSesion = await responseSesion.json();
+        console.log('Session ID:', dataSesion.resultSession.sessionId);
+        if (dataSesion.resultSession.success) {
+          window.location.href = '/dashboard';
+        } else {
+          errorMessage = dataSesion.message || 'Error en la autenticación interna.';
+        }
       } else {
-        errorMessage = data.Mensaje || 'Error en la petición. Por favor, inténtalo de nuevo.';
+        errorMessage = data.Mensaje || 'Error en la autenticación externa.';
       }
-
     } catch (error) {
       errorMessage = 'No se pudo conectar con el servidor. Revisa tu conexión a internet.';
     } finally {
@@ -74,9 +86,12 @@
           required
         >
       </div>
+      {#if errorMessage}
+        <div class="text-red-600 text-sm">{errorMessage}</div>
+      {/if}
       <div>
-        <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-          Iniciar Sesión
+        <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" disabled={isLoading}>
+          {isLoading ? 'Iniciando...' : 'Iniciar Sesión'}
         </button>
       </div>
     </form>

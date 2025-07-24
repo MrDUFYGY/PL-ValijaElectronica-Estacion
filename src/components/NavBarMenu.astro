@@ -1,0 +1,82 @@
+---
+// src/components/NavBarMenu.astro
+
+interface Props {
+    station?: string | null;
+    date?: string | null;
+    userData?: {
+        c_Nombre: string;
+        c_ApellidoPat: string;
+        c_ApellidoMat: string;
+    } | null;
+}
+
+const { station, date, userData } = Astro.props;
+
+// Formatear la fecha para mostrarla, añadiendo la zona horaria para evitar errores de un día
+const formattedDate = date 
+    ? new Date(date + 'T06:00:00Z').toLocaleDateString("es-MX", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+    })
+    : "Fecha no disponible";
+
+const userName = userData ? `${userData.c_Nombre} ${userData.c_ApellidoPat} ${userData.c_ApellidoMat}` : "Usuario";
+---
+
+<header class="bg-gray-800 text-white p-2 shadow-md sticky top-0 z-50">
+    <div class="container mx-auto max-h-[9dvh]">
+        <div class="flex justify-between items-center">
+            <!-- Lado Izquierdo: Navegación y Título -->
+            <div class="flex items-center space-x-4">
+                <a href="/dashboard" class="bg-gray-700 hover:bg-gray-600 text-white font-semibold px-4 py-2 rounded-lg shadow-md transition duration-200 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    Estacion | Dia
+                </a>
+                <div class="h-6 w-px bg-gray-600"></div>
+                <h1 class="text-lg font-bold text-nowrap">Menú de Procesos</h1>
+            </div>
+
+            <!-- Centro: Información de la Estación -->
+            <div class="hidden md:flex items-center space-x-6 text-sm">
+                <div class="flex items-center">
+                    <div id="navbar-nickname" class="text-sm font-medium">Cargando sesión...</div>
+
+
+                </div>
+                <div class="h-4 w-px bg-gray-600"></div>
+                <div class="flex items-center">
+                    <span class="text-gray-400 mr-2">Fecha:</span>
+                    <span class="font-medium">{formattedDate}</span>
+                </div>
+            </div>
+
+            <!-- Lado Derecho: Sesión y Logout -->
+            <div class="flex items-center space-x-4">
+                <div class="text-right">
+                    <div>
+                        <span class="text-gray-400 mr-2">Estación:</span>
+                        <span class="font-medium text-lg">HD-{station || 'N/A'}</span>
+                    </div>
+                    <div id="navbar-fullname" class="text-xs text-gray-400"></div>
+                </div>
+                <div class="h-6 w-px bg-gray-600"></div>
+                <form action="/api/logout" method="POST">
+                    <button
+                        type="submit"
+                        class="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg shadow-md transition duration-200 flex items-center"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd" />
+                        </svg>
+                        Cerrar sesión
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</header>

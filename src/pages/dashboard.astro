@@ -1,15 +1,91 @@
 ---
-import Layout from '../layouts/Layout.astro';
+export const prerender = false;
 
-// En un futuro, aquí validaremos la sesión del usuario
+import Layout from '../layouts/Layout.astro';
+import StationSelector from '../components/StationSelector.svelte';
+
+
+
+// 1. Obtener los datos de la sesión desde el middleware
+const { user: sessionData } = Astro.locals;
+
+// 2. Si no hay datos o la sesión no fue exitosa, redirigir al login
+if (!sessionData || !sessionData.Exitoso) {
+  return Astro.redirect('/');
+}
+
+// 3. Extraer los datos validados del usuario
+const { resultValidated: userData } = sessionData;
+
+// 4. Obtener las propiedades específicas para la UI
+const userId = userData.userObj.c_NickName ?? 'Usuario'; // Usamos el NickName para el saludo
+const stations = userData.stations ?? ''; // La lista de estaciones para el selector
+
 ---
 
-<Layout title="Dashboard - Valija Electrónica">
-  <div class="min-h-screen bg-gray-100 flex flex-col justify-center items-center">
-    <div class="max-w-4xl w-full mx-auto bg-white p-8 rounded-lg shadow-md text-center">
-      <h1 class="text-3xl font-bold text-gray-900">¡Bienvenido!</h1>
-      <p class="mt-4 text-lg text-gray-600">Has iniciado sesión correctamente.</p>
-      <p class="mt-2 text-sm text-gray-500">Este es tu panel de control principal.</p>
+<Layout title="Estacion | Dia">
+  <main class="p-4 sm:p-8">
+            <h1 id="welcome-heading" class="text-2xl font-bold text-gray-800">Bienvenido, {userId} </h1>
+    <p class="text-gray-600 mb-6">Por favor, selecciona una estación para continuar.</p>
+    
+            <div id="station-selector-container">
+      <StationSelector stations={stations} client:load />
     </div>
-  </div>
+
+  </main>
 </Layout>
+
+
+
+<script is:inline>
+  // Función que se ejecuta cuando el DOM está listo.
+  async function onPageLoad() {
+    console.log('[DASHBOARD] Script inline INICIADO.');
+
+    // 1. Obtener el nickname desde localStorage.
+    const nickname = localStorage.getItem('nickname');
+    if (!nickname) {
+      console.error('[DASHBOARD] Nickname no encontrado en localStorage. No se puede continuar.');
+      return;
+    }
+
+    // 2. Llamar a nuestro proxy de Astro para obtener los datos.
+    try {
+      console.log(`[DASHBOARD] Buscando datos para el nickname: ${nickname}`);
+      const response = await fetch(`/api/getUserData?nickname=${nickname}`);
+      
+      if (!response.ok) {
+        // Si la API falla, mostramos el error en la consola.
+        const errorText = await response.text();
+        throw new Error(`Error en la respuesta de la API: ${response.status} ${response.statusText} - ${errorText}`);
+      }
+
+      const userData = await response.json();
+      console.log('[DASHBOARD] Datos del usuario recibidos:', userData);
+
+      // 3. Actualizar la UI (el saludo).
+      const heading = document.getElementById('welcome-heading');
+      if (heading && userData.c_Nombre) {
+        heading.textContent = `Bienvenido, ${userData.c_Nombre} ${userData.c_ApellidoPat} ${userData.c_ApellidoMat}`;
+      }
+
+      // 4. Guardar los datos en sessionStorage para la siguiente página.
+      sessionStorage.setItem('userData', JSON.stringify(userData));
+      console.log('[DASHBOARD] Datos del usuario guardados en sessionStorage. Proceso completado.');
+
+    } catch (error) {
+      console.error('[DASHBOARD] Fallo CRÍTICO al obtener los datos del usuario:', error);
+      const heading = document.getElementById('welcome-heading');
+      if(heading) {
+        heading.textContent = 'No se pudieron cargar los detalles del usuario.';
+      }
+    }
+  }
+
+  // Nos aseguramos de que el script se ejecute después de que la página se haya cargado.
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', onPageLoad);
+  } else {
+    onPageLoad();
+  }
+</script>

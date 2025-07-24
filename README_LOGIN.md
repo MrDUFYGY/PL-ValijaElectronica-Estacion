@@ -59,15 +59,83 @@ Una vez que el usuario inicia sesión exitosamente, su rol se determinará a par
 
 Este rol se almacenará en la sesión del usuario para controlar el acceso a diferentes funcionalidades de la aplicación.
 
-## 3. Propuesta de Implementación y Ruta de Desarrollo
+## 3. Flujo limpio de Login y Persistencia de Sesión
 
-La implementación se realizará siguiendo estos pasos:
+La implementación actual y recomendada para la gestión de sesión es la siguiente:
 
-1.  **Modificar `LoginForm.svelte`**: Integrar la llamada a la API usando `fetch` en la función `handleSubmit`.
-2.  **Manejo de Estado**: Añadir variables de estado para controlar la carga (`isLoading`), errores (`error`), y los datos del usuario (`userData`). Esto permitirá mostrar feedback visual al usuario (spinners de carga, mensajes de error, etc.).
-3.  **Almacenamiento de Sesión**: Utilizar `sessionStorage` o `localStorage` para guardar los datos del usuario y el token (si la API lo proporcionara en el futuro). Esto mantendrá al usuario autenticado mientras navega por la aplicación.
-4.  **Redirección**: Después de un inicio de sesión exitoso, redirigir al usuario a un panel principal o dashboard (`/dashboard`).
-5.  **Rutas Protegidas**: Implementar un sistema de rutas que verifique si el usuario está autenticado antes de permitir el acceso a páginas protegidas.
+1. El usuario ingresa sus credenciales en el frontend.
+2. El frontend envía las credenciales al API externo (`/ws_LoginEst/LoginHD`).
+3. Si el login es exitoso:
+   - El frontend determina el rol según el campo `Estaciones`.
+   - El frontend llama a `/api/Valija/AddLogin` enviando usuario, contraseña y rol.
+   - El backend crea la sesión y responde con un `sessionId` (n_IdSesionDiaHist generado por la base de datos).
+   - El frontend guarda el `sessionId` en una cookie (preferentemente httpOnly, usando Set-Cookie desde el backend si es posible).
+4. El middleware valida la sesión en cada request usando el `sessionId` de la cookie y la base de datos.
+5. **No se usa almacenamiento local ni sesiones en memoria en el backend ni en el frontend.**
+
+### Notas importantes:
+- El `sessionId` nunca debe generarse en el frontend, siempre lo genera y controla el backend.
+- El backend es el único responsable de crear y validar sesiones.
+- El frontend nunca debe guardar datos sensibles de sesión fuera de la cookie.
+- El middleware y las rutas protegidas consultan la base de datos para validar la sesión.
+- El rol del usuario se determina y persiste en la base de datos, y se puede devolver al frontend como referencia visual.
+
+### Ejemplo de flujo en código (TypeScript, API de login):
+
+```typescript
+export const POST: APIRoute = async ({ request }) => {
+  const ebody = await request.json();
+
+  if (!ebody.cUsuario || !ebody.cPSS) {
+    return new Response(JSON.stringify({ Exitoso: false, Mensaje: 'Faltan los campos cUsuario o cPSS.' }), { status: 400 });
+  }
+
+  // 1. Login externo
+  const apiResponse = await fetch('https://www.hidrosina.com.mx/serviciosHD/api/ws_LoginEst/LoginHD', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(ebody),
+  });
+
+  if (!apiResponse.ok) {
+    throw new Error(`La API externa respondió con el estado: ${apiResponse.status}`);
+  }
+
+  const data = await apiResponse.json();
+  const role = data.Estaciones.includes(',') ? 'Supervisor' : 'Gerente';
+
+  // 2. Registro de sesión en backend propio
+  const apiResponseSesion = await fetch('https://localhost:44345/api/Valija/AddLogin', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      UserName: ebody.cUsuario,
+      Password: ebody.cPSS,
+      role: role
+    })
+  });
+
+  if (!apiResponseSesion.ok) {
+    throw new Error(`La API interna respondió con el estado: ${apiResponseSesion.status}`);
+  }
+
+  const resultApiValija = await apiResponseSesion.json();
+
+  // 3. Guardar sessionId en cookie (solo si backend no lo hace con httpOnly)
+  // if (resultApiValija.success && resultApiValija.sessionId) {
+  //   document.cookie = `sessionId=${resultApiValija.sessionId}; path=/; SameSite=Strict`;
+  // }
+
+  // 4. Retornar resultado al frontend
+  return new Response(JSON.stringify({
+    Exitoso: data.Exitoso,
+    Mensaje: data.Mensaje,
+    sessionId: resultApiValija.sessionId,
+    role: role,
+    estaciones: data.Estaciones
+  }), { status: 200 });
+};
+```
 
 ## 4. Gestión de Sesión y Seguridad (Propuestas)
 
@@ -126,3 +194,32 @@ Dado que la app corre en un WebView, se podría delegar la gestión de la sesió
 **Conclusión y Propuesta Más Viable:**
 
 Para este proyecto, la **Propuesta 1 (Token de Sesión Temporal)** es la más adecuada. Ofrece un alto nivel de seguridad y control, es fácil de implementar con Astro y se ajusta perfectamente a las necesidades de una aplicación corporativa que se ejecuta en un entorno controlado como un WebView.
+
+---
+
+## Arquitectura de Autenticación (Actual)
+
+Para centralizar y robustecer la lógica de autenticación, el proyecto ha adoptado el uso de **Middleware de Astro**. Este enfoque nos permite proteger rutas de manera centralizada, segura y eficiente.
+
+### ¿Cómo Funciona?
+
+1.  **Middleware (`src/middleware.ts`):**
+    - Se ha creado un archivo `middleware.ts` que actúa como un guardián para rutas específicas.
+    - Antes de que un usuario pueda acceder a una ruta protegida (ej. `/dashboard`), el middleware intercepta la petición.
+    - Verifica la existencia y validez de la cookie `sessionId` contra el almacén de sesiones en `src/lib/session.ts`.
+    - Si la sesión no es válida, redirige al usuario a la página de inicio (`/`) de forma inmediata.
+    - Si la sesión es válida, extrae los datos del usuario (ID, rol, estaciones) y los adjunta al objeto global `Astro.locals.user`.
+
+2.  **Acceso en Páginas (`.astro`):**
+    - Las páginas protegidas, como `dashboard.astro`, ahora tienen un código mucho más limpio. Ya no necesitan verificar la sesión.
+    - Simplemente acceden a los datos del usuario a través de `Astro.locals.user`, que ya ha sido validado y poblado por el middleware.
+
+3.  **Tipado Seguro (`src/env.d.ts`):**
+    - Para que TypeScript entienda la estructura de nuestro objeto `Astro.locals.user` personalizado, se ha definido en `src/env.d.ts`.
+    - Esto proporciona autocompletado y seguridad de tipos en todo el proyecto al acceder a los datos de la sesión.
+
+### Ventajas de este Enfoque
+
+-   **Centralizado y DRY (Don't Repeat Yourself):** Toda la lógica de autenticación reside en un único lugar, facilitando su mantenimiento y evitando la duplicación de código.
+-   **Seguridad Mejorada:** La verificación se realiza en el servidor antes de que cualquier código de la página se ejecute, previniendo la exposición de contenido protegido.
+-   **Código Limpio:** Las páginas y layouts se centran exclusivamente en su contenido y funcionalidad, sin preocuparse por la lógica de autenticación.

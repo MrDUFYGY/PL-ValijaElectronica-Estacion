@@ -1,0 +1,32 @@
+---
+const { station, date } = Astro.props;
+
+// Formatear la fecha para mostrarla
+const formattedDate = date 
+  ? new Date(date).toLocaleDateString('es-MX', { 
+      day: '2-digit', 
+      month: '2-digit', 
+      year: 'numeric',
+      timeZone: 'America/Mexico_City'
+    })
+  : "Fecha no disponible";
+---
+
+<header class="bg-gray-800 text-white p-2 shadow-md sticky top-0 z-50">
+    <div class="container mx-auto">
+        <div class="flex justify-between items-center">
+            <!-- Lado Izquierdo: Título -->
+            <div class="flex items-center space-x-4">
+                <h1 class="text-lg font-bold text-nowrap">Menú de Procesos</h1>
+            </div>
+            
+            <!-- Lado Derecho: Información de la estación y fecha -->
+            <div class="flex items-center space-x-4">
+                <div class="text-sm text-gray-300">
+                    <div>Estación: <span class="font-medium">{station || 'No seleccionada'}</span></div>
+                    <div>Fecha: <span class="font-medium">{formattedDate}</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>

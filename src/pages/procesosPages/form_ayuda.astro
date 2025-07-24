@@ -1,0 +1,63 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+const usuario = {
+  nombre: 'Juan',
+  apellido: 'Pérez',
+  numeroEmpleado: 'EMP123456'
+};
+---
+
+<Layout>
+  <div
+    class="fixed inset-0 bg-cover bg-center z-0"
+    style="background-image: url('../../public/assets/hidrosina-3.jpg');"
+  ></div>
+
+  <div class="relative z-10 max-w-xl mx-auto p-6 mt-10 bg-white rounded shadow space-y-6">
+    <h1 class="text-2xl font-bold text-center mb-6">Reporte de Incidencia</h1>
+
+    <form method="post" enctype="multipart/form-data" class="space-y-6">
+      <!-- Datos del usuario -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-semibold text-gray-700">Nombre</label>
+          <input type="text" value={usuario.nombre} readonly
+            class="mt-1 w-full bg-gray-100 text-gray-500 border border-gray-300 rounded px-3 py-2 cursor-not-allowed" />
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-gray-700">Apellido</label>
+          <input type="text" value={usuario.apellido} readonly
+            class="mt-1 w-full bg-gray-100 text-gray-500 border border-gray-300 rounded px-3 py-2 cursor-not-allowed" />
+        </div>
+        <div class="sm:col-span-2">
+          <label class="block text-sm font-semibold text-gray-700">Número de Empleado</label>
+          <input type="text" value={usuario.numeroEmpleado} readonly
+            class="mt-1 w-full bg-gray-100 text-gray-500 border border-gray-300 rounded px-3 py-2 cursor-not-allowed" />
+        </div>
+      </div>
+
+      <!-- Incidencia -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-700">¿Qué sucedió?</label>
+        <textarea name="incidencia" rows="4" placeholder="Describe la incidencia..."
+          class="mt-1 w-full border border-gray-300 rounded px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-green-500"></textarea>
+      </div>
+
+      <!-- Archivo -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-700">Adjuntar archivo (opcional)</label>
+        <input type="file" name="archivo"
+          class="mt-2 block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200" />
+      </div>
+
+      <!-- Botón enviar -->
+      <div class="text-center">
+        <button type="submit"
+          class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded-md transition">
+          Enviar
+        </button>
+      </div>
+    </form>
+  </div>
+</Layout>

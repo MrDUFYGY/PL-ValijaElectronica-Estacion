@@ -1,0 +1,47 @@
+---
+// src/pages/procesosPages/ejemploUsoSesion.astro
+export const prerender = false;
+
+
+// 1. Obtener los datos del usuario desde Astro.locals
+// El middleware ya ha validado la sesión y ha colocado los datos del usuario aquí.
+const user = Astro.locals.user;
+
+// 2. Validar si el usuario existe. Si no, redirigir al inicio.
+// Esta es una segunda capa de seguridad en la propia página.
+if (!user) {
+  return Astro.redirect('/');
+}
+
+// 3. Ahora puedes usar los datos del usuario en tu página.
+// Accedemos a los datos anidados según la definición en `env.d.ts`.
+const userId = user.resultValidated.userObj.n_IdUsuario;
+const role = user.resultValidated.role;
+---
+
+<html lang="es">
+<head>
+  <title>Página Protegida</title>
+</head>
+<body>
+  <h1>Bienvenido a la página de procesos</h1>
+  <p>Esta es una página protegida y solo puedes verla si tienes una sesión activa.</p>
+  
+  <h2>Datos de tu sesión:</h2>
+  <ul>
+    <li><strong>ID de Usuario:</strong> {userId}</li>
+    <li><strong>Rol:</strong> {role}</li>
+  </ul>
+
+  <script define:vars={{ user }}>
+    // También puedes pasar los datos del usuario al script del lado del cliente
+    // de forma segura usando `define:vars`.
+    console.log('Datos de sesión disponibles en el cliente:', user);
+    
+    // Aquí puedes usar `user` para lógica en el frontend, como mostrar/ocultar elementos.
+    if (user.resultValidated.role === 'admin') {
+      console.log('El usuario es administrador.');
+    }
+  </script>
+</body>
+</html>

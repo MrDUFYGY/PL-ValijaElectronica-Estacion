@@ -1,0 +1,170 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Huella from "../../components/ConfirmHuella.astro";
+---
+
+<Layout>
+  <div
+    class="fixed inset-0 bg-cover bg-center z-0"
+    style="background-image: url('../../public/assets/hidrosina-3.jpg');"
+  >
+  </div>
+
+  <div class="relative z-10 max-w-md mx-auto p-6 rounded shadow mt-10 bg-white">
+    <h1 class="text-2xl font-bold mb-6 text-center">
+      Formulario de Autorización
+    </h1>
+
+    <form onsubmit="event.preventDefault();">
+      <label for="nombreGerente" class="block mb-2 font-semibold"
+        >Nombre del gerente:</label
+      >
+      <input
+        type="text"
+        id="nombreGerente"
+        name="nombreGerente"
+        placeholder="Ingresa el nombre completo"
+        class="w-full border border-gray-300 rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-green-500"
+        required
+      />
+
+      <label for="idAutorizacion" class="block mb-2 font-semibold"
+        >ID de autorización:</label
+      >
+      <input
+        type="text"
+        id="idAutorizacion"
+        name="idAutorizacion"
+        placeholder="Código o número de autorización"
+        class="w-full border border-gray-300 rounded px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-green-500"
+        required
+      />
+
+      <label for="fechaAutorizacion" class="block mb-2 font-semibold"
+        >Fecha de autorización:</label
+      >
+      <input
+        type="date"
+        id="fechaAutorizacion"
+        name="fechaAutorizacion"
+        class="w-full border border-gray-300 rounded px-3 py-2 mb-6 focus:outline-none focus:ring-2 focus:ring-green-500"
+        required
+      />
+
+      <!-- Botón de reconocimiento facial -->
+      <div class="mb-4">
+        <button
+          type="button"
+          onclick="iniciarReconocimientoFacial()"
+          class="w-full bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 transition"
+        >
+          Reconocimiento facial
+        </button>
+      </div>
+
+      <!-- Video -->
+      <div class="mb-4">
+        <video
+          id="videoFacial"
+          class="w-full rounded border border-gray-300"
+          autoplay
+          muted></video>
+      </div>
+
+      <!-- Botones de captura, descarga y envío -->
+      <div class="text-center mb-4 flex gap-4 justify-center flex-wrap">
+        <button
+          type="button"
+          onclick="tomarFoto()"
+          class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
+        >
+          Tomar foto
+        </button>
+
+        <button
+          type="button"
+          onclick="descargarFoto()"
+          class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition"
+        >
+          Descargar foto
+        </button>
+
+        <button
+          type="button"
+          onclick="subirFoto()"
+          class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition flex items-center gap-2"
+        >
+          <span id="uploadIcon">📤</span>
+          <span id="uploadText">Enviar foto</span>
+        </button>
+      </div>
+
+      <div>
+        <Huella />
+      </div>
+
+      <!-- Imagen capturada -->
+      <div class="text-center">
+        <canvas
+          id="fotoCanvas"
+          class="mx-auto border border-gray-300 rounded max-w-full"
+          style="max-width: 400px;"></canvas>
+      </div>
+    </form>
+  </div>
+
+  <script is:inline>
+    let video;
+
+    async function iniciarReconocimientoFacial() {
+      video = document.getElementById("videoFacial");
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+        });
+        video.srcObject = stream;
+        video.play();
+      } catch (err) {
+        alert("No se pudo acceder a la cámara: " + err.message);
+      }
+    }
+
+    function tomarFoto() {
+      const canvas = document.getElementById("fotoCanvas");
+      const context = canvas.getContext("2d");
+
+      const MAX_ANCHO = 400;
+      const proporcion = video.videoWidth / video.videoHeight;
+
+      const anchoDeseado = MAX_ANCHO;
+      const altoDeseado = Math.round(anchoDeseado / proporcion);
+
+      canvas.width = anchoDeseado;
+      canvas.height = altoDeseado;
+
+      context.drawImage(video, 0, 0, anchoDeseado, altoDeseado);
+    }
+
+    function descargarFoto() {
+      const canvas = document.getElementById("fotoCanvas");
+      const enlace = document.createElement("a");
+
+      enlace.download = "foto.png";
+      enlace.href = canvas.toDataURL("image/png");
+      enlace.click();
+    }
+
+    function subirFoto() {
+      const btnText = document.getElementById("uploadText");
+      const btnIcon = document.getElementById("uploadIcon");
+
+      btnIcon.textContent = "⏳";
+      btnText.textContent = "Enviando...";
+
+      setTimeout(() => {
+        btnIcon.textContent = "✅";
+        btnText.textContent = "Imagen enviada";
+      }, 2000);
+    }
+  </script>
+</Layout>

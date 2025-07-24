@@ -1,0 +1,400 @@
+---
+import Layout from "../../layouts/LayoutRigth.astro";
+import Huella from "../../components/ConfirmHuella.astro";
+import CustomPdfInput from '../../components/customInput/CustomPdfInput.svelte';
+export const prerender = false;
+
+import "../../styles/global.css";
+---
+
+<Layout>
+  <div class="mx-auto p-4 space-y-6">
+    
+    <!-- Encabezado -->
+    <div class="flex flex-col space-y-1">
+      <h1 class="text-xl font-semibold text-gray-800">
+        Movimientos de caja <span class="text-gray-500"
+          >(06/03/2025 - P1-C3)</span
+        >
+      </h1>
+      <p class="text-sm text-gray-500">
+        3 Registros. Mostrando todos los registros.
+      </p>
+    </div>
+
+    <!-- Tabla -->
+    <div class="overflow-x-auto border border-gray-300 rounded-lg shadow-sm">
+      <table class="min-w-full text-sm text-left text-gray-800">
+        <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
+          <tr>
+            <th class="px-4 py-2 font-medium">Liquidación</th>
+            <th class="px-4 py-2 font-medium">Tipo</th>
+            <th class="px-4 py-2 font-medium">Tipo de pago</th>
+            <th class="px-4 py-2 font-medium">Empleado</th>
+            <th class="px-4 py-2 font-medium">TPV</th>
+            <th class="px-4 py-2 font-medium text-right">Importe</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          <tr>
+            <td class="px-4 py-2">06/03/2025-P1-C3</td>
+            <td class="px-4 py-2">Pago</td>
+            <td class="px-4 py-2">03-FAJILLAS BILLETES</td>
+            <td class="px-4 py-2">LUIS ALVARO VILLEGAS CAMPUZANO</td>
+            <td class="px-4 py-2">TPV 002</td>
+            <td class="px-4 py-2 text-right text-red-600">-261,240.00$</td>
+          </tr>
+          <tr>
+            <td class="px-4 py-2">06/03/2025-P1-C3</td>
+            <td class="px-4 py-2">Pago</td>
+            <td class="px-4 py-2">40-DEPOSITO COMETRA</td>
+            <td class="px-4 py-2">LUIS ALVARO VILLEGAS CAMPUZANO</td>
+            <td class="px-4 py-2">TPV 002</td>
+            <td class="px-4 py-2 text-right text-red-600">-261,240.00$</td>
+          </tr>
+          <tr>
+            <td class="px-4 py-2">06/03/2025-P1-C3</td>
+            <td class="px-4 py-2">Cobro</td>
+            <td class="px-4 py-2">41-RETIRADA DE EFECTIVO</td>
+            <td class="px-4 py-2">LUIS ALVARO VILLEGAS CAMPUZANO</td>
+            <td class="px-4 py-2">TPV 002</td>
+            <td class="px-4 py-2 text-right text-green-600">261,240.00$</td>
+          </tr>
+        </tbody>
+        <tfoot class="bg-gray-50">
+          <tr>
+            <td colspan="5" class="px-4 py-2 font-semibold text-right">Total</td
+            >
+            <td class="px-4 py-2 text-right font-bold text-red-600"
+              >-261,240.00$</td
+            >
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <!-- Sección de gastos -->
+    <div class="mt-6">
+      <div class="flex items-center space-x-2">
+        <input
+          type="checkbox"
+          id="check-gastos"
+          class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+        />
+        <label for="check-gastos" class="text-sm font-medium text-gray-700"
+          >Gastos</label
+        >
+      </div>
+
+      <!-- Input de archivo para gastos (oculto por defecto) -->
+      <div id="seccion-gastos" class="mt-4 hidden">
+
+        <div class="mt-2 flex gap-4">
+          <div class="w-1/2">
+            <CustomPdfInput id="input-gastos" groupId="gastos" title="Gastos" client:visible confirmado={true}/>
+          </div>
+          <div class="w-1/2 p-3 text-sm bg-blue-50 border border-blue-100 rounded-md">
+            <p class="font-medium text-blue-800">Requisitos para gastos:</p>
+            <ul class="list-disc pl-5 mt-1 text-blue-700">
+              <li>Autorización por correo electrónico</li>
+              <li>Factura PDF (menores a $2,000)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mt-4 border border-gray-400 rounded-md overflow-hidden">
+          <div class="bg-gray-100 px-3 py-2 ">
+            <p class="text-xs text-gray-500">Asunto</p>
+            <input 
+              type="text" 
+              value="gastos - HD [000]"
+              disabled
+              class="w-full bg-transparent text-sm font-medium text-gray-700"
+            />
+          </div>
+          <div class="px-3 py-2">
+            <p class="text-xs text-gray-500 mb-1">CC:</p>
+            <div class="flex flex-wrap gap-1">
+              <span class="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded">guillermo@hidrosina.com.mx</span>
+              <span class="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded">benjamin@hidrosina.com.mx</span>
+            </div>
+          </div>
+          <div class="p-3">
+            <textarea
+              placeholder="Redacte su correo de autorización..."
+              minlength="50"
+              required
+              class="w-full h-32 p-2 text-sm border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+            ></textarea>
+            <p class="text-xs text-gray-500 mt-1">Mínimo 50 caracteres</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      // Obtener elementos del DOM
+      const checkGastos = document.getElementById("check-gastos");
+      const seccionGastos = document.getElementById("seccion-gastos");
+
+      // Agregar evento de cambio al checkbox
+      checkGastos.addEventListener("change", (e) => {
+        if (e.target.checked) {
+          seccionGastos.classList.remove("hidden");
+        } else {
+          seccionGastos.classList.add("hidden");
+        }
+      });
+    </script>
+
+    <!-- Sección: Inputs de archivos + Nota -->
+    <div class="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Columna Izquierda: Dos inputs de archivo -->
+      <div class="space-y-4">
+        <!-- Subir archivo 1 -->
+        <div
+          class="border border-dashed border-gray-300 rounded-md p-4 bg-gray-50"
+        >
+          <div class="flex justify-between items-center mb-2">
+            <label class="block text-sm font-medium text-gray-700"
+              >Talon de balores y ticket bancario</label
+            >
+            <div class="flex space-x-2">
+              <div class="w-2 h-2 rounded-full bg-gray-300" id="punto1-turno1">
+              </div>
+              <div class="w-2 h-2 rounded-full bg-gray-300" id="punto2-turno1">
+              </div>
+            </div>
+          </div>
+          <div>
+            <input
+              type="file"
+              id="input-turno1"
+              accept=".pdf"
+              class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+            />
+          </div>
+          <div class="flex items-center justify-between mt-2">
+            <p class="text-xs text-gray-400 italic">Archivo PDF requerido</p>
+            <button
+              id="ver-pdf-turno1"
+              class="text-blue-600 hover:text-blue-800 text-xs underline hidden"
+            >
+              Ver comprobante
+            </button>
+          </div>
+        </div>
+
+        <!-- Modal para el comprobante de turno 1 -->
+        <dialog id="modal-turno1" class="rounded-lg p-0 w-full max-w-[80%]">
+          <div class="p-6 bg-white rounded-lg shadow-lg relative">
+            <!-- Encabezado -->
+            <h2 class="text-lg font-semibold text-gray-800 mb-4">
+              Vista previa del comprobante
+            </h2>
+
+            <!-- Simulación PDF (puede ser imagen o iframe local) -->
+            <div class="mb-4 border rounded overflow-hidden h-80">
+              <iframe
+                id="pdf-viewer-turno1"
+                src="/assets/simulacion.pdf"
+                class="w-full h-full"
+                title="Vista previa PDF"></iframe>
+            </div>
+
+            <!-- Confirmación -->
+            <p class="text-sm text-gray-700 mb-4">
+              ¿Todos los puntos del comprobante son correctos?
+            </p>
+
+            <!-- Botones -->
+            <div class="flex justify-end space-x-2">
+              <button
+                id="cancel-turno1"
+                class="px-4 py-2 text-sm text-gray-600 bg-gray-100 rounded hover:bg-gray-200"
+              >
+                Cancelar
+              </button>
+              <button
+                id="confirm-turno1"
+                class="px-4 py-2 text-sm text-white bg-green-600 rounded hover:bg-green-700"
+              >
+                Confirmar
+              </button>
+            </div>
+          </div>
+        </dialog>
+
+        <Huella />
+      </div>
+
+      <!-- Columna Derecha: Nota informativa -->
+      <div
+        class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md shadow-sm h-full"
+      >
+        <h3 class="text-yellow-800 font-semibold mb-2">Nota:</h3>
+        <ol class="list-decimal pl-5 space-y-1 text-sm text-gray-700">
+          <li>Fecha</li>
+          <li>Número de folio</li>
+          <li>Monto</li>
+          <li>Firma del gerente y de quien recogió el efectivo</li>
+          <li>Talón de banco con información completa</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- El modal general ha sido eliminado ya que ahora cada input tiene su propio modal -->
+
+  <script type="module">
+    // Función para configurar los eventos de un input y su modal
+    function setupPdfInput(
+      inputId,
+      modalId,
+      viewerId,
+      openModalBtnId,
+      verPdfBtnId,
+      confirmBtnId,
+      cancelBtnId,
+      punto1Id,
+      punto2Id,
+    ) {
+      const input = document.getElementById(inputId);
+      const modal = document.getElementById(modalId);
+      const viewer = document.getElementById(viewerId);
+      const openModalBtn = document.getElementById(openModalBtnId);
+      const verPdfBtn = document.getElementById(verPdfBtnId);
+      const confirmBtn = document.getElementById(confirmBtnId);
+      const cancelBtn = document.getElementById(cancelBtnId);
+      const punto1 = document.getElementById(punto1Id);
+      const punto2 = document.getElementById(punto2Id);
+
+      let pdfDataUrl = null;
+
+      // Manejar la carga del archivo PDF
+      if (input) {
+        input.addEventListener("change", function (e) {
+          const file = e.target.files[0];
+          if (file && file.type === "application/pdf") {
+            // Actualizar estado visual
+            if (
+              inputId === "input-gastos" &&
+              document.getElementById("estado-gastos")
+            ) {
+              document.getElementById("estado-gastos").textContent = "Cargado";
+              document.getElementById("estado-gastos").className =
+                "text-sm text-green-500";
+              document
+                .getElementById("check-gastos-icon")
+                .classList.remove("hidden");
+            }
+
+            // Actualizar puntos de estado si existen
+            if (punto1) punto1.className = "w-2 h-2 rounded-full bg-green-500";
+
+            // Abrir modal automáticamente al cargar
+            if (modal) {
+              // Siempre mostrar el PDF de prueba primero
+              viewer.src = "/assets/simulacion.pdf";
+              modal.showModal();
+            }
+
+            // Crear URL para el PDF (para uso posterior si se necesita)
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              pdfDataUrl = e.target.result;
+            };
+            reader.readAsDataURL(file);
+          } else if (file) {
+            alert("Por favor, selecciona solo archivos PDF");
+            input.value = "";
+            if (punto1) punto1.className = "w-2 h-2 rounded-full bg-red-500";
+          }
+        });
+      }
+
+      // Abrir modal al hacer clic en el área del input
+      if (openModalBtn && modal) {
+        openModalBtn.addEventListener("click", function () {
+          modal.showModal();
+        });
+      }
+
+      // Ver PDF al hacer clic en el botón
+      if (verPdfBtn && modal) {
+        verPdfBtn.addEventListener("click", function () {
+          // Si hay un PDF cargado, mostrar ese, sino mostrar el de simulación
+          if (pdfDataUrl && viewer) {
+            viewer.src = pdfDataUrl;
+          }
+          modal.showModal();
+        });
+      }
+
+      // Confirmar PDF
+      if (confirmBtn && modal) {
+        confirmBtn.addEventListener("click", function () {
+          // Marcar como confirmado
+          if (punto2) punto2.className = "w-2 h-2 rounded-full bg-green-500";
+          if (
+            inputId === "input-gastos" &&
+            document.getElementById("estado-gastos")
+          ) {
+            document.getElementById("estado-gastos").textContent = "Confirmado";
+          }
+          modal.close();
+        });
+      }
+
+      // Cancelar
+      if (cancelBtn && modal) {
+        cancelBtn.addEventListener("click", function () {
+          modal.close();
+        });
+      }
+    }
+
+    // Configurar el checkbox de gastos
+    const checkGastos = document.getElementById("check-gastos");
+    const seccionGastos = document.getElementById("seccion-gastos");
+
+    if (checkGastos && seccionGastos) {
+      checkGastos.addEventListener("change", (e) => {
+        if (e.target.checked) {
+          seccionGastos.classList.remove("hidden");
+        } else {
+          seccionGastos.classList.add("hidden");
+        }
+      });
+    }
+
+    // Configurar los inputs con sus modales
+    document.addEventListener("DOMContentLoaded", () => {
+      // Configurar input de gastos
+      setupPdfInput(
+        "input-gastos",
+        "modal-gastos",
+        "pdf-viewer-gastos",
+        "open-modal-gastos",
+        "ver-pdf-gastos",
+        "confirm-gastos",
+        "cancel-gastos",
+        null,
+        null,
+      );
+
+      // Configurar input de turno 1
+      setupPdfInput(
+        "input-turno1",
+        "modal-turno1",
+        "pdf-viewer-turno1",
+        "open-modal-turno1",
+        "ver-pdf-turno1",
+        "confirm-turno1",
+        "cancel-turno1",
+        "punto1-turno1",
+        "punto2-turno1",
+      );
+    });
+  </script>
+</Layout>

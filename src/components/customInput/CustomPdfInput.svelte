@@ -1,0 +1,310 @@
+<script lang="ts">
+  import { createEventDispatcher, onMount, onDestroy } from 'svelte';
+
+  export let inputId: string;
+  export let label: string;
+  export let isConfirmed = false;
+  export let borderColor = 'border-green-500'; // Default to green, can be overridden
+  export let soloConsulta = false; // When true, disables file upload
+  
+  // Internal state for the confirmation status
+  $: isConfirmedInternal = isConfirmed;
+
+  const dispatch = createEventDispatcher<{
+    pdfConfirmed: { inputId: string; file: File | null };
+  }>();
+
+  let dropArea: HTMLDivElement;
+  let fileInput: HTMLInputElement;
+  let isModalOpen = false;
+  let uploadedFile: File | null = null;
+  let pdfUrl: string | null = null; // For creating object URL of the uploaded PDF
+  let showBlockIcon = false;
+
+  function openModal() {
+    if (soloConsulta) {
+      // In view-only mode, open the modal with the existing PDF or default one
+      if (!pdfUrl) {
+        // If no PDF is uploaded, use the default one
+        pdfUrl = '/assets/simulacion.pdf';
+      }
+      isModalOpen = true;
+      document.body.style.overflow = 'hidden';
+    } else if (fileInput?.files?.[0]) {
+      // In edit mode, create a new URL for the selected file
+      if (pdfUrl && !pdfUrl.startsWith('/assets/')) {
+        URL.revokeObjectURL(pdfUrl);
+      }
+      pdfUrl = URL.createObjectURL(fileInput.files[0]);
+      isModalOpen = true;
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  function closeModal() {
+    isModalOpen = false;
+    document.body.style.overflow = 'auto';
+    
+    // Only reset if not in soloConsulta mode and not confirmed
+    if (!soloConsulta && !isConfirmedInternal) {
+      if (fileInput) {
+        fileInput.value = '';
+      }
+      if (pdfUrl && !pdfUrl.startsWith('/assets/')) {
+        URL.revokeObjectURL(pdfUrl);
+        pdfUrl = null;
+      }
+    }
+  }
+  
+  function handleCancel() {
+    closeModal();
+  }
+
+  function openPdfViewer() {
+    if (pdfUrl) {
+      isModalOpen = true;
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  function confirmSelection() {
+    const file = fileInput?.files?.[0] || null;
+    if (file) {
+      // If there was a previous URL, clean it up if it's not the default PDF
+      if (pdfUrl && !pdfUrl.startsWith('/assets/')) {
+        URL.revokeObjectURL(pdfUrl);
+      }
+      // Create a new URL for the confirmed file
+      pdfUrl = file ? URL.createObjectURL(file) : '/assets/simulacion.pdf';
+      uploadedFile = file;
+      isConfirmedInternal = true;
+      dispatch('pdfConfirmed', { inputId, file });
+      closeModal();
+    } else if (soloConsulta) {
+      // In soloConsulta mode, use the default PDF if no file is selected
+      pdfUrl = '/assets/simulacion.pdf';
+      isConfirmedInternal = true;
+      closeModal();
+    }
+  }
+
+  function handleReplaceClick() {
+    // Trigger file input click to select a new file
+    if (!soloConsulta) {
+      fileInput?.click();
+    }
+  }
+
+  function handleFileChange(event: Event) {
+    const files = (event.target as HTMLInputElement).files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      uploadedFile = file;
+      pdfUrl = URL.createObjectURL(file);
+      isConfirmedInternal = false;
+      if (!soloConsulta) {
+        openModal();
+      }
+    }
+  }
+
+  // Clean up object URLs when component is destroyed
+  onDestroy(() => {
+    if (pdfUrl && !pdfUrl.startsWith('/assets/')) {
+      URL.revokeObjectURL(pdfUrl);
+    }
+  });
+
+  function handleDrop(e: DragEvent) {
+    if (soloConsulta) return;
+    
+    e.preventDefault();
+    dropArea.classList.remove('border-blue-500', 'bg-blue-50');
+    if (e.dataTransfer?.files?.length) {
+      fileInput.files = e.dataTransfer.files;
+      const event = { target: { files: e.dataTransfer.files } } as unknown as Event;
+      handleFileChange(event);
+    }
+  }
+
+  function handleDragOver(e: DragEvent) {
+    if (soloConsulta) return;
+    e.preventDefault();
+    dropArea.classList.add('border-blue-500', 'bg-blue-50');
+  }
+
+  function handleDragLeave() {
+    if (soloConsulta) return;
+    dropArea.classList.remove('border-blue-500', 'bg-blue-50');
+  }
+
+  onMount(() => {
+    const handleDragOverFn = (e: DragEvent) => handleDragOver(e);
+    const handleDragLeaveFn = handleDragLeave;
+    const handleDropFn = (e: DragEvent) => handleDrop(e);
+
+    dropArea.addEventListener('dragover', handleDragOverFn);
+    dropArea.addEventListener('dragleave', handleDragLeaveFn);
+    dropArea.addEventListener('drop', handleDropFn);
+    dropArea.addEventListener('click', () => {
+      if (!soloConsulta) fileInput?.click();
+    });
+    
+    // Cleanup function
+    return () => {
+      dropArea.removeEventListener('dragover', handleDragOverFn);
+      dropArea.removeEventListener('dragleave', handleDragLeaveFn);
+      dropArea.removeEventListener('drop', handleDropFn);
+      dropArea.removeEventListener('click', () => fileInput?.click());
+    };
+
+
+  });
+</script>
+
+<div class="w-full relative">
+  <div class="flex justify-between items-center mb-2">
+    <label for={inputId} class="block text-sm font-medium text-gray-700">
+      {label}
+    </label>
+    {#if soloConsulta && pdfUrl}
+      <button
+        on:click={openModal}
+        class="text-blue-600 hover:text-blue-800 text-sm flex items-center"
+        type="button"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h2a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+        </svg>
+        <span class="ml-1">Ver documento</span>
+      </button>
+    {/if}
+  </div>
+  
+  <div
+    bind:this={dropArea}
+    role="button"
+    aria-label="Seleccionar archivo PDF"
+    tabindex={soloConsulta ? -1 : 0}
+    class="rounded-lg p-6 text-center transition-colors border-2 border-dashed 
+      {isConfirmedInternal ? borderColor : 'border-gray-300'}
+      {soloConsulta 
+        ? 'bg-gray-50 cursor-not-allowed' 
+        : 'bg-white hover:bg-blue-50 cursor-pointer'}
+      relative"
+    class:opacity-50={soloConsulta}
+    on:mouseenter={() => soloConsulta && (showBlockIcon = true)}
+    on:mouseleave={() => showBlockIcon = false}
+  >
+    {#if showBlockIcon && soloConsulta}
+      <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+        </svg>
+      </div>
+    {/if}
+    {#if !isConfirmedInternal}
+      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 48 48">
+        <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+      <p class="mt-2 text-gray-700">
+        Arrastra y suelta un archivo PDF o haz clic para seleccionar
+      </p>
+    {:else}
+      <div class="flex flex-col items-center">
+        <svg class="h-12 w-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <p class="mt-2 text-gray-700">Documento cargado</p>
+        <p class="text-sm text-gray-500">{uploadedFile?.name}</p>
+        <button
+          on:click|stopPropagation={openPdfViewer}
+          class="mt-2 px-3 py-1 text-sm text-blue-600 hover:text-blue-800"
+          type="button"
+        >
+          Ver documento
+        </button>
+      </div>
+    {/if}
+    <input
+      bind:this={fileInput}
+      type="file"
+      accept=".pdf"
+      class="hidden"
+      id={inputId}
+      on:change={handleFileChange}
+      disabled={soloConsulta}
+    />
+  </div>
+
+  {#if isModalOpen}
+    <div 
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" 
+      on:click|self={closeModal}
+      tabindex="-1"
+      on:keydown={(e) => e.key === 'Escape' && closeModal()}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+    >
+      <div class="bg-white  shadow-xl w-full h-[100vh] flex flex-col">
+        <div class="px-6 py-4 border-b flex justify-between items-center">
+          <h3 id="modal-title" class="text-lg font-semibold">Vista previa del documento</h3>
+          <button
+            type="button"
+            on:click={closeModal}
+            class="text-gray-500 hover:text-gray-700"
+            aria-label="Cerrar"
+          >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        
+        <div class="flex-1 overflow-auto p-1 h-full">
+          {#if pdfUrl}
+            <iframe
+              src={pdfUrl}
+              class="w-full h-full min-h-[60vh] border rounded"
+              title="Vista previa del documento"
+            ></iframe>
+          {:else}
+            <div class="flex items-center justify-center h-64 text-gray-500">
+              No hay documento para mostrar
+            </div>
+          {/if}
+        </div>
+        
+        <div class="px-6 py-4 border-t flex justify-end space-x-3">
+          <button
+            type="button"
+            on:click={handleCancel}
+            class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded hover:bg-gray-200"
+          >
+            {soloConsulta && isConfirmedInternal ? 'Cerrar' : 'Cancelar'}
+          </button>
+          {#if !soloConsulta || !isConfirmedInternal}
+            <button
+              type="button"
+              on:click={handleReplaceClick}
+              class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={soloConsulta}
+            >
+              Reemplazar
+            </button>
+            <button
+              type="button"
+              on:click={confirmSelection}
+              class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={soloConsulta || !fileInput?.files?.[0]}
+            >
+              Confirmar
+            </button>
+          {/if}
+        </div>
+      </div>
+    </div>
+  {/if}
+</div>

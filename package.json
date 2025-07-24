@@ -3,7 +3,8 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "astro dev",
+    "dev": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 astro dev",
+    "test": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
@@ -13,9 +14,14 @@
     "@tailwindcss/vite": "^4.1.11",
     "@types/uuid": "^10.0.0",
     "astro": "^5.11.1",
+    "axios": "^1.10.0",
     "svelte": "^5.36.1",
     "tailwindcss": "^4.1.11",
     "typescript": "^5.8.3",
     "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "undici": "^6.21.3"
   }
 }

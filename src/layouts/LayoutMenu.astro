@@ -1,6 +1,5 @@
 ---
 import './src/styles/global.css'
-const { title } = Astro.props;
 ---
 <!doctype html>
 <html lang="en">
@@ -10,7 +9,7 @@ const { title } = Astro.props;
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-		<title>{title} - Valija Electronica</title>
+		<title>Valija Electronica</title>
 	</head>
 	<body>
 		<slot />
@@ -25,6 +24,12 @@ const { title } = Astro.props;
 		height: 100%;
 	}
 	body {
+		background-color: #d4d4d4;
 		font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+		scrollbar-color: #333 white;
+	}
+	*{
+		scrollbar-width: thin;
+
 	}
 </style>

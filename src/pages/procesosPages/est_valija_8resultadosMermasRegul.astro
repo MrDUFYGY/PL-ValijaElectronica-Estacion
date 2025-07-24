@@ -1,0 +1,123 @@
+---
+import Layout from '../../layouts/LayoutRigth.astro';
+import Huella from '../../components/ConfirmHuella.astro';
+export const prerender = false;
+
+---
+
+<Layout>
+
+
+    <div class="bg-white p-8 max-w-5xl mx-auto font-sans"> {/* Contenedor principal blanco con padding */}
+
+        {/* Encabezado con Logo y Texto a la derecha */}
+        <header class="flex justify-between items-start mb-10">
+          <div>
+            {/* Necesitarás la imagen del logo de Avalon */}
+            {/* Reemplaza 'logoUrl' si usas una variable de Astro o la ruta directa */}
+            <img src="../assets/logo_hidrosina.png" alt="Hidrosina Logo" class="h-30 mb-4"> <h1 class="text-2xl font-bold">Resultado de mermas y regularización</h1>
+             {/* Ajusta la altura (h-10) según necesites */}
+            {/* Si el logo incluye "Informática y Servicios", quizás necesites agregarlo como texto o tener una imagen completa */}
+          </div>
+          <div class="text-right text-xs text-gray-400"> {/* Texto gris claro y pequeño */}
+            <p>LUIS ALVARO VILLEGAS CA...</p> {/* Completa el texto si es necesario */}
+            {/* Añade más líneas si existen en la imagen original */}
+          </div>
+        </header>
+      
+        {/* Títulos */}
+        <p class="text-sm text-gray-500 mb-6">Situación anterior a la regularización</p>
+      
+        {/* Tabla de Resultados */}
+        <table class="w-full text-sm border-collapse"> {/* Tabla de ancho completo */}
+          <thead>
+            {/* Fila de encabezados */}
+            <tr class="text-left text-gray-600 font-medium"> {/* Texto alineado a la izquierda, color gris */}
+              <th class="pb-2 pt-2">Tanque</th> {/* Padding vertical */}
+              <th class="pb-2 pt-2">Producto</th>
+              <th class="pb-2 pt-2 text-right">Volumen teórico</th> {/* Alineado a la derecha */}
+              <th class="pb-2 pt-2 text-right">% ocupación</th> {/* Alineado a la derecha */}
+              <th class="pb-2 pt-2 text-right">Volumen medido</th> {/* Alineado a la derecha */}
+              <th class="pb-2 pt-2 text-right">Volumen de la merma</th> {/* Alineado a la derecha */}
+              <th class="pb-2 pt-2 text-right">Merma media mensual</th> {/* Alineado a la derecha */}
+            </tr>
+          </thead>
+          <tbody class="text-gray-800"> {/* Color de texto principal para el cuerpo */}
+            {/* Fila 1 */}
+            <tr class="border-t border-gray-200"> {/* Línea sutil superior para separar filas */}
+              <td class="py-2">Tanque 1</td> {/* Padding vertical */}
+              <td class="py-2">32011.MAGNA</td>
+              <td class="py-2 text-right">17,938.46</td> {/* Alineado a la derecha */}
+              <td class="py-2 text-right">44.85%</td> {/* Alineado a la derecha */}
+              <td class="py-2 text-right">14,587.39</td> {/* Alineado a la derecha */}
+              <td class="py-2 text-right">-3,351.07</td> {/* Alineado a la derecha */}
+              <td class="py-2 text-right">0.00%</td> {/* Alineado a la derecha */}
+            </tr>
+            {/* Fila 2 */}
+            <tr class="border-t border-gray-200">
+              <td class="py-2">Tanque 2</td>
+              <td class="py-2">32011.MAGNA</td>
+              <td class="py-2 text-right">6,526.61</td>
+              <td class="py-2 text-right">16.32%</td>
+              <td class="py-2 text-right">8,258.87</td>
+              <td class="py-2 text-right">1,732.26</td>
+              <td class="py-2 text-right">0.00%</td>
+            </tr>
+            {/* Fila 3 */}
+            <tr class="border-t border-gray-200">
+              <td class="py-2">Tanque 3</td>
+              <td class="py-2">32011.MAGNA</td>
+              <td class="py-2 text-right">-1,508.39</td>
+              <td class="py-2 text-right">-3.77%</td> {/* Asegúrate de que el signo negativo sea intencional */}
+              <td class="py-2 text-right">1,093.86</td>
+              <td class="py-2 text-right">2,602.25</td>
+              <td class="py-2 text-right">0.00%</td>
+            </tr>
+            {/* Fila 4 */}
+            <tr class="border-t border-gray-200">
+              <td class="py-2">Tanque 4</td>
+              <td class="py-2">32012.PREMIUM</td>
+              <td class="py-2 text-right">17,345.20</td>
+              <td class="py-2 text-right">43.36%</td>
+              <td class="py-2 text-right">17,331.52</td>
+              <td class="py-2 text-right">-13.68</td>
+              <td class="py-2 text-right">0.00%</td>
+            </tr>
+            {/* Fila 5 */}
+            <tr class="border-t border-gray-200">
+              <td class="py-2">Tanque 5</td>
+              <td class="py-2">34006.DIESEL</td>
+              <td class="py-2 text-right">890.32</td>
+              <td class="py-2 text-right">2.23%</td>
+              <td class="py-2 text-right">3,834.21</td>
+              <td class="py-2 text-right">2,943.89</td>
+              <td class="py-2 text-right">0.00%</td>
+            </tr>
+            {/* Fila 6 */}
+            <tr class="border-t border-gray-200">
+              <td class="py-2">Tanque 6</td>
+              <td class="py-2">34006.DIESEL</td>
+              <td class="py-2 text-right">21,097.67</td>
+              <td class="py-2 text-right">52.74%</td>
+              <td class="py-2 text-right">18,012.82</td>
+              <td class="py-2 text-right">-3,084.85</td>
+              <td class="py-2 text-right">0.00%</td>
+            </tr>
+            {/* Puedes añadir más filas si es necesario */}
+          </tbody>
+        </table>
+      
+
+
+        <Huella />
+
+
+
+
+
+
+
+      </div>
+
+
+</Layout>

@@ -1,0 +1,134 @@
+---
+const { inputId, punto1Id, punto2Id, titulo } = Astro.props;
+---
+
+<div class="border border-dashed border-gray-300 rounded-md p-4 bg-gray-50">
+  <div class="flex justify-between items-center mb-2">
+    <label class="block text-sm font-medium text-gray-700">
+      {titulo}
+    </label>
+    <div class="flex space-x-2">
+      <div class="w-2 h-2 rounded-full bg-gray-300" id={punto1Id}></div>
+      <div class="w-2 h-2 rounded-full bg-gray-300" id={punto2Id}></div>
+    </div>
+  </div>
+
+  <input 
+    type="file" 
+    id={inputId} 
+    accept=".pdf"
+    class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"
+    onchange={`updateFile(event, '${inputId}', '${punto1Id}', '${punto2Id}')`}
+  >
+
+  <div class="flex items-center justify-between mt-2">
+    <p class="text-xs text-gray-400 italic">Archivo PDF requerido</p>
+    <div class="flex space-x-2">
+      <button id={`viewFile-${inputId}`} class="hidden text-blue-600 hover:text-blue-800 text-xs underline">
+        Ver PDF
+      </button>
+      <button id={`removeFile-${inputId}`} class="hidden text-red-500 hover:text-red-700 text-xs">
+        Eliminar
+      </button>
+    </div>
+  </div>
+</div>
+
+<dialog id={`modal-${inputId}`} class="w-full max-w-3xl rounded-xl shadow-xl p-0 overflow-hidden">
+  <div class="flex flex-col h-[80vh]">
+    <div class="bg-gray-100 p-4 flex justify-between items-center">
+      <h2 class="text-lg font-semibold text-gray-700">Previsualización de PDF</h2>
+      <button id={`closeModal-${inputId}`} class="text-red-500 hover:text-red-700">✕</button>
+    </div>
+    <iframe id={`pdfViewer-${inputId}`} class="flex-1 w-full" style="border: none;"></iframe>
+    <div class="p-4 bg-gray-100 text-right">
+      <button 
+        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        onclick={`document.getElementById('modal-${inputId}')?.close()`}
+      >
+        Confirmar Archivo
+      </button>
+    </div>
+  </div>
+</dialog>
+
+<script is:inline>
+  const fileStorage = {};
+
+  function updateFile(event, inputId, punto1Id, punto2Id) {
+    const file = event?.target?.files?.[0];
+    const input = document.getElementById(inputId);
+    const punto1 = document.getElementById(punto1Id);
+    const punto2 = document.getElementById(punto2Id);
+    const viewFileButton = document.getElementById(`viewFile-${inputId}`);
+    const removeFileButton = document.getElementById(`removeFile-${inputId}`);
+
+    [punto1, punto2].forEach(p => {
+      if (p) {
+        p.classList.remove('bg-green-500', 'bg-red-500');
+        p.classList.add('bg-gray-300');
+      }
+    });
+
+    if (!file || file.type !== 'application/pdf') {
+      alert('Por favor, selecciona solo archivos PDF');
+      if (input) input.value = '';
+      if (punto1) punto1.classList.replace('bg-gray-300', 'bg-red-500');
+      if (removeFileButton) removeFileButton.classList.add('hidden');
+      if (viewFileButton) viewFileButton.classList.add('hidden');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      fileStorage[inputId] = e.target.result;
+      if (punto1) punto1.classList.replace('bg-gray-300', 'bg-green-500');
+      if (removeFileButton) removeFileButton.classList.remove('hidden');
+      if (viewFileButton) viewFileButton.classList.remove('hidden');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const allRemove = document.querySelectorAll('[id^="removeFile-"]');
+    const allView = document.querySelectorAll('[id^="viewFile-"]');
+    const allClose = document.querySelectorAll('[id^="closeModal-"]');
+
+    allRemove.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const inputId = btn.id.replace('removeFile-', '');
+        const input = document.getElementById(inputId);
+        const punto1 = document.getElementById(`p1-${inputId}`);
+        const punto2 = document.getElementById(`p2-${inputId}`);
+        const viewFileButton = document.getElementById(`viewFile-${inputId}`);
+        if (input) input.value = '';
+        if (viewFileButton) viewFileButton.classList.add('hidden');
+        updateFile({ target: { files: [] } }, inputId, punto1?.id, punto2?.id);
+      });
+    });
+
+    allView.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const inputId = btn.id.replace('viewFile-', '');
+        const modal = document.getElementById(`modal-${inputId}`);
+        const viewer = document.getElementById(`pdfViewer-${inputId}`);
+        if (fileStorage[inputId] && viewer && modal) {
+          modal.showModal();
+          setTimeout(() => {
+            viewer.src = fileStorage[inputId];
+          }, 50); // espera breve para que el modal esté completamente visible
+        }
+      });
+    });
+
+    allClose.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const inputId = btn.id.replace('closeModal-', '');
+        const modal = document.getElementById(`modal-${inputId}`);
+        const viewer = document.getElementById(`pdfViewer-${inputId}`);
+        if (modal) modal.close();
+        if (viewer) viewer.src = ''; // limpia el iframe
+      });
+    });
+  });
+</script>

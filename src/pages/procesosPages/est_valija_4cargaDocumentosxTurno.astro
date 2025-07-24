@@ -1,0 +1,13 @@
+---
+import Layout from '../../layouts/LayoutRigth.astro';
+import CargaDocumentosxTurno from '../../components/customInput/est_valija_4sistemUploadComp.svelte';
+export const prerender = false;
+
+const url = new URL(Astro.request.url);
+const station = url.searchParams.get('station');
+const date = url.searchParams.get('date');
+---
+
+<Layout station={station} date={date}>
+  <CargaDocumentosxTurno client:visible />
+</Layout>

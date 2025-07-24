@@ -1,0 +1,374 @@
+---
+import Layout from '../../layouts/LayoutRigth.astro';
+import Huella from '../../components/ConfirmHuella.astro';
+import "../../styles/global.css";
+export const prerender = false;
+
+---
+
+<Layout>
+  <div class="container mx-auto p-6">
+    <!-- Diálogo de confirmación -->
+    <div id="confirm-dialog" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg p-6 max-w-4xl w-full relative z-50">
+        <h3 class="text-lg font-semibold mb-4">Confirmar carga de archivo</h3>
+        <div class="mb-4 border rounded overflow-hidden h-96">
+          <iframe id="preview-pdf" class="w-full h-full" title="Vista previa PDF"></iframe>
+        </div>
+        <div class="flex justify-end space-x-4">
+          <button id="cancel-upload-dialog" class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">Cancelar</button>
+          <button id="confirm-upload-dialog" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Confirmar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-lg p-6">
+      <h1 class="text-2xl font-bold text-center mb-8 text-gray-800">Carga de Nóminas</h1>
+
+      <!-- Contenedor de inputs dinámicos -->
+      <div id="inputs-container" class="space-y-4">
+        <div class="input-group flex items-center space-x-4">
+          <div class="flex-grow">
+            <div class="file-upload-container">
+              <label class="block text-gray-700 mb-2">Nómina</label>
+              <div class="relative border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-blue-500 transition-colors">
+                <input type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept=".pdf" data-input-id="1">
+                <div class="text-center">
+                  <svg class="mx-auto h-8 w-8 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  <p class="mt-1 text-xs text-gray-600">Haz clic para seleccionar o arrastra un archivo aquí</p>
+                </div>
+                <div class="absolute top-2 right-2 flex space-x-2">
+                  <div class="w-3 h-3 rounded-full bg-gray-200" data-status-1="1"></div>
+                  <div class="w-3 h-3 rounded-full bg-gray-200" data-status-2="1"></div>
+                </div>
+              </div>
+              <p class="file-name mt-2 text-xs text-gray-500"></p>
+            </div>
+          </div>
+          <button class="add-input-btn mt-6 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+
+      <!-- Paso 1: Textarea de Envío -->
+       <div class="border border-dashed border-gray-300 rounded-md p-4 bg-gray-50">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Envio</label>
+        <textarea
+        id="input-envio"
+        rows="4"
+        maxlength="500"
+        class="w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
+        placeholder="Escriba su mensaje de envio..."></textarea>
+        <div class="flex justify-between items-center mt-2">
+          <span id="char-count" class="text-sm text-gray-500"
+          >0 / 100 caracteres</span
+          >
+          <button
+          id="btn-enviar"
+          class="bg-blue-600 text-white px-4 py-1 rounded-md hover:bg-blue-700 transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+           disabled
+           >
+           Enviar
+          </button>
+         
+        </div>
+        <div
+        id="envio-estado"
+        class="hidden mt-4 flex items-center justify-center space-x-2"
+        >
+        <div class="spinner"></div>
+        <span class="text-blue-600 font-semibold">Enviado...</span>
+        </div>
+       </div>
+
+      <!-- Botón de envío -->
+      <div class="mt-8 flex justify-end">
+
+        <Huella />
+      </div>
+
+      <!-- Resumen de archivos -->
+      <div class="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h2 class="text-lg font-semibold mb-4 text-gray-700">Archivos Seleccionados</h2>
+          <ul id="files-summary" class="list-disc list-inside text-sm text-gray-600">
+            <li>Sin archivos seleccionados</li>
+          </ul>
+        </div>
+
+            <!-- Columna Derecha: Nota informativa -->
+    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md shadow-sm h-full">
+      <h3 class="text-yellow-800 font-semibold mb-2">Nota:</h3>
+      <ol class="list-decimal pl-5 space-y-1 text-sm text-gray-700">
+        <li>Solo se envían las que fueron pagadas en efectivo y que comprueban el monto en póliza</li>
+        <li>Deben venir firmadas por el empleado</li> 
+      </ol>
+    </div>
+  </div>
+
+      </div>
+    </div>
+  </div>
+
+<script type="module">
+    document.addEventListener('DOMContentLoaded', function () {
+        const inputsContainer = document.getElementById('inputs-container');
+        const confirmDialog = document.getElementById('confirm-dialog');
+        const confirmUploadBtn = document.getElementById('confirm-upload-dialog');
+        const cancelUploadBtn = document.getElementById('cancel-upload-dialog');
+        const previewPdf = document.getElementById('preview-pdf');
+        const submitButton = document.getElementById('submit-all');
+        const filesSummary = document.getElementById('files-summary');
+
+        let currentFileInput = null;
+        let currentFile = null;
+        let currentFileUrl = null;
+        let uploadedFiles = new Map();
+        let inputCounter = 1;
+
+        // Función para crear un nuevo grupo de input
+        function createNewInputGroup() {
+            inputCounter++;
+            const inputGroup = document.createElement('div');
+            inputGroup.className = 'input-group flex items-center space-x-4';
+
+            inputGroup.innerHTML = `
+        <div class="flex-grow">
+          <div class="file-upload-container">
+            <label class="block text-gray-700 mb-2">Nómina</label>
+            <div class="relative border-2 border-dashed border-gray-300 rounded-lg p-4 hover:border-blue-500 transition-colors">
+              <input type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept=".pdf" data-input-id="${inputCounter}">
+              <div class="text-center">
+                <svg class="mx-auto h-8 w-8 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                  <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <p class="mt-1 text-xs text-gray-600">Haz clic para seleccionar o arrastra un archivo aquí</p>
+              </div>
+              <div class="absolute top-2 right-2 flex space-x-2">
+                <div class="w-3 h-3 rounded-full bg-gray-200" data-status-1="${inputCounter}"></div>
+                <div class="w-3 h-3 rounded-full bg-gray-200" data-status-2="${inputCounter}"></div>
+              </div>
+            </div>
+            <p class="file-name mt-2 text-xs text-gray-500"></p>
+          </div>
+        </div>
+        <button class="remove-input-btn mt-6 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      `;
+
+            setupFileInput(inputGroup.querySelector('input[type="file"]'));
+            setupRemoveButton(inputGroup.querySelector('.remove-input-btn'));
+
+            return inputGroup;
+        }
+
+        // Función para mostrar el diálogo de confirmación
+        function showConfirmDialog(fileInput, file) {
+            currentFileInput = fileInput;
+            currentFile = file;
+            currentFileUrl = URL.createObjectURL(file);
+            previewPdf.src = currentFileUrl;
+            confirmDialog.classList.remove('hidden');
+        }
+
+        // Función para ocultar el diálogo de confirmación
+        function hideConfirmDialog() {
+            confirmDialog.classList.add('hidden');
+            if (currentFileUrl) {
+                URL.revokeObjectURL(currentFileUrl);
+                currentFileUrl = null;
+            }
+            currentFileInput = null;
+            currentFile = null;
+        }
+
+        // Función para actualizar el estado de validación
+        function updateValidationStatus(inputId, status1, status2) {
+            const status1Element = document.querySelector(`[data-status-1="${inputId}"]`);
+            const status2Element = document.querySelector(`[data-status-2="${inputId}"]`);
+            const container = document.querySelector(`[data-input-id="${inputId}"]`).closest('.file-upload-container');
+
+            if (status1Element) {
+                status1Element.classList.remove('bg-gray-200', 'bg-green-500', 'bg-red-500');
+                status1Element.classList.add(status1);
+            }
+
+            if (status2Element) {
+                status2Element.classList.remove('bg-gray-200', 'bg-green-500', 'bg-red-500');
+                status2Element.classList.add(status2);
+            }
+
+            if (status1 === 'bg-green-500') {
+                container.querySelector('.relative').classList.add('border-green-500');
+                container.querySelector('.relative').classList.remove('border-gray-300');
+            } else {
+                container.querySelector('.relative').classList.remove('border-green-500');
+                container.querySelector('.relative').classList.add('border-gray-300');
+            }
+        }
+
+        // Función para actualizar el resumen de archivos
+        function updateFilesSummary() {
+            if (uploadedFiles.size === 0) {
+                filesSummary.innerHTML = '<li>Sin archivos seleccionados</li>';
+                return;
+            }
+
+            filesSummary.innerHTML = '';
+            uploadedFiles.forEach((file, inputId) => {
+                const li = document.createElement('li');
+                li.textContent = `Nómina ${inputId}: ${file.name}`;
+                filesSummary.appendChild(li);
+            });
+        }
+
+        // Configurar input de archivo
+        function setupFileInput(input) {
+            const container = input.closest('.file-upload-container');
+
+            input.addEventListener('change', function (e) {
+                const file = this.files[0];
+                if (file) {
+                    if (file.type === 'application/pdf') {
+                        showConfirmDialog(this, file);
+                    } else {
+                        alert('Por favor, selecciona solo archivos PDF');
+                        this.value = '';
+                        updateValidationStatus(this.dataset.inputId, 'bg-red-500', 'bg-gray-200');
+                    }
+                }
+            });
+
+            // Configurar drag and drop
+            container.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                container.querySelector('.relative').classList.add('border-blue-500');
+            });
+
+            container.addEventListener('dragleave', () => {
+                container.querySelector('.relative').classList.remove('border-blue-500');
+            });
+
+            container.addEventListener('drop', (e) => {
+                e.preventDefault();
+                container.querySelector('.relative').classList.remove('border-blue-500');
+
+                const file = e.dataTransfer.files[0];
+                if (file) {
+                    if (file.type === 'application/pdf') {
+                        input.files = e.dataTransfer.files;
+                        showConfirmDialog(input, file);
+                    } else {
+                        alert('Por favor, arrastra solo archivos PDF');
+                        updateValidationStatus(input.dataset.inputId, 'bg-red-500', 'bg-gray-200');
+                    }
+                }
+            });
+        }
+
+        // Configurar botón de eliminar
+        function setupRemoveButton(button) {
+            button.addEventListener('click', function () {
+                const inputGroup = this.closest('.input-group');
+                const input = inputGroup.querySelector('input[type="file"]');
+                uploadedFiles.delete(input.dataset.inputId);
+                inputGroup.remove();
+                updateFilesSummary();
+            });
+        }
+
+        // Event listeners para el diálogo de confirmación
+        confirmUploadBtn.addEventListener('click', () => {
+            if (currentFileInput && currentFile) {
+                const container = currentFileInput.closest('.file-upload-container');
+                const fileNameElement = container.querySelector('.file-name');
+
+                fileNameElement.textContent = currentFile.name;
+                updateValidationStatus(currentFileInput.dataset.inputId, 'bg-green-500', 'bg-gray-200');
+                uploadedFiles.set(currentFileInput.dataset.inputId, currentFile);
+
+                updateFilesSummary();
+            }
+            hideConfirmDialog();
+        });
+
+        cancelUploadBtn.addEventListener('click', () => {
+            if (currentFileInput) {
+                currentFileInput.value = '';
+                updateValidationStatus(currentFileInput.dataset.inputId, 'bg-gray-200', 'bg-gray-200');
+                uploadedFiles.delete(currentFileInput.dataset.inputId);
+                updateFilesSummary();
+            }
+            hideConfirmDialog();
+        });
+
+        // Event listener para el botón de agregar input
+        document.querySelector('.add-input-btn').addEventListener('click', function () {
+            const newInputGroup = createNewInputGroup();
+            inputsContainer.appendChild(newInputGroup);
+        });
+
+        // Event listener para el botón de enviar
+        submitButton.addEventListener('click', function () {
+            if (uploadedFiles.size === 0) {
+                alert('Por favor, selecciona al menos un archivo antes de enviar.');
+                return;
+            }
+            // Aquí iría la lógica para enviar los archivos al servidor
+            alert('Archivos listos para enviar. Aquí implementarías la lógica de envío al servidor.');
+        });
+
+        // Configurar el primer input
+        setupFileInput(document.querySelector('input[type="file"]'));
+    });
+
+        // Boton de enviar funcione
+      const envioTextarea = document.getElementById("input-envio");
+      const envioEstado = document.getElementById("envio-estado");
+      const seccionComprobante = document.getElementById("seccion-comprobante");
+
+      const charCount = document.getElementById("char-count");
+      const btnEnviar = document.getElementById("btn-enviar");
+
+      // Función para manejar el conteo de caracteres y habilitar el botón
+      envioTextarea.addEventListener("input", (e) => {
+        const currentLength = e.target.value.trim().length;
+        charCount.textContent = `${currentLength} / 100 caracteres`;
+
+        // Habilitar o deshabilitar el botón según el conteo de caracteres
+        if (currentLength >= 100) {
+          btnEnviar.disabled = false;
+        } else {
+          btnEnviar.disabled = true;
+        }
+      });
+
+      // Función para manejar el envío
+      btnEnviar.addEventListener("click", () => {
+        // Deshabilitar textarea y botón durante el envío
+        envioTextarea.disabled = true;
+        btnEnviar.disabled = true;
+
+        // Mostrar animación de carga
+        envioEstado.classList.remove("hidden");
+
+        // Simular envío con timeout
+        setTimeout(() => {
+          envioEstado.classList.add("hidden");
+          seccionComprobante.classList.remove("hidden");
+        }, 5000);
+      });
+
+    
+</script>
+
+</Layout>
