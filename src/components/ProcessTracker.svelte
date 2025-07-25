@@ -127,7 +127,7 @@
     
     // Función para manejar el clic en el botón
     function handleButtonClick(event: MouseEvent) {
-      toggleDetails();
+      showDetailsOnly();
       if (!modalId) return;
       
       // Obtener la URL del modal desde el mapa
@@ -228,9 +228,28 @@
     }
   
     let showDetails = false;
+    let detailsContent: HTMLElement;
+
     function toggleDetails() {
       showDetails = !showDetails;
+      if (detailsContent) {
+        if (showDetails) {
+          detailsContent.style.maxHeight = detailsContent.scrollHeight + "px";
+        } else {
+          detailsContent.style.maxHeight = '0';
+        }
+      }
     }
+
+      function showDetailsOnly(forceShow: boolean = true) {
+    if (forceShow && !showDetails) {
+      showDetails = true;
+      if (detailsContent) {
+        detailsContent.style.maxHeight = detailsContent.scrollHeight + "px";
+      }
+    }
+  }
+
   </script>
   
   <div class="proceso-card {getClasesFondoTarjeta(estado)} rounded-lg p-4 mb-2 border" bind:this={container}>
@@ -273,59 +292,64 @@
     
   
     
-    {#if showDetails}
-    <!-- Descripción del proceso -->
-    <div class="mb-4 text-sm text-gray-700">
-      {descripcion}
-    </div>
-    
-    <!-- Contenedor de pasos y subprocesos -->
-    <div class="relative">
-      <!-- Línea vertical de progreso -->
-      <div class="absolute left-3 top-0 bottom-0 w-0.5 bg-gray-200">
-        <div 
-          class="absolute top-0 left-0 w-full bg-blue-500 transition-all duration-300"
-          style={`height: ${porcentajeCompletado}%`}
-        ></div>
+    <div class="details-content" bind:this={detailsContent}>
+      <!-- Descripción del proceso -->
+      <div class="text-sm text-gray-900">
+        {descripcion}
       </div>
       
-      <!-- Lista de pasos y subprocesos -->
-      <div class="space-y-2 pl-5">
-        {#each pasos as paso, i}
-          <div class="relative">
-            <!-- Número del paso -->
-            <div class="absolute -left-4 top-0 w-4 h-4 flex items-center justify-center rounded-full 
-                     {paso.activo 
-                       ? 'bg-blue-500 text-white' 
-                       : 'bg-white border border-gray-300 text-gray-400'}
-                     {paso.esActual ? 'ring-2 ring-blue-400 scale-110' : ''}
-                     text-[9px] font-medium transition-all duration-200">
-              {paso.mostrarCheck ? '✓' : paso.numero}
-            </div>
-            
-            <!-- Contenido del subproceso -->
-            <div class="ml-1.5">
-              <div class={`text-[11px] leading-tight ${paso.activo ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>
-                {paso.nombre}
+      <!-- Contenedor de pasos y subprocesos -->
+      <div class="relative">
+        <!-- Línea vertical de progreso -->
+        <div class="absolute left-3 top-0 bottom-0 w-0.5 bg-gray-500">
+          <div 
+            class="absolute top-0 left-0 w-full bg-blue-500 transition-all duration-300"
+            style={`height: ${porcentajeCompletado}%`}
+          ></div>
+        </div>
+        
+        <!-- Lista de pasos y subprocesos -->
+        <div class="space-y-2 pl-5">
+          {#each pasos as paso, i}
+            <div class="relative">
+              <!-- Número del paso -->
+              <div class="absolute -left-4 top-0 w-4 h-4 flex items-center justify-center rounded-full 
+                       {paso.activo 
+                         ? 'bg-blue-500 text-white' 
+                         : 'bg-white border border-gray-500 text-gray-700'}
+                       {paso.esActual ? 'ring-2 ring-blue-400 scale-110' : ''}
+                       text-[9px] font-medium transition-all duration-200">
+                {paso.mostrarCheck ? '✓' : paso.numero}
               </div>
-              {#if !paso.esUltimo}
-                <div class="h-3 w-0.5 bg-gray-200 ml-1.5 mt-0.5"></div>
-              {/if}
+              
+              <!-- Contenido del subproceso -->
+              <div class="ml-1.5">
+                <div class={`text-[13px] leading-tight ${paso.activo ? 'text-gray-900 font-medium' : 'text-gray-700'}`}>
+                  {paso.nombre}
+                </div>
+                {#if !paso.esUltimo}
+                  <div class="h-3 w-0.5 bg-gray-500 ml-1.5 mt-0.5"></div>
+                {/if}
+              </div>
             </div>
-          </div>
-        {/each}
+          {/each}
+        </div>
       </div>
     </div>
-{/if}
   </div>
   
   <style>
     .proceso-card {
-      transition: all 0.2s ease;
-      margin: 5px;
+      transition: all 0.1s ease;
+      
     }
     .proceso-card:hover {
       box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.7), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    }
+    .details-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.2s ease-in-out;
     }
   </style>
   

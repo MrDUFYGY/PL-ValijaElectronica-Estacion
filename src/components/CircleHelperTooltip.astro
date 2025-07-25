@@ -1,0 +1,120 @@
+---
+
+---
+  <!-- Círculo con el símbolo de pregunta -->
+  <div class="help-circle">?</div>
+
+  <!-- Caja de instrucciones en la parte inferior izquierda -->
+  <div class="tooltip-box">
+    <p><strong>Atajos:</strong></p>
+    <ul>
+      <li>
+        ● Botón "Subir": <kbd
+          >Este botón solo aparece cuando aún no se ha realizado ninguna carga
+          de archivos.</kbd>
+      </li><br>
+      <li>
+        ● Botón "❯": <kbd
+          >Este botón aparece únicamente después de haber realizado una carga de
+          archivos.</kbd>
+      </li> <br>
+      <li>
+        ● Identificador "Pendiente": <kbd
+          >No se ha realizado ninguna carga de archivos.</kbd>
+      </li><br>
+      <li>
+        ● Identificador "Iniciado": <kbd
+          >Ya se han cargado algunos archivos, pero aún faltan por subir.</kbd>
+      </li><br>
+      <li>
+        ● Identificador "Realizado": <kbd
+          >Todos los archivos se han cargado correctamente.</kbd>
+      </li><br>
+    </ul>
+  </div>
+  <style>
+    /* Contenedor del icono de ayuda */
+    .help-circle {
+      position: fixed;
+      bottom: .2vw;
+      left: .2vw;
+      width: 50px;
+      height: 50px;
+      background-color: #018e2e;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      font-size: 24px;
+      z-index: 1000;
+    }
+
+    /* Círculo exterior para el efecto de respiración */
+    .help-circle::before {
+      content: "";
+      position: absolute;
+      width: 80px; /* Tamaño inicial del círculo exterior */
+      height: 80px;
+      border-radius: 50%;
+      background-color: rgba(
+        69,
+        163,
+        43,
+        0.5
+      ); /* Color del círculo con opacidad */
+      animation: breathing 2.4s infinite; /* Animación de respiración */
+      z-index: -1; /* Coloca el círculo detrás del círculo principal */
+    }
+
+    /* Animación de respiración */
+    @keyframes breathing {
+      0% {
+        transform: scale(1);
+        opacity: 0.7;
+      }
+
+      50% {
+        transform: scale(1.2); /* Expande el círculo */
+        opacity: 0.3; /* Reduce la opacidad */
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 0.7;
+      }
+    }
+
+    /* Tooltip con instrucciones */
+    .tooltip-box {
+      position: fixed;
+      bottom: 3vw;
+      left: 1vw;
+      background-color: rgba(105, 250, 48, 0.9);
+      color: black;
+      padding: 15px;
+      border-radius: 6px;
+      display: none; /* Oculto por defecto */
+      z-index: 100;
+      font-size: 14px;
+      width: 300px;
+    }
+
+    /* Mostrar el tooltip cuando se pasa el ratón sobre el círculo */
+    .help-circle:hover + .tooltip-box {
+      display: block;
+    }
+
+    /* Flecha del tooltip */
+    .tooltip-box::after {
+      content: "";
+      position: absolute;
+      top: 100%; /* Flecha apuntando hacia el círculo */
+      left: 50%;
+      margin-left: -100px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: rgba(250, 235, 48, 0.9) transparent transparent transparent;
+    }
+  </style>

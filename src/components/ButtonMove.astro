@@ -1,0 +1,129 @@
+---
+export interface Props {
+  position?: string; // top puede ser '10%', '2rem', '40px', etc.
+  styles?: string;
+  clases?: string;
+  id?: string;
+  icono?: string;
+  direction?: 'up' | 'down';
+}
+
+const { 
+  position, 
+  styles = '', 
+  clases = '', 
+  id, 
+  icono = '▲',
+  direction = 'up'
+} = Astro.props;
+
+// Generar ID único si no se proporciona
+const componentId = `btn-move-${Math.random().toString(36).substr(2, 9)}`;
+const buttonId = id ? `btn-${id}` : componentId;
+
+// Estilos de posicionamiento
+const positionStyles = position 
+  ? `top: ${position};`
+  : '';
+
+// Estilos base del botón
+const baseStyles = `
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: none;
+  background: #007bff;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+  z-index: 1000;
+`;
+
+// Combinar todos los estilos
+const finalStyles = `${baseStyles}${positionStyles}${styles}`; // el usuario puede definir position y left en styles o clases
+---
+
+<button 
+  type="button" 
+  id={buttonId}
+  class={`button-move ${clases}`}
+  style={finalStyles}
+  data-target-id={id}
+>
+  {icono.includes('<') ? (
+    <Fragment set:html={icono} />
+  ) : icono.startsWith('material-icons') ? (
+    <span class="material-icons">{icono.replace('material-icons:', '')}</span>
+  ) : (
+    icono
+  )}
+</button>
+
+<script>
+  // Función para manejar el scroll
+  function handleScroll(targetId: string | null, direction: string) {
+    if (targetId) {
+      // Scroll en un contenedor específico
+      const container = document.getElementById(targetId);
+      if (container) {
+        const scrollTop = direction === 'up' ? 0 : container.scrollHeight;
+        container.scrollTo({ top: scrollTop, behavior: 'smooth' });
+      }
+    } else {
+      // Scroll en la ventana principal
+      const scrollTop = direction === 'up' ? 0 : document.body.scrollHeight;
+      window.scrollTo({ top: scrollTop, behavior: 'smooth' });
+    }
+  }
+
+  // Inicializar eventos cuando el DOM esté listo
+  document.addEventListener('DOMContentLoaded', () => {
+    const buttons = document.querySelectorAll('.button-move');
+    
+    buttons.forEach(button => {
+      const btn = button as HTMLButtonElement;
+      const targetId = btn.dataset.targetId;
+      const direction = btn.textContent?.includes('▼') || btn.textContent?.includes('down') ? 'down' : 'up';
+      
+      btn.addEventListener('click', () => {
+        handleScroll(targetId || null, direction);
+      });
+
+      // Efectos hover
+      btn.addEventListener('mouseenter', () => {
+        btn.style.transform = 'scale(1.1)';
+        btn.style.background = '#0056b3';
+      });
+
+      btn.addEventListener('mouseleave', () => {
+        btn.style.transform = 'scale(1)';
+        btn.style.background = '#007bff';
+      });
+    });
+  });
+</script>
+
+<style>
+  .button-move:hover {
+    transform: scale(1.1);
+    background: #0056b3 !important;
+  }
+
+  .button-move:active {
+    transform: scale(0.95);
+  }
+
+  /* Estilos responsivos */
+  @media (max-width: 768px) {
+    .button-move {
+      width: 45px !important;
+      height: 45px !important;
+      font-size: 16px !important;
+    }
+  }
+</style>

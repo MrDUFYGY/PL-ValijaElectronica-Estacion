@@ -61,7 +61,7 @@
   }
 </script>
 
-<div class="w-full max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-md">
+<div class="w-full max-w-2xl mx-auto bg-[#018E2E] p-6 rounded-lg shadow-md">
   
   <!-- Selector de Estación -->
   {#if stationList.length > 1}
@@ -69,7 +69,7 @@
       <label for="station-select" class="block text-lg font-medium text-gray-700 mb-2">Selecciona una Estación:</label>
       <select 
         id="station-select" 
-        class="block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-lg"
+        class="block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-yellow-500 focus:border-yellow-500 text-lg"
         on:change={handleStationSelect}
       >
         <option value="">-- Por favor, elige una opción --</option>
@@ -83,15 +83,15 @@
   <!-- Calendario -->
   {#if showCalendar}
     <div class="mt-4">
-      <h2 class="text-xl font-semibold text-gray-800 mb-4">Selecciona una Fecha</h2>
+      <h2 class="text-xl font-semibold text-white mb-4">Selecciona una Fecha</h2>
       <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
         {#each dates as date}
           <button 
             on:click={() => handleDateSelect(date)}
-            class="p-4 border rounded-lg text-center transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            class:bg-indigo-600={selectedDate?.getTime() === date.getTime()}
+            class="p-4 border rounded-lg text-center transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
+            class:bg-yellow-600={selectedDate?.getTime() === date.getTime()}
             class:text-white={selectedDate?.getTime() === date.getTime()}
-            class:hover:bg-indigo-100={selectedDate?.getTime() !== date.getTime()}
+            class:hover:bg-yellow-100={selectedDate?.getTime() !== date.getTime()}
             class:bg-gray-50={selectedDate?.getTime() !== date.getTime()}
           >
             <span class="block font-bold text-lg">{date.getDate()}</span>
@@ -103,7 +103,7 @@
         <button 
           on:click={handleContinue}
           disabled={!selectedStation || !selectedDate}
-          class="px-8 py-3 bg-green-600 text-white font-bold rounded-lg shadow-md hover:bg-green-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+          class="px-8 py-3 bg-yellow-100 text-gray-800 font-bold rounded-lg shadow-md hover:bg-yellow-700 hover:text-white transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
         >
           Continuar
         </button>
@@ -112,7 +112,7 @@
   {/if}
 
   {#if stationList.length === 1}
-    <p class="text-gray-600 mt-4">Estación seleccionada por defecto: <strong>{selectedStation}</strong></p>
+    <p class="text-white mt-4">Estación seleccionada por defecto: <strong>{selectedStation}</strong></p>
   {/if}
 
 </div>

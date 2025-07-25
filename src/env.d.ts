@@ -28,13 +28,13 @@ declare namespace App {
   }
 
   // Define la estructura completa de los datos de sesión
-  interface SessionData {
+  interface SessionTotal {
     Exitoso: boolean;
     resultValidated: ResultValidated;
   }
 
   // Actualiza la interfaz Locals para usar el nuevo tipo de sesión
   interface Locals {
-    user?: SessionData;
+    SessionTotal?: SessionTotal;
   }
 }

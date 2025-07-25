@@ -1,6 +1,8 @@
 ---
 import './src/styles/global.css'
 const { title } = Astro.props;
+import hidrosina from "../assets/logo_hidrosina.png";
+
 ---
 <!doctype html>
 <html lang="en">
@@ -13,18 +15,135 @@ const { title } = Astro.props;
 		<title>{title} - Valija Electronica</title>
 	</head>
 	<body>
-		<slot />
+		<div class="contenedor">
+			<slot />			
+		</div>
+		
+
+
+		<div class="snow-container">
+			<!-- Generamos múltiples divs que representarán los copos de nieve -->
+			<div class="snowflake"></div>
+			<div class="snowflake"></div>
+			<div class="snowflake"></div>
+			<div class="snowflake"></div>
+			<div class="snowflake"></div>
+			<div class="snowflake"></div>
+			<div class="snowflake"></div>
+			<div class="snowflake"></div>
+			<div class="snowflake"></div>
+			<div class="snowflake"></div>
+		</div>
+	
+		<div class="background-half-blur" style={`background-image: url(${hidrosina.src})`}></div>
+		<div class="membretes">
+			<svg width="820" height="366" viewBox="0 0 820 366" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M820 280L141 0H820V280Z" fill="#18AC54" />
+				<path d="M820 222L0 0H235.5L820 163.034V222Z" fill="#D0D83A" />
+				<path d="M820 222L534 144.5L820 366V222Z" fill="#116D37" />
+			</svg>
+		</div>
+
+
+
+
 	</body>
 </html>
 
 <style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-	body {
-		font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-	}
+	    body {
+        background-color: #2d2d2d;
+        display: flex;
+    }
+
+
+	.contenedor {
+        text-align: center;
+        width: 100%;
+        position: relative; /* Asegura que el contenido esté en una capa superior */
+        z-index: 2; /* Coloca el contenido por encima de las animaciones */
+    }
+
+
+    .membretes {
+        position: fixed; /* Para que el elemento esté siempre visible */
+        top: 0; /* Posicionarlo en la parte superior */
+        right: 0; /* Alinearlo a la derecha */
+        width: 528px; /* Ancho fijo del SVG */
+        height: 235px; /* Alto fijo del SVG */
+        z-index: 1; /* Detrás del contenido, pero visible */
+        opacity: 0.8; /* Si quieres darle un efecto de transparencia */
+    }
+    .background-half-blur {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 33%; /* Mantener el tamaño deseado */
+        height: 65vh; /* Mantener el tamaño deseado */
+         
+		/* Ruta de tu imagen */
+        background-position: left top; /* Alineado a la izquierda */
+        background-size: contain; /* Ajustar imagen dentro del área asignada sin recortar */
+        background-repeat: no-repeat;
+        filter: blur(1px); /* Aplicar desenfoque */
+        z-index: 1; /* Detrás del contenido, pero visible */
+    }
+
+
+
+
+
+
+
+
+
+
+
+.snow-container {
+  position: fixed; /* Fijo para que no se mueva con el scroll */
+  top: 0;
+  left: 0;
+  width: 100vw; /* 100% del ancho de la ventana */
+  height: 100vh; /* 100% del alto de la ventana */
+  z-index: 0; /* La capa más profunda, pero visible */
+  pointer-events: none; /* Para que los copos no interfieran con los clics */
+  overflow: hidden; /* Asegura que los copos que salen de la pantalla se oculten */
+}
+
+.snowflake {
+  position: absolute;
+  top: -70px;
+  width: 10px;
+  height: 10px;
+  background-color: yellow;
+  border-radius: 50%;
+  opacity: 0.8;
+  animation: fall linear infinite;
+}
+
+/* Variabilidad en las animaciones para cada copo */
+.snowflake:nth-child(1) { left: 10%; animation-duration: 5s; animation-delay: 0s; }
+.snowflake:nth-child(2) { left: 20%; animation-duration: 8s; animation-delay: 1s; }
+.snowflake:nth-child(3) { left: 30%; animation-duration: 6s; animation-delay: 2s; }
+.snowflake:nth-child(4) { left: 40%; animation-duration: 4s; animation-delay: 1.5s; }
+.snowflake:nth-child(5) { left: 50%; animation-duration: 10s; animation-delay: 3s; }
+.snowflake:nth-child(6) { left: 60%; animation-duration: 7s; animation-delay: 0.5s; }
+.snowflake:nth-child(7) { left: 70%; animation-duration: 9s; animation-delay: 1.2s; }
+.snowflake:nth-child(8) { left: 80%; animation-duration: 6s; animation-delay: 0.8s; }
+.snowflake:nth-child(9) { left: 90%; animation-duration: 5s; animation-delay: 2.2s; }
+.snowflake:nth-child(10) { left: 95%; animation-duration: 7s; animation-delay: 1.8s; }
+
+/* Animación para simular la caída de los copos */
+@keyframes fall {
+  0% {
+    transform: translateY(-10px) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+	
 </style>

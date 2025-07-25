@@ -7,26 +7,27 @@ import StationSelector from '../components/StationSelector.svelte';
 
 
 // 1. Obtener los datos de la sesión desde el middleware
-const { user: sessionData } = Astro.locals;
+const { SessionTotal } = Astro.locals;
 
 // 2. Si no hay datos o la sesión no fue exitosa, redirigir al login
-if (!sessionData || !sessionData.Exitoso) {
+if (!SessionTotal || !SessionTotal.Exitoso) {
+  // if (!sessionData || !sessionData.Exitoso) {
   return Astro.redirect('/');
 }
 
 // 3. Extraer los datos validados del usuario
-const { resultValidated: userData } = sessionData;
+const { resultValidated } = SessionTotal;
 
 // 4. Obtener las propiedades específicas para la UI
-const userId = userData.userObj.c_NickName ?? 'Usuario'; // Usamos el NickName para el saludo
-const stations = userData.stations ?? ''; // La lista de estaciones para el selector
+const userId = resultValidated.userObj.c_NickName ?? 'Usuario'; // Usamos el NickName para el saludo
+const stations = resultValidated.stations ?? ''; // La lista de estaciones para el selector
 
 ---
 
 <Layout title="Estacion | Dia">
   <main class="p-4 sm:p-8">
-            <h1 id="welcome-heading" class="text-2xl font-bold text-gray-800">Bienvenido, {userId} </h1>
-    <p class="text-gray-600 mb-6">Por favor, selecciona una estación para continuar.</p>
+            <h1 id="welcome-heading" class="text-2xl font-bold text-black">Bienvenido, {userId} </h1>
+    <p class="text-gray-900 mb-6">Por favor, selecciona una estación para continuar.</p>
     
             <div id="station-selector-container">
       <StationSelector stations={stations} client:load />

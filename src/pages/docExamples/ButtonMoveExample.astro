@@ -1,0 +1,98 @@
+---
+import ButtonMove from '../../components/ButtonMove.astro';
+---
+
+<div class="example-container">
+  <h2>Ejemplos de uso del ButtonMove</h2>
+  
+  <!-- Ejemplo 1: Botón básico sin posición fija -->
+  <div class="example-section">
+    <h3>1. Botón básico (sin posición absoluta)</h3>
+    <ButtonMove 
+      icono="▲"
+      position="10%"
+      clases="p-2 m-2"
+    />
+  </div>
+
+  <!-- Ejemplo 2: Botón con posición fija -->
+  <div class="example-section">
+    <h3>2. Botón con posición fija (esquina inferior derecha)</h3>
+    <ButtonMove 
+      position="90%"
+      icono="▲"
+      clases="shadow-lg"
+    />
+  </div>
+
+  <!-- Ejemplo 3: Botón con ID específico para contenedor -->
+  <div class="example-section">
+    <h3>3. Botón para scroll en contenedor específico</h3>
+    <div id="table-container" style="height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
+      <div style="height: 800px; background: linear-gradient(to bottom, #f0f0f0, #e0e0e0);">
+        <p>Contenido largo para hacer scroll...</p>
+        <p>Línea 1</p>
+        <p>Línea 2</p>
+        <p>Línea 3</p>
+        <!-- Más contenido para demostrar el scroll -->
+        {Array.from({length: 50}, (_, i) => <p>Línea {i + 4}</p>)}
+      </div>
+    </div>
+    <ButtonMove 
+      id="table-container"
+      icono="▲"
+      clases="mt-2"
+    />
+  </div>
+
+  <!-- Ejemplo 4: Botón con icono de Material Icons -->
+  <div class="example-section">
+    <h3>4. Botón con Material Icons</h3>
+    <ButtonMove 
+      icono="material-icons:keyboard_arrow_up"
+      clases="p-1"
+      styles="background: #28a745;"
+    />
+  </div>
+
+  <!-- Ejemplo 5: Botón con SVG personalizado -->
+  <div class="example-section">
+    <h3>5. Botón con SVG personalizado</h3>
+    <ButtonMove 
+      icono='<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>'
+      styles="background: #dc3545;"
+    />
+  </div>
+
+  <!-- Ejemplo 6: Botón para bajar -->
+  <div class="example-section">
+    <h3>6. Botón para bajar</h3>
+    <ButtonMove 
+      icono="▼"
+      direction="down"
+      clases="p-2"
+      styles="background: #6f42c1;"
+    />
+  </div>
+</div>
+
+<style>
+  .example-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .example-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #f9f9f9;
+  }
+
+  .example-section h3 {
+    margin-top: 0;
+    color: #333;
+  }
+</style>

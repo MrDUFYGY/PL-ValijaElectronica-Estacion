@@ -1,5 +1,9 @@
 import { defineMiddleware } from 'astro:middleware';
 
+// ✅ Control para activar/desactivar el middleware.
+// Cambia a 'false' para desactivar la validación de sesión durante el desarrollo.
+const MIDDLEWARE_ENABLED = true;
+
 // Rutas que requieren una sesión de usuario válida.
 const protectedRoutes = ['/dashboard', '/menuProcesosEstacion', '/procesosPages'];
 
@@ -13,7 +17,8 @@ async function validarSesionRemota(sessionId: string | undefined): Promise<any |
 
     const resp = await fetch('https://localhost:44345/api/Valija/ValidarSesion', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json', },
       body: JSON.stringify({ SessionId: sessionId })
     });
     if (!resp.ok) return null;
@@ -27,26 +32,65 @@ async function validarSesionRemota(sessionId: string | undefined): Promise<any |
 }
 
 export const onRequest = defineMiddleware(async ({ locals, request, cookies, redirect }, next) => {
+  // Si el middleware está desactivado, se salta toda la lógica de validación.
+  console.log('Middleware ejecutado');
+  if (!MIDDLEWARE_ENABLED) {
+    // Opcional: Si necesitas simular un usuario para desarrollo, puedes añadirlo aquí.
+    locals.SessionTotal = {
+      Exitoso: true,
+      resultValidated: {
+        success: true,
+        sessionId: 999, // ID de sesión de prueba
+        role: 'Gerente', // Rol de prueba
+        stations: '3,4,5,6,7',
+        userObj: {
+          n_IdUsuario: 1,
+          c_NickName: 'dev_user',
+          c_Nombre: 'Desarrollador',
+          c_ApellidoPat: 'Simulado',
+          c_ApellidoMat: '',
+          c_CorreoElectronico: 'dev@test.com',
+          RolObject: {
+            n_IdRol: 1,
+            c_Nombre: 'Admin'
+          }
+        }
+      }
+    };
+    console.log('Middleware ejecutado 2');
+    return next();
+  }
   const url = new URL(request.url);
 
   // IMPORTANTE: Ignoramos todas las rutas de API en el middleware de sesión.
   if (url.pathname.startsWith('/api/')) {
-    return next();
+   return next();
   }
 
-  // Comprueba si la ruta actual está en la lista de protegidas.
-  if (protectedRoutes.some(route => url.pathname.startsWith(route))) {
-    const sessionId = cookies.get('sessionId')?.value;
-    console.log('Session ID en middleware:', sessionId);
 
-    const userData = await validarSesionRemota(sessionId);
-    if (!userData) {
-      return redirect('/');
+  try{
+    // Comprueba si la ruta actual está en la lista de protegidas.
+    if (protectedRoutes.some(route => url.pathname.startsWith(route))) {
+      const sessionId = cookies.get('sessionId')?.value;
+      console.log('Session ID en middleware:', sessionId);
+      
+      const userData = await validarSesionRemota(sessionId);
+      console.log("userData",userData);
+      if (!userData) {
+        console.log("No hay sesion");
+        return redirect('/');
+      }
+      // Si la sesión es válida, adjunta la respuesta COMPLETA de la API a Astro.locals.
+      // Esto asegura que la estructura coincida con el tipo `SessionData` definido en `env.d.ts`.
+      locals.SessionTotal = userData;
+      
     }
-    // Si la sesión es válida, adjunta la respuesta COMPLETA de la API a Astro.locals.
-    // Esto asegura que la estructura coincida con el tipo `SessionData` definido en `env.d.ts`.
-    locals.user = userData;
+  }catch(e){
+    console.log(e);
+    return redirect('/');
   }
+
+
 
   return next();
 });

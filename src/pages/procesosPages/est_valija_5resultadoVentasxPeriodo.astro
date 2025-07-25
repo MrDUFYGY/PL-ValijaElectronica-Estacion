@@ -1,281 +1,323 @@
 ---
-import Layout from '../../layouts/LayoutRigth.astro';
-import Huella from '../../components/ConfirmHuella.astro';
-import CustomPdfInput from '../../components/customInput/CustomPdfInput.svelte';
+import Layout from "../../layouts/LayoutRigth.astro";
+import Huella from "../../components/ConfirmHuella.astro";
+import CustomPdfInput from "../../components/customInput/CustomPdfInput.svelte";
 export const prerender = false;
 
 ---
 
 <Layout>
-
-
-
-
-  
-<div class="container mx-auto p-6 bg-white shadow-md font-sans">
-
+  <div class="container mx-auto p-6 bg-white shadow-md font-sans rounded-lg">
     <!-- Modal para visualizar PDF de ventas por periodo -->
-    <div id="dialog-ventas-periodo" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50 overflow-hidden">
-      <div class="bg-white rounded-lg p-2 max-w-4xl w-full h-full relative z-50 ">
+    <div
+      id="dialog-ventas-periodo"
+      class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50 overflow-hidden"
+    >
+      <div
+        class="bg-white rounded-lg p-2 max-w-4xl w-full h-full relative z-50"
+      >
         <div class="flex justify-between items-center mb-4">
-          <h3 class="text-lg font-semibold" id="title-ventas-periodo">Visualización de Documento</h3>
-          <button onclick="closeDialogVentasPeriodo()" class="text-gray-500 hover:text-gray-700">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          <h3 class="text-lg font-semibold" id="title-ventas-periodo">
+            Visualización de Documento
+          </h3>
+          <button
+            onclick="closeDialogVentasPeriodo()"
+            class="text-gray-500 hover:text-gray-700"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"></path>
             </svg>
           </button>
         </div>
         <div class="bg-gray-50 rounded-lg p-4 mb-4">
           <p class="text-gray-700">Revise el documento antes de confirmar.</p>
         </div>
-        <div class="w-full h-[60vh] border border-gray-200 rounded-lg overflow-hidden">
-          <iframe id="viewer-ventas-periodo" class="w-full h-full border-0" title="Visor PDF"></iframe>
+        <div
+          class="w-full h-[60vh] border border-gray-200 rounded-lg overflow-hidden"
+        >
+          <iframe
+            id="viewer-ventas-periodo"
+            class="w-full h-full border-0"
+            title="Visor PDF"></iframe>
         </div>
         <div class="flex justify-end gap-4 mt-4">
-          <button onclick="closeDialogVentasPeriodo()" class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors">
+          <button
+            onclick="closeDialogVentasPeriodo()"
+            class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors"
+          >
             Cancelar
           </button>
-          <button onclick="confirmarVentasPeriodo()" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors">
+          <button
+            onclick="confirmarVentasPeriodo()"
+            class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+          >
             Confirmar
           </button>
         </div>
       </div>
     </div>
 
-    <header class="flex justify-between items-start mb-8 pb-4 border-b border-gray-200">
-        <div>
-            <img src="../assets/logo_hidrosina.png" alt="Hidrosina Logo" class="h-25 opacity-75">
-        </div>
-        <div class="text-right text-sm text-gray-500">
-            <p>MARTHA ANGELICA HERNA[...]</p>
-            <p>MAHDEZ84 (?)</p>
-        </div>
-    </header>
+
 
     <section class="mb-6">
-        <h1 class="text-2xl font-bold text-gray-800 mb-2">Resultado de la consulta de ventas por periodo</h1>
-        <p class="text-gray-600 font-semibold">Datos de la consulta</p>
-        <p class="text-sm text-gray-500 mt-2">2 Registros. Mostrando todos los Registros.</p>
+      <h1 class="text-2xl font-bold text-gray-800 mb-2">
+        Resultado de la consulta de ventas por periodo
+      </h1>
     </section>
 
-    <section>
-        <h2 class="text-lg font-semibold text-center mb-3 text-gray-700">Listado de ventas por periodo</h2>
-        <div class="overflow-x-auto shadow-sm border border-gray-200 rounded">
-            
-            <table class="w-full border-collapse text-sm min-w-[900px]">
-                <thead class="bg-gray-100 text-gray-600">
-                    <tr>
-                        <th class="border-b border-gray-300 p-2 text-left" rowspan="2">Código</th>
-                        <th class="border-b border-gray-300 p-2 text-left" rowspan="2">Producto</th>
-                        <th class="border-b border-gray-300 p-2 text-left" rowspan="2">Familia</th>
-                        <th class="border border-gray-300 p-2 text-center font-semibold" colspan="3">22/4/2025</th>
-                        <th class="border border-gray-300 p-2 text-center font-semibold" colspan="3">Total</th>
-                    </tr>
-                    <tr>
-                        <th class="border-b border-l border-gray-300 p-2 text-right font-medium">Cantidad</th>
-                        <th class="border-b border-l border-gray-300 p-2 text-right font-medium">Importe</th>
-                        <th class="border-b border-l border-r border-gray-300 p-2 text-right font-medium">Importe sin impuestos</th>
-                        <th class="border-b border-l border-gray-300 p-2 text-right font-medium">Cantidad</th>
-                        <th class="border-b border-l border-gray-300 p-2 text-right font-medium">Importe</th>
-                        <th class="border-b border-l border-gray-300 p-2 text-right font-medium">Importe sin impuestos</th>
-                    </tr>
-                </thead>
-                <tbody class="text-gray-700">
-                    <tr>
-                        <td class="border-b border-gray-200 p-2">QUAK0043</td>
-                        <td class="border-b border-gray-200 p-2">LIMPIADOR DE INYECTORES 200 ML</td>
-                        <td class="border-b border-gray-200 p-2">QUAKER</td>
-                        <td class="border-b border-l border-gray-200 p-2 text-right">1.00</td>
-                        <td class="border-b border-l border-gray-200 p-2 text-right">101.00$</td>
-                        <td class="border-b border-l border-r border-gray-200 p-2 text-right">87.07$</td>
-                        <td class="border-b border-l border-gray-200 p-2 text-right">1.00</td>
-                        <td class="border-b border-l border-gray-200 p-2 text-right">101.00$</td>
-                        <td class="border-b border-l border-gray-200 p-2 text-right">87.07$</td>
-                    </tr>
-                    <tr>
-                        <td class="border-b border-gray-200 p-2">QUAK0045</td>
-                        <td class="border-b border-gray-200 p-2">DIRECCIÓN HIDRAULICA 200 ML</td>
-                        <td class="border-b border-gray-200 p-2">QUAKER</td>
-                        <td class="border-b border-l border-gray-200 p-2 text-right">1.00</td>
-                        <td class="border-b border-l border-gray-200 p-2 text-right">56.00$</td>
-                        <td class="border-b border-l border-r border-gray-200 p-2 text-right">48.28$</td>
-                        <td class="border-b border-l border-gray-200 p-2 text-right">1.00</td>
-                        <td class="border-b border-l border-gray-200 p-2 text-right">56.00$</td>
-                        <td class="border-b border-l border-gray-200 p-2 text-right">48.28$</td>
-                    </tr>
-                     </tbody>
-                <tfoot class="bg-gray-50 font-semibold text-gray-800">
-                    <tr>
-                        <td class="border-t border-gray-300 p-2 text-left" colspan="3">Total</td>
-                        <td class="border-t border-l border-gray-300 p-2 text-right">2.00</td>
-                        <td class="border-t border-l border-gray-300 p-2 text-right">157.00$</td>
-                        <td class="border-t border-l border-r border-gray-300 p-2 text-right">135.35$</td>
-                        <td class="border-t border-l border-gray-300 p-2 text-right">2.00</td>
-                        <td class="border-t border-l border-gray-300 p-2 text-right">157.00$</td>
-                        <td class="border-t border-l border-gray-300 p-2 text-right">135.35$</td>
-                    </tr>
-                </tfoot>
-            </table>
 
-        </div>
-        <div class="mt-8 grid grid-cols-3 gap-4">
-          <div>
-            <h3 class="mb-2">Turno 1</h3>
-            <CustomPdfInput groupId="ventas" title="Ventas" client:visible confirmado={true} />
-          </div>
-          <div>
-            <h3 class="mb-2">Turno 2</h3>
-            <CustomPdfInput groupId="ventas" title="Ventas" client:visible confirmado={true} />
-          </div>
-          <div>
-            <h3 class="mb-2">Turno 3</h3>
-            <CustomPdfInput groupId="ventas" title="Ventas" client:visible confirmado={true} />
-          </div>
-        </div>
-          <Huella />
-    </section>
+    <!-- Tabla de Listado de ventas por periodo -->
+      <div class="overflow-x-auto border border-gray-300 rounded-lg shadow-sm">
+      <table class="min-w-full text-sm text-center text-gray-800">
+        <caption class="text-base font-semibold text-gray-900 py-2"
+          >Listado de ventas por periodo</caption
+        >
+        <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
+          <tr>
+            <th class="px-4 py-2 font-medium">Producto</th>
+            <th class="px-4 py-2 font-medium">Cantidad</th>
+            <th class="px-4 py-2 font-medium">Importe</th>
+            <th class="px-4 py-2 font-medium">Cantidad</th>
+            <th class="px-4 py-2 font-medium">Importe</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          <tr>
+            <td class="px-4 py-2">AROMATIZANTE NEW CAR</td>
+            <td class="px-4 py-2 text-green-600">14.00</td>
+            <td class="px-4 py-2 text-green-600">210.00$</td>
+            <td class="px-4 py-2 text-green-600">14.00</td>
+            <td class="px-4 py-2 text-green-600">210.00$</td>
+          </tr>
+          <tr>
+            <td class="px-4 py-2">AROMATIZANTE DE FRESA</td>
+            <td class="px-4 py-2 text-green-600">14.00</td>
+            <td class="px-4 py-2 text-green-600">210.00$</td>
+            <td class="px-4 py-2 text-green-600">14.00</td>
+            <td class="px-4 py-2 text-green-600">210.00$</td>
+          </tr>
+          <tr>
+            <td class="px-4 py-2">ANTICONGELANTE CONCENTRACION IDEAL 946 ML</td>
+            <td class="px-4 py-2 text-green-600">4.00</td>
+            <td class="px-4 py-2 text-green-600">248.00$</td>
+            <td class="px-4 py-2 text-green-600">4.00</td>
+            <td class="px-4 py-2 text-green-600">248.00$</td>
+          </tr>
+          <tr>
+            <td class="px-4 py-2">QS ALTO KILOMETRAJE SAE 25W50 947 ML</td>
+            <td class="px-4 py-2 text-green-600">1.00</td>
+            <td class="px-4 py-2 text-green-600">165.00$</td>
+            <td class="px-4 py-2 text-green-600">1.00</td>
+            <td class="px-4 py-2 text-green-600">165.00$</td>
+          </tr>
+          <tr>
+            <td class="px-4 py-2">TRATAMIENTO PARA GASOLINA 200ML</td>
+            <td class="px-4 py-2 text-green-600">6.00</td>
+            <td class="px-4 py-2 text-green-600">432.00$</td>
+            <td class="px-4 py-2 text-green-600">6.00</td>
+            <td class="px-4 py-2 text-green-600">432.00$</td>
+          </tr>
+          <tr>
+            <td class="px-4 py-2">LIMPIADOR DE INYECTORES 200 ML</td>
+            <td class="px-4 py-2 text-green-600">1.00</td>
+            <td class="px-4 py-2 text-green-600">101.00$</td>
+            <td class="px-4 py-2 text-green-600">1.00</td>
+            <td class="px-4 py-2 text-green-600">101.00$</td>
+          </tr>
+          <tr>
+            <td class="px-4 py-2">DIRECCION HIDRAULICA 200 ML</td>
+            <td class="px-4 py-2 text-green-600">2.00</td>
+            <td class="px-4 py-2 text-green-600">112.00$</td>
+            <td class="px-4 py-2 text-green-600">2.00</td>
+            <td class="px-4 py-2 text-green-600">112.00$</td>
+          </tr>
+          <tr>
+            <td class="px-4 py-2">LIQUIDO DE FRENOS 200 ML</td>
+            <td class="px-4 py-2 text-green-600">1.00</td>
+            <td class="px-4 py-2 text-green-600">73.00$</td>
+            <td class="px-4 py-2 text-green-600">1.00</td>
+            <td class="px-4 py-2 text-green-600">73.00$</td>
+          </tr>
+          <tr>
+            <td class="px-4 py-2">ANTICONGELANTE CONCENTRADO OPTIMA 946 ML</td>
+            <td class="px-4 py-2 text-green-600">3.00</td>
+            <td class="px-4 py-2 text-green-600">249.00$</td>
+            <td class="px-4 py-2 text-green-600">3.00</td>
+            <td class="px-4 py-2 text-green-600">249.00$</td>
+          </tr>
+          <tr>
+            <td class="px-4 py-2">FULL PRO LIMPIA PARABRISAS 946 ML</td>
+            <td class="px-4 py-2 text-green-600">1.00</td>
+            <td class="px-4 py-2 text-green-600">69.00$</td>
+            <td class="px-4 py-2 text-green-600">1.00</td>
+            <td class="px-4 py-2 text-green-600">69.00$</td>
+          </tr>
+        </tbody>
+        <tfoot class="bg-gray-50 font-bold">
+          <tr>
+            <td class="px-4 py-2 text-center text-black-600">Total:</td>
+            <td class="px-4 py-2 text-center text-green-600">47.00</td>
+            <td class="px-4 py-2 text-center text-green-600">1,869.00$</td>
+            <td class="px-4 py-2 text-center text-green-600">47.00</td>
+            <td class="px-4 py-2 text-center text-green-600">1,869.00$</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    <br />
 
-</div>
 
-<style>
+  </div>
+
+  <style>
     /* Puedes añadir CSS personalizado aquí si es necesario */
     /* Por ejemplo, para controlar saltos de línea específicos */
     /* td { white-space: nowrap; } */ /* Evitaría saltos de línea en celdas */
-</style>
+  </style>
 
-<script type="module">
-  // Variables globales
-  let ventasPeriodoFileUrl = null;
-  let currentFileInput = null;
+  <script type="module">
+    // Variables globales
+    let ventasPeriodoFileUrl = null;
+    let currentFileInput = null;
 
-  // Función para manejar la carga de archivos
-  function handleFileUpload(fileInput, file) {
-    if (file && file.type === 'application/pdf') {
-      currentFileInput = fileInput;
-      const container = fileInput.closest('.file-upload-container');
-      const fileNameDisplay = container.querySelector('.file-name');
-      
-      // Actualizar el nombre del archivo
-      fileNameDisplay.textContent = file.name;
-      
-      // Mostrar el visor PDF
-      showVentasPeriodoViewer(file);
-    } else {
-      alert('Por favor, seleccione un archivo PDF válido.');
-    }
-  }
+    // Función para manejar la carga de archivos
+    function handleFileUpload(fileInput, file) {
+      if (file && file.type === "application/pdf") {
+        currentFileInput = fileInput;
+        const container = fileInput.closest(".file-upload-container");
+        const fileNameDisplay = container.querySelector(".file-name");
 
-  // Función para mostrar el visor PDF
-  function showVentasPeriodoViewer(file) {
-    ventasPeriodoFileUrl = URL.createObjectURL(file);
-    
-    const dialog = document.getElementById('dialog-ventas-periodo');
-    const viewer = document.getElementById('viewer-ventas-periodo');
-    const title = document.getElementById('title-ventas-periodo');
-    
-    if (dialog && viewer && title) {
-      viewer.src = ventasPeriodoFileUrl;
-      title.textContent = `Visualización: ${currentFileInput.id.replace('-', ' ').toUpperCase()}`;
-      dialog.classList.remove('hidden');
-    }
-  }
+        // Actualizar el nombre del archivo
+        fileNameDisplay.textContent = file.name;
 
-  // Función para cerrar el dialog
-  window.closeDialogVentasPeriodo = function() {
-    const dialog = document.getElementById('dialog-ventas-periodo');
-    const viewer = document.getElementById('viewer-ventas-periodo');
-    
-    if (!dialog || !viewer) return;
-    
-    dialog.classList.add('hidden');
-    viewer.src = '';
-
-    // Si se cierra sin confirmar, limpiamos el input actual
-    if (currentFileInput) {
-      const container = currentFileInput.closest('.file-upload-container');
-      const fileNameDisplay = container.querySelector('.file-name');
-      fileNameDisplay.textContent = '';
-      currentFileInput.value = '';
-    }
-    
-    // Liberar memoria de la URL del objeto
-    if (ventasPeriodoFileUrl) {
-      URL.revokeObjectURL(ventasPeriodoFileUrl);
-      ventasPeriodoFileUrl = null;
-    }
-    currentFileInput = null;
-  }
-
-  // Función para confirmar el documento seleccionado
-  window.confirmarVentasPeriodo = function() {
-    if (currentFileInput) {
-      const container = currentFileInput.closest('.file-upload-container');
-      const status1 = container.querySelector('[id$="-status1"]');
-      const status2 = container.querySelector('[id$="-status2"]');
-      const inputContainer = container.querySelector('.relative');
-      
-      if (container && status1 && status2 && inputContainer) {
-        // Actualizar estados visuales
-        status1.classList.remove('bg-gray-200');
-        status1.classList.add('bg-green-500');
-        status2.classList.remove('bg-gray-200');
-        status2.classList.add('bg-green-500');
-        inputContainer.classList.remove('border-gray-300', 'border-blue-500');
-        inputContainer.classList.add('border-green-500');
+        // Mostrar el visor PDF
+        showVentasPeriodoViewer(file);
+      } else {
+        alert("Por favor, seleccione un archivo PDF válido.");
       }
     }
-    closeDialogVentasPeriodo();
-  }
 
-  // Event listeners cuando el DOM esté cargado
-  document.addEventListener('DOMContentLoaded', function() {
-    // Configurar los event listeners para los inputs de archivo
-    const fileInputs = document.querySelectorAll('input[type="file"]');
-    
-    fileInputs.forEach(input => {
-      input.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file) {
-          handleFileUpload(input, file);
+    // Función para mostrar el visor PDF
+    function showVentasPeriodoViewer(file) {
+      ventasPeriodoFileUrl = URL.createObjectURL(file);
+
+      const dialog = document.getElementById("dialog-ventas-periodo");
+      const viewer = document.getElementById("viewer-ventas-periodo");
+      const title = document.getElementById("title-ventas-periodo");
+
+      if (dialog && viewer && title) {
+        viewer.src = ventasPeriodoFileUrl;
+        title.textContent = `Visualización: ${currentFileInput.id.replace("-", " ").toUpperCase()}`;
+        dialog.classList.remove("hidden");
+      }
+    }
+
+    // Función para cerrar el dialog
+    window.closeDialogVentasPeriodo = function () {
+      const dialog = document.getElementById("dialog-ventas-periodo");
+      const viewer = document.getElementById("viewer-ventas-periodo");
+
+      if (!dialog || !viewer) return;
+
+      dialog.classList.add("hidden");
+      viewer.src = "";
+
+      // Si se cierra sin confirmar, limpiamos el input actual
+      if (currentFileInput) {
+        const container = currentFileInput.closest(".file-upload-container");
+        const fileNameDisplay = container.querySelector(".file-name");
+        fileNameDisplay.textContent = "";
+        currentFileInput.value = "";
+      }
+
+      // Liberar memoria de la URL del objeto
+      if (ventasPeriodoFileUrl) {
+        URL.revokeObjectURL(ventasPeriodoFileUrl);
+        ventasPeriodoFileUrl = null;
+      }
+      currentFileInput = null;
+    };
+
+    // Función para confirmar el documento seleccionado
+    window.confirmarVentasPeriodo = function () {
+      if (currentFileInput) {
+        const container = currentFileInput.closest(".file-upload-container");
+        const status1 = container.querySelector('[id$="-status1"]');
+        const status2 = container.querySelector('[id$="-status2"]');
+        const inputContainer = container.querySelector(".relative");
+
+        if (container && status1 && status2 && inputContainer) {
+          // Actualizar estados visuales
+          status1.classList.remove("bg-gray-200");
+          status1.classList.add("bg-green-500");
+          status2.classList.remove("bg-gray-200");
+          status2.classList.add("bg-green-500");
+          inputContainer.classList.remove("border-gray-300", "border-blue-500");
+          inputContainer.classList.add("border-green-500");
         }
-      });
+      }
+      closeDialogVentasPeriodo();
+    };
 
-      // Permitir arrastrar y soltar archivos
-      const container = input.closest('.relative');
-      if (container) {
-        container.addEventListener('dragover', (e) => {
-          e.preventDefault();
-          container.classList.add('border-blue-500');
-        });
+    // Event listeners cuando el DOM esté cargado
+    document.addEventListener("DOMContentLoaded", function () {
+      // Configurar los event listeners para los inputs de archivo
+      const fileInputs = document.querySelectorAll('input[type="file"]');
 
-        container.addEventListener('dragleave', () => {
-          container.classList.remove('border-blue-500');
-        });
-
-        container.addEventListener('drop', (e) => {
-          e.preventDefault();
-          container.classList.remove('border-blue-500');
-          const file = e.dataTransfer.files[0];
+      fileInputs.forEach((input) => {
+        input.addEventListener("change", (e) => {
+          const file = e.target.files[0];
           if (file) {
             handleFileUpload(input, file);
           }
         });
-      }
+
+        // Permitir arrastrar y soltar archivos
+        const container = input.closest(".relative");
+        if (container) {
+          container.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            container.classList.add("border-blue-500");
+          });
+
+          container.addEventListener("dragleave", () => {
+            container.classList.remove("border-blue-500");
+          });
+
+          container.addEventListener("drop", (e) => {
+            e.preventDefault();
+            container.classList.remove("border-blue-500");
+            const file = e.dataTransfer.files[0];
+            if (file) {
+              handleFileUpload(input, file);
+            }
+          });
+        }
+      });
     });
-  });
-</script>
+  </script>
 
-<script>
-  // Detectar si estamos en un iframe
-  const isInIframe = window.self !== window.top;
-  
-  if (isInIframe) {
-    console.log('Esta página está siendo mostrada dentro de un iframe');
-    // Aquí puedes agregar cualquier lógica específica para cuando esté en iframe
-    // Por ejemplo: document.body.classList.add('iframe-mode');
-  } else {
-    console.log('Esta página está siendo mostrada directamente en el navegador');
-  }
-</script>
+  <script>
+    // Detectar si estamos en un iframe
+    const isInIframe = window.self !== window.top;
 
+    if (isInIframe) {
+      console.log("Esta página está siendo mostrada dentro de un iframe");
+      // Aquí puedes agregar cualquier lógica específica para cuando esté en iframe
+      // Por ejemplo: document.body.classList.add('iframe-mode');
+    } else {
+      console.log(
+        "Esta página está siendo mostrada directamente en el navegador",
+      );
+    }
+  </script>
 </Layout>

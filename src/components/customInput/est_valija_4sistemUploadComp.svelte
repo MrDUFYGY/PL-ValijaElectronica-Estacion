@@ -17,10 +17,10 @@
   }
 </script>
 
-<div class="font-sans flex items-center justify-center max-w-4xl mx-auto">
+<div class="font-sans flex items-center justify-center max-w-4xl mx-auto bg-gray-50 rounded-md">
   <div class="w-full">
     <div class="p-5 mx-auto">
-      <div class="mb-4 flex space-x-4 p-2 bg-white rounded-lg shadow-md">
+      <div class="mb-4 flex space-x-4 p-2 bg-gray-100 rounded-lg shadow-md">
         <button
           on:click={() => activeTab = 1}
           class="flex-1 py-2 px-4 rounded-md focus:outline-none focus:shadow-outline-blue transition-all duration-300 {activeTab === 1 ? 'bg-blue-600 text-white' : ''} {sealedGroups['mediciones-comprobantes'] ? ' border-yellow-400 border-2' : ''}"

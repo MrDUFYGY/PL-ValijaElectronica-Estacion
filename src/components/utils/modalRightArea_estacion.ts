@@ -50,13 +50,13 @@ declare global {
       const iframe = document.createElement("iframe");
       iframe.src = url;
       iframe.style.width = "100%";
-      iframe.style.height = "85%";
+      iframe.style.height = "90%";
       iframe.style.border = "none";
       iframe.title = "Contenido del modal";
   
       // Agregar título al modal
       const modalHeader = document.createElement("div");
-      modalHeader.className = "relative sticky top-0 bg-white p-4 mb-4 rounded-lg shadow flex items-center justify-between z-50";
+      modalHeader.className = "relative sticky top-0 bg-white p-4 rounded-lg shadow flex items-center justify-between z-50";
   
       const modalTitle = document.createElement("h2");
       modalTitle.className = "text-xl font-semibold text-gray-800";

@@ -1,15 +1,13 @@
 ---
 import Layout from "../../layouts/LayoutRigth.astro";
-import Huella from "../../components/ConfirmHuella.astro";
-import CustomPdfInput from '../../components/customInput/CustomPdfInput.svelte';
+import CustomPdfInput from "../../components/customInput/CustomPdfInput.svelte";
 export const prerender = false;
 
 import "../../styles/global.css";
 ---
 
-<Layout>
-  <div class="mx-auto p-4 space-y-6">
-    
+<Layout title="Movimientos de caja">
+  <div class="mx-auto p-4 space-y-6 bg-white rounded-md shadow-md mt-1">
     <!-- Encabezado -->
     <div class="flex flex-col space-y-1">
       <h1 class="text-xl font-semibold text-gray-800">
@@ -22,56 +20,42 @@ import "../../styles/global.css";
       </p>
     </div>
 
-    <!-- Tabla -->
-    <div class="overflow-x-auto border border-gray-300 rounded-lg shadow-sm">
-      <table class="min-w-full text-sm text-left text-gray-800">
-        <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
-          <tr>
-            <th class="px-4 py-2 font-medium">Liquidación</th>
-            <th class="px-4 py-2 font-medium">Tipo</th>
-            <th class="px-4 py-2 font-medium">Tipo de pago</th>
-            <th class="px-4 py-2 font-medium">Empleado</th>
-            <th class="px-4 py-2 font-medium">TPV</th>
-            <th class="px-4 py-2 font-medium text-right">Importe</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-200">
-          <tr>
-            <td class="px-4 py-2">06/03/2025-P1-C3</td>
-            <td class="px-4 py-2">Pago</td>
-            <td class="px-4 py-2">03-FAJILLAS BILLETES</td>
-            <td class="px-4 py-2">LUIS ALVARO VILLEGAS CAMPUZANO</td>
-            <td class="px-4 py-2">TPV 002</td>
-            <td class="px-4 py-2 text-right text-red-600">-261,240.00$</td>
-          </tr>
-          <tr>
-            <td class="px-4 py-2">06/03/2025-P1-C3</td>
-            <td class="px-4 py-2">Pago</td>
-            <td class="px-4 py-2">40-DEPOSITO COMETRA</td>
-            <td class="px-4 py-2">LUIS ALVARO VILLEGAS CAMPUZANO</td>
-            <td class="px-4 py-2">TPV 002</td>
-            <td class="px-4 py-2 text-right text-red-600">-261,240.00$</td>
-          </tr>
-          <tr>
-            <td class="px-4 py-2">06/03/2025-P1-C3</td>
-            <td class="px-4 py-2">Cobro</td>
-            <td class="px-4 py-2">41-RETIRADA DE EFECTIVO</td>
-            <td class="px-4 py-2">LUIS ALVARO VILLEGAS CAMPUZANO</td>
-            <td class="px-4 py-2">TPV 002</td>
-            <td class="px-4 py-2 text-right text-green-600">261,240.00$</td>
-          </tr>
-        </tbody>
-        <tfoot class="bg-gray-50">
-          <tr>
-            <td colspan="5" class="px-4 py-2 font-semibold text-right">Total</td
-            >
-            <td class="px-4 py-2 text-right font-bold text-red-600"
-              >-261,240.00$</td
-            >
-          </tr>
-        </tfoot>
-      </table>
-    </div>
+<!-- Tabla: Movimientos de caja -->
+<div class="overflow-x-auto border border-gray-300 rounded-lg shadow-sm">
+  <table class="min-w-full text-sm text-center text-gray-800">
+    <caption class="text-base font-semibold text-gray-900 py-2">Movimientos de caja</caption>
+    <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
+      <tr>
+        <th class="px-4 py-2 font-medium">Pago/Cobro</th>
+        <th class="px-4 py-2 font-medium">Documento</th>
+        <th class="px-4 py-2 font-medium">Importe</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-200">
+      <tr>
+        <td class="px-4 py-2">41-RETIRADA DE EFECTIVO</td>
+        <td class="px-4 py-2">?</td>
+        <td class="px-4 py-2 text-green-600">261.240.00$</td>
+      </tr>
+      <tr>
+        <td class="px-4 py-2">03-FAJILLAS BILLETES</td>
+        <td class="px-4 py-2">?</td>
+        <td class="px-4 py-2 text-red-600">-261.240.00$</td>
+      </tr>
+      <tr>
+        <td class="px-4 py-2">40-DEPOSITO COMETRA</td>
+        <td class="px-4 py-2">?</td>
+        <td class="px-4 py-2 text-red-600">-261,240.00$</td>
+      </tr>
+    </tbody>
+    <tfoot class="bg-gray-50">
+      <tr>
+        <td colspan="2" class="px-4 py-2 font-semibold text-center">Total:</td>
+        <td class="px-4 py-2 font-bold text-red-600">-261,240.00$</td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
 
     <!-- Sección de gastos -->
     <div class="mt-6">
@@ -88,12 +72,19 @@ import "../../styles/global.css";
 
       <!-- Input de archivo para gastos (oculto por defecto) -->
       <div id="seccion-gastos" class="mt-4 hidden">
-
         <div class="mt-2 flex gap-4">
           <div class="w-1/2">
-            <CustomPdfInput id="input-gastos" groupId="gastos" title="Gastos" client:visible confirmado={true}/>
+            <CustomPdfInput
+              id="input-gastos"
+              groupId="gastos"
+              title="Gastos"
+              client:visible
+              confirmado={true}
+            />
           </div>
-          <div class="w-1/2 p-3 text-sm bg-blue-50 border border-blue-100 rounded-md">
+          <div
+            class="w-1/2 p-3 text-sm bg-blue-50 border border-blue-100 rounded-md"
+          >
             <p class="font-medium text-blue-800">Requisitos para gastos:</p>
             <ul class="list-disc pl-5 mt-1 text-blue-700">
               <li>Autorización por correo electrónico</li>
@@ -103,10 +94,10 @@ import "../../styles/global.css";
         </div>
 
         <div class="mt-4 border border-gray-400 rounded-md overflow-hidden">
-          <div class="bg-gray-100 px-3 py-2 ">
+          <div class="bg-gray-100 px-3 py-2">
             <p class="text-xs text-gray-500">Asunto</p>
-            <input 
-              type="text" 
+            <input
+              type="text"
               value="gastos - HD [000]"
               disabled
               class="w-full bg-transparent text-sm font-medium text-gray-700"
@@ -115,8 +106,12 @@ import "../../styles/global.css";
           <div class="px-3 py-2">
             <p class="text-xs text-gray-500 mb-1">CC:</p>
             <div class="flex flex-wrap gap-1">
-              <span class="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded">guillermo@hidrosina.com.mx</span>
-              <span class="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded">benjamin@hidrosina.com.mx</span>
+              <span class="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded"
+                >guillermo@hidrosina.com.mx</span
+              >
+              <span class="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded"
+                >benjamin@hidrosina.com.mx</span
+              >
             </div>
           </div>
           <div class="p-3">
@@ -225,7 +220,7 @@ import "../../styles/global.css";
           </div>
         </dialog>
 
-        <Huella />
+        <!-- <Huella /> -->
       </div>
 
       <!-- Columna Derecha: Nota informativa -->

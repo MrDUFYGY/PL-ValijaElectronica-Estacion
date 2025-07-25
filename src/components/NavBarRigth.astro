@@ -1,5 +1,5 @@
 ---
-const { station, date } = Astro.props;
+const { station, date, title } = Astro.props;
 
 // Formatear la fecha para mostrarla
 const formattedDate = date 
@@ -12,12 +12,12 @@ const formattedDate = date
   : "Fecha no disponible";
 ---
 
-<header class="bg-gray-800 text-white p-2 shadow-md sticky top-0 z-50">
+<header class="bg-[#018E2E] text-white p-2 shadow-md sticky top-0 z-50">
     <div class="container mx-auto">
         <div class="flex justify-between items-center">
             <!-- Lado Izquierdo: Título -->
             <div class="flex items-center space-x-4">
-                <h1 class="text-lg font-bold text-nowrap">Menú de Procesos</h1>
+                <h1 class="text-lg font-bold text-nowrap">{title}</h1>
             </div>
             
             <!-- Lado Derecho: Información de la estación y fecha -->

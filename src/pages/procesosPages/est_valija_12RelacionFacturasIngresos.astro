@@ -1,4 +1,4 @@
-﻿---
+---
 const esperado = 5;
 const recibidoInicial = 4;
 export const prerender = false;
@@ -89,8 +89,8 @@ export const prerender = false;
   </head>
   <body>
     <h1>Facturas e Ingresos de Carburantes</h1>
-    <p><strong>Esperado:</strong> <span id="esperado">{esperado}</span></p>
-    <p><strong>Recibido:</strong> <span id="recibido">{recibidoInicial}</span></p>
+    <p><strong>VDM:</strong> <span id="esperado">{esperado}</span></p>
+    <p><strong>CBOS/OpenPOS:</strong> <span id="recibido">{recibidoInicial}</span></p>
 
 
     <div class="progress-container">
@@ -103,8 +103,10 @@ export const prerender = false;
 
     <br>
 
-    <button onclick="modificarRecibido(-1)">-1 Registros</button>
-    <button onclick="modificarRecibido(1)">+1 Registros</button>
+    <!-- Botones modificadores de la barra de progreso -->
+     
+    <!-- <button onclick="modificarRecibido(-1)">-1 Registros</button>
+    <button onclick="modificarRecibido(1)">+1 Registros</button> -->
 
     <script is:inline>
       let esperado = parseInt(document.getElementById("esperado").textContent);

@@ -1,11 +1,11 @@
 ---
 import NavBarRigth from './NavBarRigth.astro';
-const { station, date } = Astro.props;
+const { station, date, title } = Astro.props;
 ---
 
 <div id="contenido-a-mostrar" style="display: none;">
   <slot name="contenido">
-    <NavBarRigth station={station} date={date} />
+    <NavBarRigth station={station} date={date} title={title}/>
   </slot>
 </div>
 

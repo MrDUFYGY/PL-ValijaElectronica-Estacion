@@ -42,12 +42,21 @@
           credentials: 'include'
         });
 
-        const dataSesion = await responseSesion.json();
-        console.log('Session ID:', dataSesion.resultSession.sessionId);
-        if (dataSesion.resultSession.success) {
-          window.location.href = '/dashboard';
+        const responseSesionJson = await responseSesion.json();
+
+        if (responseSesion.ok && responseSesionJson.resultSession?.sessionId) {
+          const sessionId = responseSesionJson.resultSession.sessionId;
+
+
+
+
+
+          // Guardamos el sessionId en una cookie del lado del cliente.
+          // Esto asegura que la cookie pertenece al dominio actual (localhost o el túnel)
+          document.cookie = `sessionId=${sessionId}; path=/; SameSite=Lax`;
+          window.location.href = '/dashboard'; // Redirige al dashboard
         } else {
-          errorMessage = dataSesion.message || 'Error en la autenticación interna.';
+          errorMessage = responseSesionJson.resultSession || 'Error al iniciar sesión. Verifique sus credenciales.';
         }
       } else {
         errorMessage = data.Mensaje || 'Error en la autenticación externa.';
@@ -60,12 +69,12 @@
   }
 </script>
 
-<div class="min-h-screen bg-gray-50 flex flex-col justify-center items-center">
-  <div class="max-w-md w-full mx-auto bg-white p-8 border border-gray-300 rounded-lg shadow-md">
-    <h2 class="text-2xl font-bold text-center text-gray-900 mb-8">Valija Electrónica - Inicio de Sesión</h2>
+<div class="min-h-screen  flex flex-col justify-center items-center">
+  <div class="max-w-md w-full mx-auto bg-[#018E2E] p-8 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold text-center text-yellow-100 mb-8">Inicia Sesión</h2>
     <form on:submit|preventDefault={handleSubmit} class="space-y-6">
       <div>
-        <label for="employeeId" class="text-sm font-medium text-gray-700">Número de Empleado</label>
+        <label for="employeeId" class="text-sm font-medium text-white">Número de Empleado</label>
         <input 
           type="text" 
           id="employeeId" 
@@ -76,7 +85,7 @@
         >
       </div>
       <div>
-        <label for="password" class="text-sm font-medium text-gray-700">Contraseña</label>
+        <label for="password" class="text-sm font-medium text-white">Contraseña</label>
         <input 
           type="password" 
           id="password" 
@@ -90,7 +99,7 @@
         <div class="text-red-600 text-sm">{errorMessage}</div>
       {/if}
       <div>
-        <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" disabled={isLoading}>
+        <button type="submit" class="bg-[#FAEB30] w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-black hover:bg-[#FAEB30]/80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" disabled={isLoading}>
           {isLoading ? 'Iniciando...' : 'Iniciar Sesión'}
         </button>
       </div>
