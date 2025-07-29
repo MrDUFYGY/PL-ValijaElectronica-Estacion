@@ -1,7 +1,8 @@
 ---
 import Layout from "../../layouts/LayoutRigth.astro";
-import Input from "../../components/ConfirmInput.astro";
+import CustomPdfInput from "../../components/customInput/CustomPdfInput.svelte";
 import Huella from "../../components/ConfirmHuella.astro";
+import DocsRecepcionCombustible from "../../components/DocsRecepcionCombustible.svelte";
 export const prerender = false;
 
 import "../../styles/global.css";
@@ -59,14 +60,8 @@ import "../../styles/global.css";
     </div>
     <br />
 
-        <div class="border border-gray-300 rounded-md p-4 bg-gray-50">
-            <Input
-                inputId="input-archivo1"
-                punto1Id="punto1-archivo1"
-                punto2Id="punto2-archivo1"
-                titulo="Subir talón de banco"
-            />
-            <!-- <Huella /> -->
-        </div>
-    </div>
+
+
+    <DocsRecepcionCombustible client:visible />
+  </div>
 </Layout>

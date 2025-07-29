@@ -163,7 +163,7 @@
   });
 </script>
 
-<div class="w-full relative">
+<div class="w-full relative max-h-[180px]">
   <div class="flex justify-between items-center mb-2">
     <label for={inputId} class="block text-sm font-medium text-gray-700">
       {label}
@@ -187,7 +187,7 @@
     role="button"
     aria-label="Seleccionar archivo PDF"
     tabindex={soloConsulta ? -1 : 0}
-    class="rounded-lg p-6 text-center transition-colors border-2 border-dashed 
+    class="rounded-lg p-1 text-center transition-colors border-2 border-dashed bg-cyan-50
       {isConfirmedInternal ? borderColor : 'border-gray-300'}
       {soloConsulta 
         ? 'bg-gray-50 cursor-not-allowed' 
@@ -205,9 +205,7 @@
       </div>
     {/if}
     {#if !isConfirmedInternal}
-      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 48 48">
-        <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-      </svg>
+    <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-400" viewBox="0 0 576 512"><path fill="#2d2d2d" d="M208 48H96c-8.8 0-16 7.2-16 16v384c0 8.8 7.2 16 16 16h80v48H96c-35.3 0-64-28.7-64-64V64C32 28.7 60.7 0 96 0h133.5c17 0 33.3 6.7 45.3 18.7l122.5 122.6c12 12 18.7 28.3 18.7 45.3v149.5h-48v-128h-88c-39.8 0-72-32.2-72-72v-88zm140.1 112L256 67.9V136c0 13.3 10.7 24 24 24zM240 380h32c33.1 0 60 26.9 60 60s-26.9 60-60 60h-12v28c0 11-9 20-20 20s-20-9-20-20V400c0-11 9-20 20-20m32 80c11 0 20-9 20-20s-9-20-20-20h-12v40zm96-80h32c28.7 0 52 23.3 52 52v64c0 28.7-23.3 52-52 52h-32c-11 0-20-9-20-20V400c0-11 9-20 20-20m32 128c6.6 0 12-5.4 12-12v-64c0-6.6-5.4-12-12-12h-12v88zm76-108c0-11 9-20 20-20h48c11 0 20 9 20 20s-9 20-20 20h-28v24h28c11 0 20 9 20 20s-9 20-20 20h-28v44c0 11-9 20-20 20s-20-9-20-20z"/></svg>      
       <p class="mt-2 text-gray-700">
         Arrastra y suelta un archivo PDF o haz clic para seleccionar
       </p>

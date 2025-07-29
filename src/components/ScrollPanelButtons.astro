@@ -1,0 +1,60 @@
+---
+// src/components/scroll/ScrollPanelButtons.astro
+interface Props {
+  scrollTargetId: string;
+  scrollContainerId: string;
+}
+
+const { scrollTargetId, scrollContainerId } = Astro.props;
+---
+
+<style>
+  .scroll-buttons-wrapper {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    z-index: 3000;
+    pointer-events: none;
+  }
+
+  .scroll-btn {
+    pointer-events: auto;
+    background-color: #AFC73D; 
+    color: rgb(58, 58, 58);
+    border: none;
+    border-radius: 9999px;
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.705);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+  }
+
+  .scroll-btn:hover {
+    background-color: #FAEB30; 
+    color: black;
+    transform: scale(1.05);
+  }
+</style>
+
+<div class="scroll-buttons-wrapper">
+  <button
+    type="button"
+    class="scroll-btn"
+    onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+    title="Ir arriba"
+  >
+    ⬆
+  </button>
+
+  <button
+    type="button"
+    class="scroll-btn"
+    onclick={`document.getElementById('${scrollTargetId}').scrollIntoView({ top: 0, behavior: 'smooth', block: 'center' })`}
+    title="Ir abajo"
+  >
+    ⬇
+  </button>
+</div>

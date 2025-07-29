@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import ContenidoAMostrar from "../components/ContenidoAMostrar.astro";
 const { content, station, date, title } = Astro.props;
+import ScrollPanelButtons from "../components/ScrollPanelButtons.astro";
 import Huella from "../components/ConfirmHuella.astro";
 
 export const prerender = false;
@@ -26,13 +27,23 @@ export const prerender = false;
 		<title>{title}</title>
 	</head>
 	<body>
-		<ContenidoAMostrar station={station} date={date} title={title}/>
+		<div id="">
+			<ContenidoAMostrar station={station} date={date} title={title}/>
+			<ScrollPanelButtons
+			scrollTargetId="button-scroll"
+			scrollContainerId="navTop-scroll"/>
+		</div>
 		<main>
 			<slot />
+
 		</main>
 		<br />
 		<div class="flex items-center justify-center">
 			<Huella />
+
+		</div>
+		<div id="button-scroll">
+			
 		</div>
 	</body>
 </html>

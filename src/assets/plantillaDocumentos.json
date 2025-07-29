@@ -1,0 +1,243 @@
+{
+    "DataDia": {
+        "fecha": "2025-06-26",
+        "estacion": {
+            "numeroEstacion": 0,
+            "tipoEstacion": "",
+            "ubicacion": ""
+        }
+    },
+
+    "EstructuraDocumentacionProcesoDia":[
+        {
+            "Proceso1": 
+            {
+                "HL-t1": {
+                    "IdDocument": "",
+                    "TitleDocument": "Hoja Liquidacion Turno 1",
+                    "IdSesionDB": ""
+                },
+                "HL-t2": {
+                    "IdDocument": "",
+                    "TitleDocument": "Hoja Liquidacion Turno 2",
+                    "IdSesionDB": ""
+                },
+                "HL-t3": {
+                    "IdDocument": "",
+                    "TitleDocument": "Hoja Liquidacion Turno 3",
+                    "IdSesionDB": ""
+                },
+                "HL-Corte": {
+                    "IdDocument": "",
+                    "TitleDocument": "Hoja Liquidacion de Corte",
+                    "IdSesionDB": ""
+                }
+
+            },
+            "Proceso2": 
+            {
+                "Talon&TicketBancario": {
+                    "IdDocument": "",
+                    "TitleDocument": "Talon y Ticket Bancario",
+                    "IdSesionDB": ""
+                },
+                "Gastos": {
+                    "IdDocument": "",
+                    "TitleDocument": "Gastos - base",
+                    "IdSesionDB": ""
+                }                
+            },
+            "Proceso3": 
+            {
+                "Nomina": {
+                    "IdDocument": "",
+                    "TitleDocument": "Nomina",
+                    "IdSesionDB": ""
+                }                
+            },
+            "Proceso4": 
+            {
+                "Mediciones&Comprobantes": [
+                    {
+                        "IdDocument": "",
+                        "TitleDocument": "",
+                        "IdSesionDB": "",
+                        "Turno":""
+                    },
+                    {
+                        "IdDocument": "",
+                        "TitleDocument": "",
+                        "IdSesionDB": "",
+                        "Turno":""
+                    },
+                    {
+                        "IdDocument": "",
+                        "TitleDocument": "",
+                        "IdSesionDB": "",
+                        "Turno":""
+                    }
+                ],
+                "ListadoTags": [
+                    {
+                        "IdDocument": "",
+                        "TitleDocument": "",
+                        "IdSesionDB": "",
+                        "Turno":""
+                    },
+                    {
+                        "IdDocument": "",
+                        "TitleDocument": "",
+                        "IdSesionDB": "",
+                        "Turno":""
+                    },
+                    {
+                        "IdDocument": "",
+                        "TitleDocument": "",
+                        "IdSesionDB": "",
+                        "Turno":""
+                    }
+                ],
+                "ListadoContadores": [
+                    {
+                        "IdDocument": "",
+                        "TitleDocument": "",
+                        "IdSesionDB": "",
+                        "Turno":""
+                    },
+                    {
+                        "IdDocument": "",
+                        "TitleDocument": "",
+                        "IdSesionDB": "",
+                        "Turno":""
+                    },
+                    {
+                        "IdDocument": "",
+                        "TitleDocument": "",
+                        "IdSesionDB": "",
+                        "Turno":""
+                    }
+                ],
+                "H-OpenPos": [
+                    {
+                        "IdDocument": "",
+                        "TitleDocument": "",
+                        "IdSesionDB": "",
+                        "Turno":""
+                    },
+                    {
+                        "IdDocument": "",
+                        "TitleDocument": "",
+                        "IdSesionDB": "",
+                        "Turno":""
+                    },
+                    {
+                        "IdDocument": "",
+                        "TitleDocument": "",
+                        "IdSesionDB": "",
+                        "Turno":""
+                    }
+                ]
+            },
+            "Proceso5": 
+            {
+                "":""
+            },
+            "Proceso6": 
+            {
+                "DocumentacionRemisiones":[
+                    {
+                        "IdDocument": "",
+                        "TitleDocument": "Carta Porte",
+                        "IdSesionDB": "",
+                        "Turno":""
+                    },
+                    {
+                        "IdDocument": "",
+                        "TitleDocument": "Factura VDM",
+                        "IdSesionDB": "",
+                        "Turno":""
+                    },
+                    {
+                        "IdDocument": "",
+                        "TitleDocument": "VT-Remisiones",
+                        "IdSesionDB": "",
+                        "Turno":""
+                    }
+                ]
+ 
+            },
+            "Proceso7": 
+            {
+                "FacturaCliente":[
+                    {
+                        "IdDocument": "",
+                        "TitleDocument": "Factura Cliente",
+                        "IdSesionDB": "",
+                        "Turno":"",
+                        "Observaciones":""
+                    }
+                ]
+ 
+            },
+            "Proceso8": 
+            {
+                "DocumentacionMermas":{
+                    "IdDocument": "",
+                    "TitleDocument": "Documentacion de Mermas",
+                    "IdSesionDB": ""
+                }    
+            },
+            "Proceso9": 
+            {
+                "Jarreo":[
+                    {
+                        "IdDocument": "",
+                        "TitleDocument": "Extraccion",
+                        "IdSesionDB": ""
+                    },
+                    {
+                        "IdDocument": "",
+                        "TitleDocument": "Retornos",
+                        "IdSesionDB": ""
+                    },
+                    {
+                        "IdDocument": "",
+                        "TitleDocument": "TV-Jarreo",
+                        "IdSesionDB": ""
+                    },
+                    {
+                        "Correo":""
+                    }
+                ]    
+            },
+            "Proceso10": 
+            {
+                "DocumentacionVales": {
+                    "IdDocument": "",
+                    "TitleDocument": "",
+                    "IdSesionDB": ""
+                }    
+            },
+            "Proceso11": 
+            {
+                "CorteTerminalesxTurno": [
+                    {
+                        "IdDocument": "",
+                        "TitleDocument": "Corte Terminal Turno 1",
+                        "IdSesionDB": ""
+                    },
+                    {
+                        "IdDocument": "",
+                        "TitleDocument": "Corte Terminal Turno 2",
+                        "IdSesionDB": ""
+                    },
+                    {
+                        "IdDocument": "",
+                        "TitleDocument": "Corte Terminal Turno 3",
+                        "IdSesionDB": ""
+                    }
+                ]
+            }
+        }
+    ]
+}

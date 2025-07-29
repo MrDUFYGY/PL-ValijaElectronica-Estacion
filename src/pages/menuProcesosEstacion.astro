@@ -7,6 +7,10 @@ import ProcessTracker from '../components/ProcessTracker.svelte';
 import MenuHerramientas from "../components/MenuHerramientas.astro";
 import CircleHelper from "../components/CircleHelperTooltip.astro"
 import ButtonMove from "../components/ButtonMove.astro"
+import MembretesBGAnimated from "../components/MembretesBGAnimated.astro"
+
+
+
 
 // El middleware ya ha verificado la sesión.
 const sessionTotal = Astro.locals.SessionTotal;
@@ -66,9 +70,6 @@ interface MenuItem {
   modalSide?: 'left' | 'right' | 'center' | 'mov';
   isOpen?: boolean;
   sugerencia?: boolean;
-  backgroundColor?: string;
-  iconColor?: string;
-  textColor?: string;
 }
 const items: MenuItem[] = [
   {
@@ -87,43 +88,40 @@ const items: MenuItem[] = [
     link: "/procesosPages/form_ayuda",
     modalSide: "mov" as const,
     isOpen: false,
-    backgroundColor: "oklch(0.637 0.237 25.331)",
-    iconColor: "white",
-    textColor: "white",
   },
-  {
-    title: "right",
-    description: "right",
-    icon: "logout",
-    link: "/zzzz",
-    modalSide: "right" as const,
-    isOpen: false,
-    backgroundColor: "oklch(0.637 0.237 25.331)",
-    iconColor: "white",
-    textColor: "white",
-  },
-  {
-    title: "left",
-    description: "left",
-    icon: "logout",
-    link: "/zzzz",
-    modalSide: "left" as const,
-    isOpen: false,
-    backgroundColor: "oklch(0.637 0.237 25.331)",
-    iconColor: "white",
-    textColor: "white",
-  },
-  {
-    title: "center",
-    description: "center",
-    icon: "logout",
-    link: "/docExamples/ButtonMoveExample",
-    modalSide: "center" as const,
-    isOpen: false,
-    backgroundColor: "black",
-    iconColor: "white",
-    textColor: "white",
-  },
+  // {
+  //   title: "right",
+  //   description: "right",
+  //   icon: "logout",
+  //   link: "/zzzz",
+  //   modalSide: "right" as const,
+  //   isOpen: false,
+  //   backgroundColor: "oklch(0.637 0.237 25.331)",
+  //   iconColor: "white",
+  //   textColor: "white",
+  // },
+  // {
+  //   title: "left",
+  //   description: "left",
+  //   icon: "logout",
+  //   link: "/zzzz",
+  //   modalSide: "left" as const,
+  //   isOpen: false,
+  //   backgroundColor: "oklch(0.637 0.237 25.331)",
+  //   iconColor: "white",
+  //   textColor: "white",
+  // },
+  // {
+  //   title: "center",
+  //   description: "center",
+  //   icon: "logout",
+  //   link: "/docExamples/ButtonMoveExample",
+  //   modalSide: "center" as const,
+  //   isOpen: false,
+  //   backgroundColor: "black",
+  //   iconColor: "white",
+  //   textColor: "white",
+  // },
 
 ];
 
@@ -243,7 +241,7 @@ const items: MenuItem[] = [
   
       <CircleHelper />
       
-      <div id="resizer" class="bg-[#2d2d2d]" style="width: 10px; cursor: col-resize; height: 100%; position: relative; z-index: 10;" title="Arrastrar para ajustar">
+      <div id="resizer" class="" style="width: 10px; cursor: col-resize; height: 100%; position: relative; z-index: 10;" title="Arrastrar para ajustar">
         <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 2px; height: 30px; background-color: #999;"></div>
       </div>
       <div
@@ -251,7 +249,10 @@ const items: MenuItem[] = [
         style="flex: 1; height: 100%; overflow-y: hidden; padding: 5px; "
         class="mt-2 mr-2"
         >
-        <div class="bg-white px-5 py-2 rounded-lg border border-gray-300 shadow-lg">
+
+        <MembretesBGAnimated />
+
+        <div class=" z-100 bg-white px-5 py-2 rounded-lg border border-gray-300 shadow-lg">
           <h2 class="text-lg font-semibold">Menu de Accesos y Herramientas.</h2>
           <p class="text-gray-600">
             Si necesitas asistencia preciona en el boton de ayuda.
