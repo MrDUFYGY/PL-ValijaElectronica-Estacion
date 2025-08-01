@@ -1,0 +1,211 @@
+---
+import Layout from "../../../layouts/LayoutRigth.astro";
+import FormHistorico from "./form_historico.astro";
+export const prerender = false;
+import hidrosina from "../../../assets/hidrosina-3.jpg";
+
+const usuario = {
+  nombre: "Juan",
+  apellido: "Pérez",
+  numeroEmpleado: "EMP123456",
+};
+---
+
+<Layout>
+  <div
+    class="fixed inset-0 bg-cover bg-center z-0"
+    style={`background-image: url(${hidrosina.src})`}
+  >
+  </div>
+  <div
+    class="relative z-10 max-w-5xl mx-auto p-6 mt-10 bg-white rounded shadow space-y-6"
+  >
+    <h1
+      class="text-3xl text-center mb-6"
+      style="font-family: 'Playfair Display', serif;"
+    >
+      Reporte de Incidencia
+    </h1>
+
+    <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
+      <ul
+        class="flex justify-center flex-wrap -mb-px text-sm font-medium text-center"
+        id="default-tab"
+        data-tabs-toggle="#default-tab-content"
+        role="tablist"
+      >
+        <li class="me-2" role="presentation">
+          <button
+            class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+            id="profile-tab"
+            data-tabs-target="#profile"
+            type="button"
+            role="tab"
+            aria-controls="profile"
+            aria-selected="false"
+          >
+            Formulario
+          </button>
+        </li>
+        <li class="me-2" role="presentation">
+          <button
+            class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+            id="dashboard-tab"
+            data-tabs-target="#dashboard"
+            type="button"
+            role="tab"
+            aria-controls="dashboard"
+            aria-selected="false"
+          >
+            Histórico
+          </button>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Contenido del tab Formulario -->
+    <div id="profile" class="tab-content">
+      <form id="formIncidencia" enctype="multipart/form-data" class="space-y-6">
+        <!-- Datos del usuario -->
+        <div
+          class="bg-gray-100 border border-gray-300 rounded-lg p-4 sm:p-6 mb-6 shadow-sm"
+        >
+          <h2 class="text-lg font-bold text-gray-700 mb-4">Usuario</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <p class="text-sm font-semibold text-gray-500">Nombre</p>
+              <p class="text-base text-gray-700">{usuario.nombre}</p>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-gray-500">Apellido</p>
+              <p class="text-base text-gray-700">{usuario.apellido}</p>
+            </div>
+            <div class="sm:col-span-2">
+              <p class="text-sm font-semibold text-gray-500">
+                Número de Empleado
+              </p>
+              <p class="text-base text-gray-700">{usuario.numeroEmpleado}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Menu desplegable -->
+        <div>
+          <label
+            for="categoria"
+            class="block text-sm font-semibold text-gray-700"
+          >
+            Selecciona los proceso donde tienes problemas.
+          </label>
+          <select
+            name="procesos"
+            id="procesos"
+            class="mt-1 block w-full bg-white border border-gray-300 text-gray-700 rounded px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+          >
+            <option value="">Selecciona una opción</option>
+            <option value="h1">Hoja de liquidación</option>
+            <option value="h2">Movimientos de caja</option>
+            <option value="h3">Nóminas</option>
+            <option value="h4">Listados de contadores, OpenPos, Mediciones y Lista de placas con Tag</option>
+            <option value="h5">Hoja de corte de periféricos</option>
+            <option value="h6">Recepción de carburantes con soporte</option>
+            <option value="h7">Listado de remisión de periféricos</option>
+            <option value="h8">Regularización de existencias (Mermas)</option>
+            <option value="h9">Jarreo</option>
+            <option value="h10">Vales por empresa</option>
+            <option value="h11">Corte de terminales por vouchers</option>
+            <option value="h12">Otro</option>
+          </select>
+        </div>
+
+        <!-- Incidencia -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700">
+            ¿Qué sucedió?
+          </label>
+          <textarea
+            name="incidencia"
+            rows="4"
+            placeholder="Describe la incidencia..."
+            class="mt-1 w-full border border-gray-300 rounded px-3 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-green-500"
+          ></textarea>
+        </div>
+
+        <!-- Archivo
+        <div>
+          <label class="block text-sm font-semibold text-gray-700">
+            Adjuntar archivo (opcional)
+          </label>
+          <input
+            type="file"
+            name="archivo"
+            class="mt-2 block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
+          />
+        </div> -->
+
+        <!-- Botón enviar -->
+        <div class="text-center">
+          <button
+            type="submit"
+            class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded-md transition"
+          >
+            Enviar
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Contenido del tab Histórico -->
+
+    <script is:inline>
+      document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('formIncidencia');
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const usuario = {
+            nombre: document.querySelector('p.text-base.text-gray-700:nth-child(2)').textContent,
+            apellido: document.querySelector('p.text-base.text-gray-700:nth-child(4)').textContent,
+            numeroEmpleado: document.querySelector('p.text-base.text-gray-700:nth-child(6)').textContent
+          };
+          const proceso = document.getElementById('procesos').value;
+          const mensaje = form.querySelector('textarea[name="incidencia"]').value;
+          const fecha = new Date();
+          const caso = {
+            usuario,
+            proceso,
+            mensaje,
+            fecha: fecha.toLocaleString()
+          };
+          let historico = JSON.parse(localStorage.getItem('historicoIncidencias') || '[]');
+          historico.unshift(caso);
+          localStorage.setItem('historicoIncidencias', JSON.stringify(historico));
+          alert('Incidencia registrada en el histórico.');
+          form.reset();
+        });
+      });
+    </script>
+    <div id="dashboard" class="tab-content hidden">
+      <FormHistorico usuario={usuario} />
+    </div>
+
+  </div>
+
+  <script>
+    const buttons = document.querySelectorAll('[data-tabs-target]');
+    const contents = document.querySelectorAll('.tab-content');
+  
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        // Quitar clases activas y mostrar el contenido correspondiente
+        buttons.forEach((b) => b.setAttribute('aria-selected', 'false'));
+        contents.forEach((c) => c.classList.add('hidden'));
+  
+        // Activar tab actual
+        btn.setAttribute('aria-selected', 'true');
+        const tab = btn.getAttribute('data-tabs-target').substring(1);
+        document.querySelector(`#${tab}`).classList.remove('hidden');
+      });
+    });
+  </script>
+</Layout>
+

@@ -4,10 +4,11 @@
 interface Props {
     station?: string | null;
     date?: string | null;
+    nickname?: string | null;
 }
 
 const { SessionTotal } = Astro.locals;
-const { station, date } = Astro.props;
+const { station, date, nickname } = Astro.props;
 // Formatear la fecha para mostrarla, añadiendo la zona horaria para evitar errores de un día
 const formattedDate = date 
     ? new Date(date + 'T06:00:00Z').toLocaleDateString("es-MX", {
@@ -39,7 +40,7 @@ const userName = SessionTotal?.resultValidated?.userObj ? `${SessionTotal?.resul
             <!-- Centro: Información de la Estación -->
             <div class="hidden md:flex items-center space-x-6 text-sm">
                 <div class="flex items-center">
-                    <div id="navbar-nickname" class="text-sm font-medium">Cargando sesión...</div>
+                    <div id="navbar-nickname" class="text-sm font-medium">Usuario: {nickname}</div>
 
 
                 </div>

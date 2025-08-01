@@ -1,19 +1,18 @@
 ---
 import "../../styles/global.css";
 import Layout from "../../layouts/LayoutRigth.astro";
-import Huella from "../../components/ConfirmHuella.astro";
 import CustomPdfInput from "../../components/customInput/CustomPdfInput.svelte";
-import PdfInputGroup from "../../components/customInput/PdfInputGroup.svelte";
 export const prerender = false;
 
 const { station, date } = Astro.props;
-
+const idsSubprocesos = [1, 2, 6]; // IDs de subprocesos a actualizar
+const otro = 'Este es un ejemplo de una variable y como se realiza.'
 
 
 
 ---
 
-<Layout station={station} date={date}>
+<Layout station={station} date={date} idsSubprocesos={idsSubprocesos} otro={otro}>
  <!-- Contenedor principal con mejor diseño -->
  <div
  id="hl-contenedor-principal"
@@ -136,6 +135,7 @@ const { station, date } = Astro.props;
 
  
  <div class="mt-6">
+  <!-- Input de Corte -->
   <div class="flex items-center space-x-2">
     <input
       type="checkbox"
@@ -146,6 +146,7 @@ const { station, date } = Astro.props;
       >Subir de Hojas de Liquidación por turnos</label
     >
   </div>
+  <!-- Inputs por turno -->
   <div id="seccion-hl-turnos" class="mt-8 grid grid-cols-3 gap-4 hidden">
     <div>
       <h3 class="mb-2">Turno 1</h3>

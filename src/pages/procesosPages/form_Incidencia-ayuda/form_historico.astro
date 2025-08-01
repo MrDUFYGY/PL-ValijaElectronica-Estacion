@@ -1,0 +1,252 @@
+---
+// Este archivo se usa como componente, por eso NO lleva <Layout>
+const { usuario } = Astro.props;
+const nombreUsuario = usuario?.nombre ?? "Tú";
+
+// Datos de ejemplo para las incidencias
+const incidencias = [
+  {
+    id: 1,
+    titulo: "Error en carga de documento",
+    de: "Juan Pérez",
+    para: "Corporativo",
+    fecha: "29/07/2025",
+    hora: "10:12 a.m.",
+    descripcion: "El sistema no permite cargar documentos PDF desde el módulo de reportes.",
+    mensajes: [
+      { autor: "Corporativo", mensaje: "Ya reiniciamos el servicio, inténtalo de nuevo." },
+      { autor: "Juan", mensaje: "Sigue fallando, pero ahora es distinto." }
+    ]
+  },
+  {
+    id: 2,
+    titulo: "Problema con conexión a base de datos",
+    de: "María González",
+    para: "Corporativo",
+    fecha: "29/07/2025",
+    hora: "11:30 a.m.",
+    descripcion: "La aplicación muestra errores de timeout al intentar conectar con la base de datos principal.",
+    mensajes: [
+      { autor: "Corporativo", mensaje: "Revisando la conexión del servidor." }
+    ]
+  },
+  {
+    id: 3,
+    titulo: "Error en envío de notificaciones",
+    de: "Carlos Ruiz",
+    para: "Corporativo",
+    fecha: "29/07/2025",
+    hora: "02:15 p.m.",
+    descripcion: "Los usuarios no están recibiendo las notificaciones por correo electrónico.",
+    mensajes: [
+      { autor: "Corporativo", mensaje: "Verificando configuración del servidor SMTP." },
+      { autor: "Carlos", mensaje: "¿Hay alguna estimación de tiempo para la solución?" }
+    ]
+  }
+];
+---
+
+<div class="bg-gray-100 p-6 space-y-6 min-h-screen">
+  <!-- Vista de Lista -->
+  <div id="vistaLista">
+    <!-- Título -->
+    <h2 class="text-2xl font-bold text-gray-700">Histórico de incidencias</h2>
+
+    <!-- Lista de tarjetas -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
+      {incidencias.map((incidencia) => (
+        <div 
+          class="card-incidencia bg-white rounded-lg shadow-md p-4 border border-gray-300 group cursor-pointer hover:shadow-lg transition-shadow" 
+          data-incidencia-id={incidencia.id}
+        >
+          <div class="flex flex-col gap-2">
+            <h3 class="text-lg font-semibold text-blue-600">{incidencia.titulo}</h3>
+            <p class="text-sm text-gray-600">De: {incidencia.de} → Para: {incidencia.para}</p>
+            <p class="text-xs text-gray-500"> {incidencia.fecha}  {incidencia.hora}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- Vista de Detalle -->
+  <div id="vistaDetalle" class="hidden">
+    <!-- Header con botón de regreso -->
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-2xl font-bold text-gray-700">Detalle de incidencia</h2>
+      <button id="btnVolver" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition flex items-center gap-2">
+        <span class="text-xl">×</span>
+        Volver
+      </button>
+    </div>
+
+    <!-- Información de la incidencia -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <h3 id="detalleTitulo" class="text-2xl font-bold mb-3 text-blue-600"></h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div>
+          <p class="text-sm text-gray-500">De:</p>
+          <p id="detalleDe" class="text-gray-700 font-medium"></p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500">Para:</p>
+          <p id="detallePara" class="text-gray-700 font-medium"></p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500">Fecha:</p>
+          <p id="detalleFecha" class="text-gray-700 font-medium"></p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500">Hora:</p>
+          <p id="detalleHora" class="text-gray-700 font-medium"></p>
+        </div>
+      </div>
+      <div>
+        <p class="text-sm text-gray-500 mb-2">Descripción:</p>
+        <p id="detalleDescripcion" class="text-gray-700 bg-gray-50 p-3 rounded border"></p>
+      </div>
+    </div>
+
+    <!-- Chat de mensajes -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <h4 class="text-lg font-semibold mb-4 text-gray-700"> Conversación</h4>
+      
+      <!-- Área de mensajes -->
+      <div class="bg-gray-100 p-4 rounded border border-gray-200 mb-4 h-64 overflow-y-auto space-y-3" id="chatMensajes">
+        <!-- Los mensajes se cargarán dinámicamente -->
+      </div>
+
+      <!-- Textarea para escribir -->
+      <textarea id="nuevoMensaje" rows="3" placeholder="Escribe tu respuesta..." class="w-full rounded-md border border-gray-300 p-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 mb-3"></textarea>
+
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <input id="confirmarEnvio" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+          <label for="confirmarEnvio" class="text-sm text-gray-700">Confirmar envío</label>
+        </div>
+        <button id="btnEnviar" class="bg-blue-600 text-white text-sm px-6 py-2 rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed" disabled>Enviar mensaje</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script define:vars={{ incidencias, nombreUsuario }}>
+  const vistaLista = document.getElementById("vistaLista");
+  const vistaDetalle = document.getElementById("vistaDetalle");
+  const btnEnviar = document.getElementById("btnEnviar");
+  const confirmar = document.getElementById("confirmarEnvio");
+  let incidenciaActual = null;
+
+  // Agregar event listeners a las cards y botones
+  document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.card-incidencia');
+    cards.forEach(card => {
+      card.addEventListener('click', function() {
+        const idIncidencia = parseInt(this.getAttribute('data-incidencia-id'));
+        mostrarDetalle(idIncidencia);
+      });
+    });
+
+    // Event listener para el botón de volver
+    const btnVolver = document.getElementById('btnVolver');
+    if (btnVolver) {
+      btnVolver.addEventListener('click', volverALista);
+    }
+
+    // Event listener para el botón de enviar
+    const btnEnviarMsg = document.getElementById('btnEnviar');
+    if (btnEnviarMsg) {
+      btnEnviarMsg.addEventListener('click', enviarMensaje);
+    }
+  });
+
+  function mostrarDetalle(idIncidencia) {
+    // Encontrar la incidencia por ID
+    incidenciaActual = incidencias.find(inc => inc.id === idIncidencia);
+    
+    if (!incidenciaActual) return;
+
+    // Actualizar información del detalle
+    document.getElementById("detalleTitulo").textContent = incidenciaActual.titulo;
+    document.getElementById("detalleDe").textContent = incidenciaActual.de;
+    document.getElementById("detallePara").textContent = incidenciaActual.para;
+    document.getElementById("detalleFecha").textContent = incidenciaActual.fecha;
+    document.getElementById("detalleHora").textContent = incidenciaActual.hora;
+    document.getElementById("detalleDescripcion").textContent = incidenciaActual.descripcion;
+
+    // Cargar mensajes existentes
+    cargarMensajes();
+    
+    // Cambiar vistas
+    vistaLista.classList.add("hidden");
+    vistaDetalle.classList.remove("hidden");
+  }
+
+  function volverALista() {
+    // Cambiar vistas
+    vistaDetalle.classList.add("hidden");
+    vistaLista.classList.remove("hidden");
+    
+    // Limpiar campos
+    document.getElementById("nuevoMensaje").value = "";
+    confirmar.checked = false;
+    btnEnviar.disabled = true;
+    incidenciaActual = null;
+  }
+
+  function cargarMensajes() {
+    const contenedor = document.getElementById("chatMensajes");
+    contenedor.innerHTML = "";
+    
+    if (incidenciaActual && incidenciaActual.mensajes) {
+      incidenciaActual.mensajes.forEach(msg => {
+        const mensajeDiv = document.createElement("div");
+        mensajeDiv.className = "bg-white p-3 rounded-lg shadow-sm border-l-4 border-blue-300";
+        mensajeDiv.innerHTML = `<strong class="text-blue-600">${msg.autor}:</strong> <span class="text-gray-700">${msg.mensaje}</span>`;
+        contenedor.appendChild(mensajeDiv);
+      });
+    }
+    
+    // Scroll al final
+    contenedor.scrollTop = contenedor.scrollHeight;
+  }
+
+  confirmar.addEventListener("change", () => {
+    btnEnviar.disabled = !confirmar.checked;
+  });
+
+  function enviarMensaje() {
+    const mensaje = document.getElementById("nuevoMensaje").value.trim();
+    if (!mensaje || !incidenciaActual) return;
+
+    // Agregar mensaje al array de la incidencia
+    incidenciaActual.mensajes.push({
+      autor: nombreUsuario,
+      mensaje: mensaje
+    });
+
+    // Crear elemento visual del mensaje
+    const contenedor = document.getElementById("chatMensajes");
+    const mensajeDiv = document.createElement("div");
+    mensajeDiv.className = "bg-green-50 p-3 rounded-lg shadow-sm border-l-4 border-green-400";
+    mensajeDiv.innerHTML = `<strong class="text-green-600">${nombreUsuario}:</strong> <span class="text-gray-700">${mensaje}</span>`;
+    contenedor.appendChild(mensajeDiv);
+
+    // Scroll al final
+    contenedor.scrollTop = contenedor.scrollHeight;
+
+    // Limpiar campos
+    document.getElementById("nuevoMensaje").value = "";
+    confirmar.checked = false;
+    btnEnviar.disabled = true;
+  }
+
+  // Permitir enviar con Enter (Ctrl+Enter)
+  document.getElementById("nuevoMensaje").addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && e.ctrlKey && !btnEnviar.disabled) {
+      enviarMensaje();
+    }
+  });
+</script>

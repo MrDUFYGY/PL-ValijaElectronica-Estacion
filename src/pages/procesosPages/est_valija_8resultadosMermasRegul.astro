@@ -2,10 +2,11 @@
 import Layout from "../../layouts/LayoutRigth.astro";
 import Huella from "../../components/ConfirmHuella.astro";
 export const prerender = false;
+const idsSubprocesos = [23,24]; // IDs de subprocesos a actualizar
 
 ---
 
-<Layout>
+<Layout title="Resultados de Mermas Reguladas" idsSubprocesos={idsSubprocesos}>
   <div class=" p-8 max-w-5xl mx-auto font-sans rounded-lg bg-white">
     {/* Contenedor principal blanco con padding */}
 

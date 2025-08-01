@@ -25,43 +25,24 @@
         })
       });
 
-      const data = await response.json();
-
-      if (data.Exitoso) {
-        // 2. LOGIN DIRECTO AL BACKEND C# PARA SESIÓN
-        const responseSesion = await fetch('https://localhost:44345/api/Valija/AddLogin', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            UserName: employeeId,
-            Password: encodedPassword,
-            Estaciones: data.Estaciones
-          }),
-          credentials: 'include'
-        });
-
-        const responseSesionJson = await responseSesion.json();
-
-        if (responseSesion.ok && responseSesionJson.resultSession?.sessionId) {
-          const sessionId = responseSesionJson.resultSession.sessionId;
-
-
-
-
-
-          // Guardamos el sessionId en una cookie del lado del cliente.
-          // Esto asegura que la cookie pertenece al dominio actual (localhost o el túnel)
-          document.cookie = `sessionId=${sessionId}; path=/; SameSite=Lax`;
+      if (response.ok) {
+        const data = await response.json();
+        if (data.Exitoso) {
           window.location.href = '/dashboard'; // Redirige al dashboard
         } else {
-          errorMessage = responseSesionJson.resultSession || 'Error al iniciar sesión. Verifique sus credenciales.';
+          errorMessage = data.Mensaje || 'Error al iniciar sesión. Verifique sus credenciales.';
         }
       } else {
-        errorMessage = data.Mensaje || 'Error en la autenticación externa.';
+        // Si la respuesta no es ok, intenta leer el mensaje de error
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.Mensaje || `Error del servidor: ${response.status}`;
+        } catch (e) {
+          errorMessage = `Error del servidor: ${response.status}. No se pudo procesar la respuesta.`;
+        }
       }
     } catch (error) {
+      console.error('Error en handleSubmit:', error);
       errorMessage = 'No se pudo conectar con el servidor. Revisa tu conexión a internet.';
     } finally {
       isLoading = false;

@@ -2,12 +2,15 @@
 import Layout from '../../layouts/LayoutRigth.astro';
 import Huella from '../../components/ConfirmHuella.astro';
 import CustomPdfInput from '../../components/customInput/CustomPdfInput.svelte';
+import NominasExtraInputs from '../../components/NominasExtraInputs.svelte';
 import "../../styles/global.css";
 export const prerender = false;
+const idsSubprocesos = [10, 11]; // IDs de subprocesos a actualizar
+
 
 ---
 
-<Layout title="Carga de Nominas">
+<Layout title="Carga de Nominas" idsSubprocesos={idsSubprocesos}>
   <div class="container mx-auto">
 
 
@@ -52,8 +55,6 @@ export const prerender = false;
 
         </div>
       </div>
-
-
         <!-- Resumen de archivos -->
         <div class="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- Input para Nominas -->
@@ -69,6 +70,12 @@ export const prerender = false;
             </ol>
           </div>
         </div>
+      <!-- Nóminas Extra: sección separada, visible como extra -->
+      <section class="mt-8">
+        <NominasExtraInputs client:visible />
+      </section>
+
+
 
       </div>
     </div>

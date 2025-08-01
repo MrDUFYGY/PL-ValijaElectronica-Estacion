@@ -1,6 +1,7 @@
 <script lang="ts">
   // Prop para recibir las estaciones desde Astro
     export let stations: string;
+    export let nickname: string;
   // Prop para recibir los datos completos del usuario, que vienen de dashboard.astro
   export let userData: any = null;
 
@@ -46,7 +47,7 @@
     
     // Formateamos la fecha a YYYY-MM-DD para la URL
     const dateString = selectedDate.toISOString().split('T')[0];
-    window.location.href = `/menuProcesosEstacion?station=${selectedStation}&date=${dateString}`;
+    window.location.href = `/menuProcesosEstacion?station=${selectedStation}&date=${dateString}&nickname=${nickname}`;
   }
 
   // --- Lógica del Calendario ---
@@ -62,7 +63,7 @@
 </script>
 
 <div class="w-full max-w-2xl mx-auto bg-[#018E2E] p-6 rounded-lg shadow-md">
-  
+  <p>Selecciona una estación para continuar USUARIO: {nickname}.</p>
   <!-- Selector de Estación -->
   {#if stationList.length > 1}
     <div class="mb-6">

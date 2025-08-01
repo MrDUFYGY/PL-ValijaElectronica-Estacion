@@ -4,11 +4,12 @@ import CustomPdfInput from "../../components/customInput/CustomPdfInput.svelte";
 import Huella from "../../components/ConfirmHuella.astro";
 import DocsRecepcionCombustible from "../../components/DocsRecepcionCombustible.svelte";
 export const prerender = false;
+const idsSubprocesos = [18, 19, 20]; // IDs de subprocesos a actualizar
 
 import "../../styles/global.css";
 ---
 
-<Layout title={'Histórico de movimientos de carburante'}>
+<Layout title={'Histórico de movimientos de carburante'} idsSubprocesos={idsSubprocesos}>
     <div class="container mx-auto bg-white font-sans p-6 rounded-lg">
 
 

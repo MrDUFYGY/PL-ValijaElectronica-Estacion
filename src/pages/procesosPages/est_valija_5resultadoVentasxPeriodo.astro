@@ -1,70 +1,90 @@
 ---
 import Layout from "../../layouts/LayoutRigth.astro";
-import Huella from "../../components/ConfirmHuella.astro";
-import CustomPdfInput from "../../components/customInput/CustomPdfInput.svelte";
+import MenuHerramientas from "../../components/MenuHerramientas.astro";
+const idsSubprocesos = [16, 17]; // IDs de subprocesos a actualizar
+
 export const prerender = false;
 
+interface MenuItem {
+  title: string;
+  description: string;
+  icon: string;
+  link: string;
+  backgroundColor?: string;
+  iconColor?: string;
+  textColor?: string;
+  modalSide?: 'left' | 'right' | 'center' | 'mov';
+  isOpen?: boolean;
+  sugerencia?: boolean;
+  borderColor?: string;
+}
+const items: MenuItem[] = [
+  {
+    title: "Turno 1",
+    description: "Turno 1",
+    icon: "receipt",
+    link: "/procesosPages/form_InventariosLoad/1",
+    modalSide: "center" as const,
+    isOpen: false,
+    sugerencia: true,
+    backgroundColor: "#88cf9f",
+    iconColor: "black",
+    textColor: "black",
+    borderColor: "#018E2E",
+  },
+  {
+    title: "Turno 2",
+    description: "Turno 2",
+    icon: "receipt",
+    link: "/procesosPages/form_InventariosLoad/2", 
+    modalSide: "center" as const,
+    isOpen: false,
+    backgroundColor: "#88cf9f",
+    iconColor: "black",
+    textColor: "black",
+    borderColor: "#018E2E",
+  },
+  {
+    title: "Turno 3",
+    description: "Turno 3",
+    icon: "receipt",
+    link: "/procesosPages/form_InventariosLoad/3", 
+    modalSide: "center" as const,
+    isOpen: false,
+    backgroundColor: "#88cf9f",
+    iconColor: "black",
+    textColor: "black",
+    borderColor: "#018E2E",
+  },
+  // {
+  //   title: "left",
+  //   description: "left",
+  //   icon: "logout",
+  //   link: "/zzzz",
+  //   modalSide: "left" as const,
+  //   isOpen: false,
+  //   backgroundColor: "oklch(0.637 0.237 25.331)",
+  //   iconColor: "white",
+  //   textColor: "white",
+  // },
+  // {
+  //   title: "center",
+  //   description: "center",
+  //   icon: "logout",
+  //   link: "/docExamples/ButtonMoveExample",
+  //   modalSide: "center" as const,
+  //   isOpen: false,
+  //   backgroundColor: "black",
+  //   iconColor: "white",
+  //   textColor: "white",
+  // },
+
+];
 ---
 
-<Layout>
+<Layout title="Resultados de Ventas por Periodo" idsSubprocesos={idsSubprocesos}>
   <div class="container mx-auto p-6 bg-white shadow-md font-sans rounded-lg">
-    <!-- Modal para visualizar PDF de ventas por periodo -->
-    <div
-      id="dialog-ventas-periodo"
-      class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50 overflow-hidden"
-    >
-      <div
-        class="bg-white rounded-lg p-2 max-w-4xl w-full h-full relative z-50"
-      >
-        <div class="flex justify-between items-center mb-4">
-          <h3 class="text-lg font-semibold" id="title-ventas-periodo">
-            Visualización de Documento
-          </h3>
-          <button
-            onclick="closeDialogVentasPeriodo()"
-            class="text-gray-500 hover:text-gray-700"
-          >
-            <svg
-              class="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-          </button>
-        </div>
-        <div class="bg-gray-50 rounded-lg p-4 mb-4">
-          <p class="text-gray-700">Revise el documento antes de confirmar.</p>
-        </div>
-        <div
-          class="w-full h-[60vh] border border-gray-200 rounded-lg overflow-hidden"
-        >
-          <iframe
-            id="viewer-ventas-periodo"
-            class="w-full h-full border-0"
-            title="Visor PDF"></iframe>
-        </div>
-        <div class="flex justify-end gap-4 mt-4">
-          <button
-            onclick="closeDialogVentasPeriodo()"
-            class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors"
-          >
-            Cancelar
-          </button>
-          <button
-            onclick="confirmarVentasPeriodo()"
-            class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
-          >
-            Confirmar
-          </button>
-        </div>
-      </div>
-    </div>
+    <MenuHerramientas items={items} />
 
 
 
@@ -181,125 +201,7 @@ export const prerender = false;
   </style>
 
   <script type="module">
-    // Variables globales
-    let ventasPeriodoFileUrl = null;
-    let currentFileInput = null;
-
-    // Función para manejar la carga de archivos
-    function handleFileUpload(fileInput, file) {
-      if (file && file.type === "application/pdf") {
-        currentFileInput = fileInput;
-        const container = fileInput.closest(".file-upload-container");
-        const fileNameDisplay = container.querySelector(".file-name");
-
-        // Actualizar el nombre del archivo
-        fileNameDisplay.textContent = file.name;
-
-        // Mostrar el visor PDF
-        showVentasPeriodoViewer(file);
-      } else {
-        alert("Por favor, seleccione un archivo PDF válido.");
-      }
-    }
-
-    // Función para mostrar el visor PDF
-    function showVentasPeriodoViewer(file) {
-      ventasPeriodoFileUrl = URL.createObjectURL(file);
-
-      const dialog = document.getElementById("dialog-ventas-periodo");
-      const viewer = document.getElementById("viewer-ventas-periodo");
-      const title = document.getElementById("title-ventas-periodo");
-
-      if (dialog && viewer && title) {
-        viewer.src = ventasPeriodoFileUrl;
-        title.textContent = `Visualización: ${currentFileInput.id.replace("-", " ").toUpperCase()}`;
-        dialog.classList.remove("hidden");
-      }
-    }
-
-    // Función para cerrar el dialog
-    window.closeDialogVentasPeriodo = function () {
-      const dialog = document.getElementById("dialog-ventas-periodo");
-      const viewer = document.getElementById("viewer-ventas-periodo");
-
-      if (!dialog || !viewer) return;
-
-      dialog.classList.add("hidden");
-      viewer.src = "";
-
-      // Si se cierra sin confirmar, limpiamos el input actual
-      if (currentFileInput) {
-        const container = currentFileInput.closest(".file-upload-container");
-        const fileNameDisplay = container.querySelector(".file-name");
-        fileNameDisplay.textContent = "";
-        currentFileInput.value = "";
-      }
-
-      // Liberar memoria de la URL del objeto
-      if (ventasPeriodoFileUrl) {
-        URL.revokeObjectURL(ventasPeriodoFileUrl);
-        ventasPeriodoFileUrl = null;
-      }
-      currentFileInput = null;
-    };
-
-    // Función para confirmar el documento seleccionado
-    window.confirmarVentasPeriodo = function () {
-      if (currentFileInput) {
-        const container = currentFileInput.closest(".file-upload-container");
-        const status1 = container.querySelector('[id$="-status1"]');
-        const status2 = container.querySelector('[id$="-status2"]');
-        const inputContainer = container.querySelector(".relative");
-
-        if (container && status1 && status2 && inputContainer) {
-          // Actualizar estados visuales
-          status1.classList.remove("bg-gray-200");
-          status1.classList.add("bg-green-500");
-          status2.classList.remove("bg-gray-200");
-          status2.classList.add("bg-green-500");
-          inputContainer.classList.remove("border-gray-300", "border-blue-500");
-          inputContainer.classList.add("border-green-500");
-        }
-      }
-      closeDialogVentasPeriodo();
-    };
-
-    // Event listeners cuando el DOM esté cargado
-    document.addEventListener("DOMContentLoaded", function () {
-      // Configurar los event listeners para los inputs de archivo
-      const fileInputs = document.querySelectorAll('input[type="file"]');
-
-      fileInputs.forEach((input) => {
-        input.addEventListener("change", (e) => {
-          const file = e.target.files[0];
-          if (file) {
-            handleFileUpload(input, file);
-          }
-        });
-
-        // Permitir arrastrar y soltar archivos
-        const container = input.closest(".relative");
-        if (container) {
-          container.addEventListener("dragover", (e) => {
-            e.preventDefault();
-            container.classList.add("border-blue-500");
-          });
-
-          container.addEventListener("dragleave", () => {
-            container.classList.remove("border-blue-500");
-          });
-
-          container.addEventListener("drop", (e) => {
-            e.preventDefault();
-            container.classList.remove("border-blue-500");
-            const file = e.dataTransfer.files[0];
-            if (file) {
-              handleFileUpload(input, file);
-            }
-          });
-        }
-      });
-    });
+    
   </script>
 
   <script>

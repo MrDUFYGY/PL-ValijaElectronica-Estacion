@@ -9,36 +9,45 @@ import StationSelector from '../components/StationSelector.svelte';
 // 1. Obtener los datos de la sesión desde el middleware
 const { SessionTotal } = Astro.locals;
 
-// 2. Si no hay datos o la sesión no fue exitosa, redirigir al login
-if (!SessionTotal || !SessionTotal.Exitoso) {
-  // if (!sessionData || !sessionData.Exitoso) {
-  return Astro.redirect('/');
+let userId = 'Usuario';
+let nickname = '';
+let stations = '';
+
+// 2. Si no hay datos o la sesión no fue exitosa, no renderizar el contenido principal.
+if (SessionTotal && SessionTotal.Exitoso) {
+  // 3. Extraer los datos validados del usuario
+  const { resultValidated } = SessionTotal;
+  const { userObj } = resultValidated;
+  userId = userObj.c_Nombre;
+  nickname = userObj.c_NickName;
+  stations = resultValidated.stations;
 }
-
-// 3. Extraer los datos validados del usuario
-const { resultValidated } = SessionTotal;
-
-// 4. Obtener las propiedades específicas para la UI
-const userId = resultValidated.userObj.c_NickName ?? 'Usuario'; // Usamos el NickName para el saludo
-const stations = resultValidated.stations ?? ''; // La lista de estaciones para el selector
 
 ---
 
 <Layout title="Estacion | Dia">
   <main class="p-4 sm:p-8">
-            <h1 id="welcome-heading" class="text-2xl font-bold text-black">Bienvenido, {userId} </h1>
-    <p class="text-gray-900 mb-6">Por favor, selecciona una estación para continuar.</p>
-    
-            <div id="station-selector-container">
-      <StationSelector stations={stations} client:load />
-    </div>
-
+    {(!SessionTotal || !SessionTotal.Exitoso) ? (
+      <div class="text-red-500">
+        <h1 class="text-2xl font-bold">Error de Sesión</h1>
+        <p>No se pudieron cargar los datos de la sesión. Revisa la consola del servidor para más detalles.</p>
+      </div>
+    ) : (
+      <>
+        <h1 id="welcome-heading" class="text-2xl font-bold text-white">Bienvenido, {userId} </h1>
+        <p class="text-gray-100 mb-6">Por favor, selecciona una estación para continuar.</p>
+        
+        <div id="station-selector-container">
+          <StationSelector {stations} {nickname} client:load />
+        </div>
+      </>
+    )}
   </main>
 </Layout>
 
 
 
-<script is:inline>
+<!-- <script is:inline>
   // Función que se ejecuta cuando el DOM está listo.
   async function onPageLoad() {
     console.log('[DASHBOARD] Script inline INICIADO.');
@@ -89,4 +98,4 @@ const stations = resultValidated.stations ?? ''; // La lista de estaciones para 
   } else {
     onPageLoad();
   }
-</script>
+</script> -->

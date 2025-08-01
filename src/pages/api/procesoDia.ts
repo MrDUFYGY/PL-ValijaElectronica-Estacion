@@ -5,7 +5,6 @@ import https from 'https';
 export const prerender = false;
 
 // El agente HTTPS solo se usa en desarrollo para aceptar certificados autofirmados.
-// En producción, `agent` será `undefined` y se usará la configuración segura por defecto.
 const agent = process.env.NODE_ENV === 'development'
   ? new https.Agent({ rejectUnauthorized: false })
   : undefined;
@@ -14,16 +13,18 @@ const agent = process.env.NODE_ENV === 'development'
 export const GET: APIRoute = async ({ url }) => {
   const station = url.searchParams.get('station');
   const date = url.searchParams.get('date');
+  const nickname = url.searchParams.get('nickname');
 
-  if (!station || !date) {
+  if (!station || !date || !nickname) {
     return new Response(JSON.stringify({ 
       Correct: false, 
-      ErrorMessage: 'Faltan los parámetros de estación o fecha.' 
+      ErrorMessage: 'Faltan los parámetros de estación, fecha o nickname.' 
     }), { status: 400 });
   }
 
   try {
-    const apiUrl = `https://localhost:44345/api/Valija/GetIdProcesoDiaByFechaHD?fecha=${date}&idEstacion=${station}&clienteId=true`;
+    // Ajusta la URL según los parámetros que espera tu backend
+    const apiUrl = `https://localhost:44345/api/Valija/GetIdProcesoDiaByFechaHD?fecha=${date}&idEstacion=${station}&clienteId=true&nickname=${nickname}`;
     
     const response = await axios.get(apiUrl, { httpsAgent: agent });
 
@@ -37,15 +38,12 @@ export const GET: APIRoute = async ({ url }) => {
   } catch (error) {
     console.error('Error en el proxy de la API procesoDia:', error);
 
-    // Axios envuelve el error. Si es un error de red o de la API, lo manejamos.
     if (axios.isAxiosError(error) && error.response) {
-      // Reenviar el estado y el cuerpo del error de la API externa
       return new Response(JSON.stringify(error.response.data), {
         status: error.response.status
       });
     }
 
-    // Si es otro tipo de error (ej. de red, certificado, etc.)
     return new Response(JSON.stringify({ 
       Correct: false, 
       ErrorMessage: 'No se pudo conectar con el servicio de procesos.' 

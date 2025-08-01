@@ -1,0 +1,191 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import ProcessTracker from "../../../components/ProcessTracker.svelte";
+
+const resumenProcesos = {
+  usuario: {
+    nombre: "LUIS ALVARO VILLEGAS",
+    rol: "Gerente",
+    correo: "luis.alvaro.villegas@hidroprueba.com",
+  },
+  fecha: new Date().toISOString(),
+  estacion: {
+    id: "EST-001",
+    nombre: "Estación Central",
+  },
+  procesos: [
+    {
+      titulo: "1. Hoja de Liquidación",
+      estado: "pendiente",
+      subprocesos: {
+        "Subida de Hoja Open Pos": false,
+        "Comparación y confirmación": false,
+      },
+    },
+    {
+      titulo: "2. Movimientos de caja",
+      estado: "iniciado",
+      subprocesos: {
+        "Subida de Talón bancario": true,
+        "Hoja de Valores": true,
+        "Comparación con resultados": true,
+        "Confirmación": true,
+      },
+    },
+    {
+      titulo: "3. Nóminas",
+      estado: "sellado",
+      subprocesos: {
+        "Subida de comprobantes": true,
+        "Confirmación de nóminas ejecutivas": true,
+        "Confirmación de Nóminas": true,
+      },
+    },
+    {
+      titulo: "4. Listados de contadores, OpenPos, Mediciones y Lista de placas con Tag",
+      estado: "alertado",
+      subprocesos: {
+        "Listado de contadores (Turno 1, 2, 3)": false,
+        "H.L. Open Pos (Turno 1, 2, 3)**": false,
+        "Mediciones con ticket (Turno 1, 2, 3)": false,
+        "Lista de placas con tag (Turno 1, 2, 3)": false,
+      },
+    },
+    {
+      titulo: "5. Hojas de corte de periféricos",
+      estado: "alertado",
+      subprocesos: {
+        "Turno 1": true,
+        "Turno 2": true,
+        "Turno 3": true,
+      },
+    },
+    {
+      titulo: "6. Recepción de carburantes con soportes",
+      estado: "validado",
+      subprocesos: {
+        "Subir documentación": false,
+        "Factura pemex / VDM": false,
+        "Veeder root": false,
+      },
+    },
+    {
+      titulo: "7. Listado de remisión de periféricos",
+      estado: "iniciado",
+      subprocesos: {
+        Formulario: false,
+        "Factura del cliente": false,
+        "Información adicional": false,
+      },
+    },
+    {
+      titulo: "8. Regularización de existencias (Mermas)",
+      estado: "sellado",
+      subprocesos: {
+        "Registro de mermas": false,
+        Documentación: false,
+        Aprobación: false,
+      },
+    },
+    {
+      titulo: "9. Jarreo",
+      estado: "sellado",
+      subprocesos: {
+        Correo: false,
+        "Documento de extracciones": false,
+        "Documento histórico": false,
+        "Ticket / Veeder root": false,
+      },
+    },
+    {
+      titulo: "10. Vales por empresa",
+      estado: "iniciado",
+      subprocesos: {
+        "Selección de empresas": true,
+        "Adjuntar PDF": true,
+        Observaciones: true,
+      },
+    },
+    {
+      titulo: "11. Corte de terminales con vouchers",
+      estado: "iniciado",
+      subprocesos: {
+        "Adjuntar voucher PDF": true,
+        "Segundo documento PDF": true,
+      },
+    },
+  ],
+};
+---
+
+<Layout title="Resumen de Procesos">
+  <div id="resumen-container" class="m-5 p-6 bg-white rounded-lg shadow-lg my-8">
+    
+    <!-- Encabezado del Resumen -->
+    <div class="flex justify-between items-center mb-6 pb-4 border-b">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-800">Resumen de Procesos</h1>
+        <p class="text-gray-600">Estación: {resumenProcesos.estacion.nombre} ({resumenProcesos.estacion.id})</p>
+        <p class="text-gray-600">Usuario: {resumenProcesos.usuario.nombre}</p>
+      </div>
+      <button id="print-button" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors no-print">
+        Imprimir / Guardar PDF
+      </button>
+    </div>
+
+    <!-- Lista de Procesos -->
+    <div class="bg-white rounded-xl mb-6 flex flex-wrap justify-around "
+    >
+      {
+        resumenProcesos.procesos.map((proceso) => {
+          const subprocesos = proceso.subprocesos || {};
+          const totalPasos = Object.keys(subprocesos).length;
+          let ultimoCompletado = 0;
+          Object.entries(subprocesos).forEach(([_, completado], index) => {
+            if (completado) ultimoCompletado = index + 1;
+          });
+
+          return (
+            <div class="max-w-[500px] w-full">
+              <ProcessTracker
+                titulo={proceso.titulo}
+                estado={proceso.estado}
+                pasoActual={ultimoCompletado}
+                totalPasos={totalPasos}
+                subprocesos={subprocesos}
+                client:load
+              />
+            </div>
+          );
+        })
+      }
+    </div>
+
+  </div>
+</Layout>
+
+<script>
+  document.getElementById('print-button')?.addEventListener('click', () => {
+    window.print();
+  });
+</script>
+
+<style>
+  @media print {
+    /* Ocultar elementos no deseados en la impresión */
+    body > :not(#resumen-container) {
+      display: none;
+    }
+    .no-print, #print-button {
+      display: none !important;
+    }
+    /* Asegurar que el contenedor del resumen ocupe toda la página */
+    #resumen-container {
+      max-width: 100%;
+      margin: 0;
+      padding: 0;
+      box-shadow: none;
+      border: none;
+    }
+  }
+</style>

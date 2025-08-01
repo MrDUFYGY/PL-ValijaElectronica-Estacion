@@ -1,0 +1,54 @@
+---
+import Layout from "../../../layouts/LayoutRigth.astro"
+export const prerender = false;
+const turno = Astro.params.turno;
+// Simulación de productos (puedes traerlos de la base de datos)
+const productos = [
+  { nombre: "AROMATIZANTE NEW CAR", precio: 15 },
+  { nombre: "AROMATIZANTE DE FRESA", precio: 15 },
+  { nombre: "ANTICONGELANTE CONCENTRACION IDEAL 946 ML", precio: 62 },
+  // ... agrega más productos aquí
+];
+---
+<Layout title="Carga de inventarios" turno={turno}>
+  <div class="flex flex-col items-center w-full">
+    <form class="w-full max-w-3xl mt-6" id="form-inventario">
+      <div class="flex justify-center w-full">
+        <table class="border border-gray-300 rounded-lg shadow-sm min-w-full text-sm text-gray-800 bg-white">
+          <thead>
+            <tr class="bg-green-100 text-green-900 uppercase text-xs">
+              <th class="px-4 py-2 border-b border-gray-300 font-semibold">Producto</th>
+              <th class="px-4 py-2 border-b border-gray-300 font-semibold">Precio</th>
+              <th class="px-4 py-2 border-b border-gray-300 font-semibold">Cantidad</th>
+            </tr>
+          </thead>
+          <tbody>
+            {productos.map((prod, idx) => (
+              <tr class={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                <td class="px-4 py-2 border-b border-gray-200 text-left">{prod.nombre}</td>
+                <td class="px-4 py-2 border-b border-gray-200 text-center">{prod.precio} $</td>
+                <td class="px-4 py-2 border-b border-gray-200 text-center">
+                  <input
+                    type="number"
+                    name={`cantidad_${idx}`}
+                    min="0"
+                    class="border border-gray-300 focus:border-green-500 focus:ring-1 focus:ring-green-300 rounded text-right px-2 py-1 w-24 bg-green-50 hover:bg-green-100 transition-colors duration-150 outline-none"
+                    required
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div class="flex justify-end mt-4">
+        <!-- <button
+          type="submit"
+          class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded shadow"
+        >
+          Guardar Inventario Turno {turno}
+        </button> -->
+      </div>
+    </form>
+  </div>
+</Layout>

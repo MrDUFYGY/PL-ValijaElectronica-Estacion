@@ -3,10 +3,11 @@ import Layout from '../../layouts/LayoutRigth.astro';
 import Huella from '../../components/ConfirmHuella.astro';
 import CustomPdfInput from '../../components/customInput/CustomPdfInput.svelte';
 export const prerender = false;
+const idsSubprocesos = [32,33,34]; // IDs de subprocesos a actualizar
 
 ---
 
-<Layout>
+<Layout title="Corte de terminales con voucher" idsSubprocesos={idsSubprocesos}>
   
 <div class="container mx-auto p-6 bg-white shadow-md font-sans rounded-lg">
 

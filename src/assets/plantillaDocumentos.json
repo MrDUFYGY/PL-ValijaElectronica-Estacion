@@ -13,23 +13,27 @@
             "Proceso1": 
             {
                 "HL-t1": {
-                    "IdDocument": "",
+                    "IdDocument": "1",
                     "TitleDocument": "Hoja Liquidacion Turno 1",
+                    "PathName": "HL-T1",
                     "IdSesionDB": ""
                 },
                 "HL-t2": {
-                    "IdDocument": "",
+                    "IdDocument": "2",
                     "TitleDocument": "Hoja Liquidacion Turno 2",
+                    "PathName": "HL-T2",
                     "IdSesionDB": ""
                 },
                 "HL-t3": {
-                    "IdDocument": "",
+                    "IdDocument": "3",
                     "TitleDocument": "Hoja Liquidacion Turno 3",
+                    "PathName": "HL-T3",
                     "IdSesionDB": ""
                 },
                 "HL-Corte": {
-                    "IdDocument": "",
+                    "IdDocument": "4",
                     "TitleDocument": "Hoja Liquidacion de Corte",
+                    "PathName": "HL-Corte",
                     "IdSesionDB": ""
                 }
 
@@ -37,21 +41,24 @@
             "Proceso2": 
             {
                 "Talon&TicketBancario": {
-                    "IdDocument": "",
+                    "IdDocument": "5",
                     "TitleDocument": "Talon y Ticket Bancario",
+                    "PathName": "TalonTicketBancario",
                     "IdSesionDB": ""
                 },
                 "Gastos": {
-                    "IdDocument": "",
-                    "TitleDocument": "Gastos - base",
+                    "IdDocument": "6",
+                    "LTitleDocument": "Gastos - base",
+                    "PathName": "Gastos-base",
                     "IdSesionDB": ""
                 }                
             },
             "Proceso3": 
             {
                 "Nomina": {
-                    "IdDocument": "",
+                    "IdDocument": "7",
                     "TitleDocument": "Nomina",
+                    "PathName": "Nomina-base",
                     "IdSesionDB": ""
                 }                
             },
@@ -59,80 +66,92 @@
             {
                 "Mediciones&Comprobantes": [
                     {
-                        "IdDocument": "",
+                        "IdDocument": "8",
                         "TitleDocument": "",
+                        "PathName": "MedicionesComprobantes-T1",
                         "IdSesionDB": "",
                         "Turno":""
                     },
                     {
-                        "IdDocument": "",
+                        "IdDocument": "9",
                         "TitleDocument": "",
+                        "PathName": "MedicionesComprobantes-T2",
                         "IdSesionDB": "",
                         "Turno":""
                     },
                     {
-                        "IdDocument": "",
+                        "IdDocument": "10",
                         "TitleDocument": "",
+                        "PathName": "MedicionesComprobantes-T3",
                         "IdSesionDB": "",
                         "Turno":""
                     }
                 ],
                 "ListadoTags": [
                     {
-                        "IdDocument": "",
+                        "IdDocument": "11",
                         "TitleDocument": "",
+                        "PathName": "ListadoTags-T1",
                         "IdSesionDB": "",
                         "Turno":""
                     },
                     {
-                        "IdDocument": "",
+                        "IdDocument": "12",
                         "TitleDocument": "",
+                        "PathName": "ListadoTags-T2",
                         "IdSesionDB": "",
                         "Turno":""
                     },
                     {
-                        "IdDocument": "",
+                        "IdDocument": "13",
                         "TitleDocument": "",
+                        "PathName": "ListadoTags-T3",
                         "IdSesionDB": "",
                         "Turno":""
                     }
                 ],
                 "ListadoContadores": [
                     {
-                        "IdDocument": "",
+                        "IdDocument": "14",
                         "TitleDocument": "",
+                        "PathName": "ListadoContadores-T1",
                         "IdSesionDB": "",
                         "Turno":""
                     },
                     {
-                        "IdDocument": "",
+                        "IdDocument": "15",
                         "TitleDocument": "",
+                        "PathName": "ListadoContadores-T2",
                         "IdSesionDB": "",
                         "Turno":""
                     },
                     {
-                        "IdDocument": "",
+                        "IdDocument": "16",
                         "TitleDocument": "",
+                        "PathName": "ListadoContadores-T3",
                         "IdSesionDB": "",
                         "Turno":""
                     }
                 ],
-                "H-OpenPos": [
+                "HojasOpenPos": [
                     {
-                        "IdDocument": "",
+                        "IdDocument": "17",
                         "TitleDocument": "",
+                        "PathName": "OpenPos-T1",
                         "IdSesionDB": "",
                         "Turno":""
                     },
                     {
-                        "IdDocument": "",
+                        "IdDocument": "18",
                         "TitleDocument": "",
+                        "PathName": "OpenPos-T2", 
                         "IdSesionDB": "",
                         "Turno":""
                     },
                     {
-                        "IdDocument": "",
+                        "IdDocument": "19",
                         "TitleDocument": "",
+                        "PathName": "OpenPos-T3",
                         "IdSesionDB": "",
                         "Turno":""
                     }
@@ -144,34 +163,43 @@
             },
             "Proceso6": 
             {
-                "DocumentacionRemisiones":[
-                    {
-                        "IdDocument": "",
-                        "TitleDocument": "Carta Porte",
-                        "IdSesionDB": "",
-                        "Turno":""
-                    },
-                    {
-                        "IdDocument": "",
-                        "TitleDocument": "Factura VDM",
-                        "IdSesionDB": "",
-                        "Turno":""
-                    },
-                    {
-                        "IdDocument": "",
-                        "TitleDocument": "VT-Remisiones",
-                        "IdSesionDB": "",
-                        "Turno":""
-                    }
-                ]
+                "DocumentacionRemisiones": {
+                    "Remision-base" : [
+                        {
+                            "NumeroRemision" : ""
+                        },
+                        {
+                            "IdDocument": "20",
+                            "TitleDocument": "Carta Porte",
+                            "PathName": "CartaPorte",
+                            "IdSesionDB": "",
+                            "Turno":""
+                        },
+                        {
+                            "IdDocument": "21",
+                            "TitleDocument": "Factura VDM",
+                            "PathName": "FacturaVDM",
+                            "IdSesionDB": "",
+                            "Turno":""
+                        },
+                        {
+                            "IdDocument": "22",
+                            "TitleDocument": "VeederRoot Ticket",
+                            "PathName": "VeederRootTicket",
+                            "IdSesionDB": "",
+                            "Turno":""
+                        }
+                    ]
+                }
  
             },
             "Proceso7": 
             {
                 "FacturaCliente":[
                     {
-                        "IdDocument": "",
+                        "IdDocument": "23",
                         "TitleDocument": "Factura Cliente",
+                        "PathName": "FacturaCliente-base",
                         "IdSesionDB": "",
                         "Turno":"",
                         "Observaciones":""
@@ -182,27 +210,31 @@
             "Proceso8": 
             {
                 "DocumentacionMermas":{
-                    "IdDocument": "",
+                    "IdDocument": "24",
                     "TitleDocument": "Documentacion de Mermas",
+                    "PathName": "DocumentacionMermas-base",
                     "IdSesionDB": ""
                 }    
             },
             "Proceso9": 
             {
-                "Jarreo":[
+                "Jarreo-base":[
                     {
-                        "IdDocument": "",
+                        "IdDocument": "25",
                         "TitleDocument": "Extraccion",
+                        "PathName": "Extraccion",
                         "IdSesionDB": ""
                     },
                     {
-                        "IdDocument": "",
+                        "IdDocument": "26",
                         "TitleDocument": "Retornos",
+                        "PathName": "Retornos",
                         "IdSesionDB": ""
                     },
                     {
-                        "IdDocument": "",
-                        "TitleDocument": "TV-Jarreo",
+                        "IdDocument": "27",
+                        "TitleDocument": "Ticket Veeder Root - Jarreo",
+                        "PathName": "TicketVeederRootJarreo",
                         "IdSesionDB": ""
                     },
                     {
@@ -213,8 +245,9 @@
             "Proceso10": 
             {
                 "DocumentacionVales": {
-                    "IdDocument": "",
+                    "IdDocument": "28",
                     "TitleDocument": "",
+                    "PathName": "DocumentacionVales",
                     "IdSesionDB": ""
                 }    
             },
@@ -222,22 +255,122 @@
             {
                 "CorteTerminalesxTurno": [
                     {
-                        "IdDocument": "",
+                        "IdDocument": "29",
                         "TitleDocument": "Corte Terminal Turno 1",
+                        "PathName": "CorteTerminalTurno1",
                         "IdSesionDB": ""
                     },
                     {
-                        "IdDocument": "",
+                        "IdDocument": "30",
                         "TitleDocument": "Corte Terminal Turno 2",
+                        "PathName": "CorteTerminalTurno2",
                         "IdSesionDB": ""
                     },
                     {
-                        "IdDocument": "",
+                        "IdDocument": "31",
                         "TitleDocument": "Corte Terminal Turno 3",
+                        "PathName": "CorteTerminalTurno3",
                         "IdSesionDB": ""
                     }
                 ]
             }
         }
+    ],
+
+    "Sesiones":[
+        {
+            "idSesion": "1",
+            "fechaHora": "2025-06-26T13:34:52-06:00",
+            "usuario": "usuario1",
+            "tiempo": "00:30:00",
+            "pasosRealizados": 5,
+            "horaIngreso": "2025-06-26T13:34:52-06:00",
+            "horaSalida": "2025-06-26T13:34:52-06:00",
+            "turno": 1,
+            "sesionConcluida": false
+        }
+        
+    ],
+
+    "InsidenciasHistoricoAyuda": [
+        {
+            "Incidencia-1": {
+                "Data": {
+                    "fechaHora": "2025-07-01T08:15:30-06:00",
+                    "usuario": "Usuario quien crea la insidencia",
+                    "tipoUser": "Estacion",
+                    "proceso": "Movimientos de caja",
+                    "Descripcion": "No aparecen los movimientos del turno anterior."
+                },
+                "Mensajes": {
+                            "mensaje-0": {
+                                    "fechaHora": "2025-07-01T08:15:30-06:00",
+                                    "usuario": "Usuario quien crea la insidencia",
+                                    "tipoUser": "Estacion",
+                                    "Descripcion": "No aparecen los movimientos del turno anterior."
+                            },
+                            "mensaje-1": {
+                                    "fechaHora": "2025-07-01T09:00:00-06:00",
+                                    "usuario": "EFernandez",
+                                    "tipoUser": "Casa",
+                                    "Descripcion": "Estamos verificando los registros, te notificamos en breve."
+                            },
+                            "mensaje-2": {
+                                    "fechaHora": "2025-07-01T09:30:15-06:00",
+                                    "usuario": "usuario2",
+                                    "tipoUser": "Estacion",
+                                    "Descripcion": "Gracias, quedo al pendiente."
+                            },
+                            "mensaje-3": {
+                                    "fechaHora": "2025-07-01T09:30:15-06:00",
+                                    "usuario": "usuario2",
+                                    "tipoUser": "Contador",
+                                    "Descripcion": "Confirmo."
+                            },
+                            "mensaje-4": {
+                                    "fechaHora": "2025-07-01T09:30:15-06:00",
+                                    "usuario": "usuario2",
+                                    "tipoUser": "Medios de Pago",
+                                    "Descripcion": "Confirmo."
+                            }
+                    }
+            }
+        }
+        
+
+
+        
+    ],
+
+    "CheckSistem":[
+        {
+            "Proceso1":[
+                {
+                    "SubprocesoEstatus":false,
+                    "Check1":false
+                },
+                {
+                    "Check2":false
+                },
+                {
+                    "Check3":false
+                },
+                {
+                    "Check4":false
+                },
+                {
+                    "Check5":false
+                }
+            ]
+        }
     ]
+
+
+
+
+
+
+
+
+
 }

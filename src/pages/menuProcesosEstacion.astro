@@ -1,6 +1,5 @@
 ---
 export const prerender = false;
-
 import Layout from '../layouts/LayoutMenu.astro';
 import NavBarMenu from '../components/NavBarMenu.astro';
 import ProcessTracker from '../components/ProcessTracker.svelte';
@@ -16,7 +15,7 @@ import MembretesBGAnimated from "../components/MembretesBGAnimated.astro"
 const sessionTotal = Astro.locals.SessionTotal;
 if (!sessionTotal) {
   // Aunque el middleware ya se encarga, esto es un fallback de seguridad.
-  return Astro.redirect('/');
+  // return Astro.redirect('/'); // Desactivado para modo desarrollo
 }
 
 
@@ -24,6 +23,7 @@ if (!sessionTotal) {
 // 1. Leer parámetros de la URL
 const station = Astro.url.searchParams.get('station');
 const date = Astro.url.searchParams.get('date');
+const nickname = Astro.url.searchParams.get('nickname');
 
 const formattedDate = date 
     ? new Date(date + 'T06:00:00Z').toLocaleDateString("es-MX", {
@@ -36,24 +36,27 @@ const formattedDate = date
 
 let content: any;
 let pageTitle = "Menú de Procesos";
-
+let data: any;
+let procesoId: any;
 
 let resumenProcesos = null;
 
 
-if (!station || !date) {
+if (!station || !date || !nickname) {
   content = { error: 'Faltan parámetros en la URL. Por favor, vuelve al dashboard e inténtalo de nuevo.' };
 } else {
   try {
-    // 2. Llamar a nuestro proxy de API
-    const response = await fetch(`${Astro.url.origin}/api/procesoDia?station=${station}&date=${date}`);
-    const data = await response.json();
+    // 2. Llamar a nuestro proxy de API incluyendo el nickname
+    const response = await fetch(`${Astro.url.origin}/api/procesoDia?station=${station}&date=${date}&nickname=${nickname}`);
+    data = await response.json();
 
     if (!response.ok || !data.Correct) {
       content = { error: data.ErrorMessage || 'Ocurrió un error al cargar los datos del proceso.' };
     } else {
       content = data.Object; // Obtenemos el objeto principal con todos los datos
       resumenProcesos = data.Object.resumenProcesos;
+      procesoId = data.Object.resumenProcesos.procesoDiaId;
+      // console.log("procesoId", procesoId);
       pageTitle = `Procesos para Estación ${station} - ${formattedDate}`;
     }
   } catch (e) {
@@ -61,6 +64,9 @@ if (!station || !date) {
     content = { error: 'No se pudo conectar con el servidor para obtener los datos.' };
   }
 }
+const queryParams = `?procesoId=${procesoId}`;
+
+
 
 interface MenuItem {
   title: string;
@@ -70,25 +76,47 @@ interface MenuItem {
   modalSide?: 'left' | 'right' | 'center' | 'mov';
   isOpen?: boolean;
   sugerencia?: boolean;
-}
+  borderColor?: string;
+  backgroundColor?: string;
+  textColor?: string;
+  iconColor?: string;
+  }
 const items: MenuItem[] = [
   {
     title: "Relacion de Facturas",
     description: "Relacion de Facturas VDM con Ingresos",
     icon: "receipt",
     link: "/procesosPages/est_valija_12RelacionFacturasIngresos", // Asegúrate de que esta ruta sea correcta
-    modalSide: "center" as const,
-    isOpen: false,
-    sugerencia: true,
-  },
-  {
-    title: "Ayuda",
-    description: "Ayuda",
-    icon: "receipt",
-    link: "/procesosPages/form_ayuda",
     modalSide: "mov" as const,
     isOpen: false,
+    sugerencia: true,
+    backgroundColor: "Red",
+    borderColor: "Red",
+    textColor: "white",
+    iconColor: "white"
   },
+  {
+    title: "Resumen",
+    description: "Incidencias",
+    icon: "receipt",
+    link: "/procesosPages/form_Resumenes/resumenes",
+    modalSide: "center" as const,
+    isOpen: false,
+    
+  },
+  {
+    title: "Añadir Incidencia",
+    description: "Incidencias",
+    icon: "receipt",
+    link: "/procesosPages/form_Incidencia-ayuda/form_ayuda",
+    modalSide: "center" as const,
+    isOpen: false,
+    backgroundColor: "#018E2E",
+    borderColor: "#FAEB30",
+    textColor: "white",
+    iconColor: "white"
+  },
+
   // {
   //   title: "right",
   //   description: "right",
@@ -127,11 +155,10 @@ const items: MenuItem[] = [
 
 
 
-
 ---
 
 <Layout title={pageTitle}>
-  <NavBarMenu station={station} date={date} />
+  <NavBarMenu station={station} date={date} nickname={nickname}/>
   <main class="">
   
     <div id="resizable-container" style="display: flex; width: 100%; height: 91dvh; position: relative;">
@@ -143,6 +170,7 @@ const items: MenuItem[] = [
       id="resumen-procesos-header"
       class="bg-gray-50 sticky top-0 z-10 flex justify-between items-center p-2 w-[100%]"
         >
+        <p></p>
 
           <h1 class="text-lg font-bold uppercase">Listado de Procesos</h1>
           <ButtonMove 
@@ -157,14 +185,10 @@ const items: MenuItem[] = [
   
           <form id="formulario" class="space-y-8 ">
             <div
-              class="bg-white rounded-xl  mb-6"
+              class="bg-white rounded-xl mb-6 flex flex-wrap justify-around "
             >
               
-              <!-- <div
-                id="resumen-procesos-content"
-                class="overflow-hidden transition-all duration-900 ease-in-out text-sm max-h-[1000px] pb-2"
-                style="max-height: 1000px;"
-              > -->
+
                 {
                   resumenProcesos.procesos.map((proceso: any) => {
                     const subprocesos = proceso.subprocesos || {};
@@ -178,20 +202,20 @@ const items: MenuItem[] = [
                     );
   
                     return (
-                      <div class="">
+                      <div class=" w-full">
                         <ProcessTracker
                           titulo={proceso.titulo}
                           estado={proceso.estado}
                           pasoActual={ultimoCompletado}
                           totalPasos={totalPasos}
-                          subprocesos={subprocesos}
+                          subprocesos={subprocesos},
+                          procesoId={procesoId},
                           client:load
                         />
                       </div>
                     );
                   })
                 }
-              <!-- </div> -->
             </div>
   
             <div class="bg-gray-50 p-4 rounded-xl border border-gray-400">
@@ -215,7 +239,7 @@ const items: MenuItem[] = [
   
             <div class="flex items-center justify-center">
               <a 
-                href="/estacion/boton_Master"
+                href="/procesosPages/form_HuellaFinal/boton_Master"
                 class="inline-block bg-blue-500 text-white px-6 py-2 rounded-lg shadow hover:bg-blue-600 transition duration-300"
               >
                 Confirmar
@@ -261,6 +285,8 @@ const items: MenuItem[] = [
         <MenuHerramientas items={items} />
       </div>
     </div>
+    <div id="IdProcesoDiaTempoHidden" data-ids={procesoId}>{procesoId}</h1>
+
   <style>
     #left-panel{
       min-width: 400px;
@@ -273,9 +299,11 @@ const items: MenuItem[] = [
       const params = new URLSearchParams(window.location.search);
       const station = params.get('station');
       const date = params.get('date');
-      
+      const divTempProcesoDiaId = document.getElementById('IdProcesoDiaTempoHidden');
+      const procesoId = divTempProcesoDiaId?.dataset.ids;
+
       document.addEventListener("DOMContentLoaded", () => {
-        modalRightArea(station || '', date || '');
+        modalRightArea(station || '', date || '', procesoId || '');
         
         // Inicializar el divisor con las opciones personalizadas
         initializeDivider({
@@ -374,33 +402,7 @@ const items: MenuItem[] = [
 <script>
   // Este script se ejecuta en el navegador del cliente después de que la página carga.
     document.addEventListener('DOMContentLoaded', () => {
-    try {
-      // 1. Recuperar el NICKNAME de la sesión activa desde localStorage
-      const nickname = localStorage.getItem('nickname');
-      const nicknameElement = document.getElementById('navbar-nickname');
 
-      if (nickname && nicknameElement) {
-        nicknameElement.textContent = `Sesión: ${nickname}`;
-      } else if (nicknameElement) {
-        nicknameElement.textContent = 'Sesión no encontrada';
-      }
-
-      // 2. Recuperar los DATOS COMPLETOS del usuario consultado desde sessionStorage
-      const userDataString = sessionStorage.getItem('userData');
-      const fullnameElement = document.getElementById('navbar-fullname');
-      
-      if (userDataString && fullnameElement) {
-        const userData = JSON.parse(userDataString);
-        if (userData.c_Nombre) {
-          fullnameElement.textContent = `Usuario: ${userData.c_Nombre} ${userData.c_ApellidoPat} ${userData.c_ApellidoMat}`;
-        }
-      } else if (fullnameElement) {
-        fullnameElement.textContent = ''; // Ocultar si no hay datos
-      }
-
-    } catch (error) {
-      console.error('Error al actualizar datos de sesión en la UI:', error);
-    }
   });
 </script>
 

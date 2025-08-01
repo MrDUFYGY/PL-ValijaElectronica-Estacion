@@ -10,6 +10,7 @@ interface MenuItem {
   backgroundColor?: string;
   iconColor?: string;
   textColor?: string;
+  borderColor?: string;
 }
 
 interface Props {
@@ -112,7 +113,8 @@ const { items } = Astro.props;
         style={{
           '--menu-bg-color': item.backgroundColor || 'white',
           '--menu-text-color': item.textColor || 'black',
-          '--menu-icon-color': item.iconColor || 'gray'
+          '--menu-icon-color': item.iconColor || 'gray',
+          '--menu-border-color': item.borderColor || ''
         }}
       >
         <button 
@@ -138,7 +140,7 @@ const { items } = Astro.props;
 <div id="modal-left" class="modal-content hidden" style="left: 0;"></div>
 <div id="modal-right" class="modal-content hidden" style="right: 0;"></div>
 <!-- Modal Center -->
-<div id="modal-center" class="modal-content hidden draggable" style=" width: 50%; height: 80%; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+<div id="modal-center" class="modal-content hidden draggable" style=" width: 97%; height: 95%; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
   <div class="modal-header" style="cursor: move; border-bottom: 1px solid #e5e7eb; padding: 1rem; display: flex; justify-content: space-between; align-items: center;">
     <span id="modal-center-title" class="modal-title" style="font-weight: 600; font-size: 1.1rem;"></span>
     <div style="display:flex; gap:0.5rem; align-items:center;">
@@ -186,7 +188,6 @@ const { items } = Astro.props;
     max-width: 100%;
     margin: 0 auto;
     overflow-y: auto;
-    height: 90dvh;
     padding: .3rem;
   }
 
@@ -210,6 +211,7 @@ const { items } = Astro.props;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: all 0.2s ease;
     cursor: pointer;
+    border: 5px solid var(--menu-border-color);
   }
 
   .menu-item:hover {
@@ -302,12 +304,7 @@ const { items } = Astro.props;
     flex-direction: column;
   }
   
-  #modal-center {
-    left: 25%;
-    right: auto;
-    width: 50%;
-    height: 80%;
-  }
+
 
   .modal-header {
     padding: 1rem;
@@ -531,8 +528,8 @@ const { items } = Astro.props;
     
     // Resetear posición inicial
     if (side === 'center') {
-      modal.style.left = '25%';
-      modal.style.top = '10vh';
+      modal.style.left = '1%';
+      modal.style.top = '1vh';
       modal.style.transform = 'none';
     } else if (side === 'mov') {
       // Centrar el modal móvil
