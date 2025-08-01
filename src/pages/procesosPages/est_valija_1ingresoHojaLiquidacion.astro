@@ -7,12 +7,13 @@ export const prerender = false;
 const { station, date } = Astro.props;
 const idsSubprocesos = [1, 2, 6]; // IDs de subprocesos a actualizar
 const otro = 'Este es un ejemplo de una variable y como se realiza.'
-
-
+ 
+const IdProcesoDia = Astro.url.searchParams.get('Id');
+// console.log("IdProcesoDia", IdProcesoDia);
 
 ---
 
-<Layout station={station} date={date} idsSubprocesos={idsSubprocesos} otro={otro}>
+<Layout station={station} date={date} idsSubprocesos={idsSubprocesos} otro={otro} IdProcesoDia={IdProcesoDia}>
  <!-- Contenedor principal con mejor diseño -->
  <div
  id="hl-contenedor-principal"

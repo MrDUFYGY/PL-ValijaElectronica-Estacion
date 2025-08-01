@@ -4,12 +4,12 @@ import Layout from "../../layouts/LayoutRigth.astro";
 import PerifericosRemisionInputs from "../../components/PerifericosRemisionInputs.svelte";
 export const prerender = false;
 const idsSubprocesos = [21,22]; // IDs de subprocesos a actualizar
-
+const IdProcesoDia = Astro.url.searchParams.get('Id');
 ---
 
 
 
-<Layout title="Remisión de Perifericos" idsSubprocesos={idsSubprocesos}>
+<Layout title="Remisión de Perifericos" idsSubprocesos={idsSubprocesos} IdProcesoDia={IdProcesoDia}>
   <div class="mx-auto  bg-white rounded-xl shadow-lg p-8 border border-gray-200">
     <PerifericosRemisionInputs client:visible/>
   </div>

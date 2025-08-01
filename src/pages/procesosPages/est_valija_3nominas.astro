@@ -6,11 +6,12 @@ import NominasExtraInputs from '../../components/NominasExtraInputs.svelte';
 import "../../styles/global.css";
 export const prerender = false;
 const idsSubprocesos = [10, 11]; // IDs de subprocesos a actualizar
+const IdProcesoDia = Astro.url.searchParams.get('Id');
 
 
 ---
 
-<Layout title="Carga de Nominas" idsSubprocesos={idsSubprocesos}>
+<Layout title="Carga de Nominas" idsSubprocesos={idsSubprocesos} IdProcesoDia={IdProcesoDia}>
   <div class="container mx-auto">
 
 

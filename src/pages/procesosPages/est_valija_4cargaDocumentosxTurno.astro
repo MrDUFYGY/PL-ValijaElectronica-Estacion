@@ -4,9 +4,10 @@ import '../../styles/global.css';
 import CargaDocumentosxTurno from '../../components/customInput/est_valija_4sistemUploadComp.svelte';
 export const prerender = false;
 const idsSubprocesos = [12,13,14,15]; // IDs de subprocesos a actualizar
+const IdProcesoDia = Astro.url.searchParams.get('Id');
 
 ---
 
-<Layout title="Carga de Documentos por Turno" idsSubprocesos={idsSubprocesos}>
+<Layout title="Carga de Documentos por Turno" idsSubprocesos={idsSubprocesos} IdProcesoDia={IdProcesoDia}>
   <CargaDocumentosxTurno client:visible />
 </Layout>

@@ -10,7 +10,7 @@
     export let totalPasos: number = 10;
     export let modalTarget: string = ''; // ID del modal a abrir
     export let validado: boolean | null = null; // Propiedad para forzar el estado validado
-    export let procesoId: string | null = null; // ID del proceso
+    export let IdProcesoDia: string | null = null; // ID del proceso
     
     // Determinar el estado basado en los subprocesos y la propiedad validado
     $: estado = (() => {
@@ -59,17 +59,17 @@
     };
     
     const modalUrlMap: Record<string, string> = {
-    'modal-resumen-liquidacion': `procesosPages/est_valija_1ingresoHojaLiquidacion?procesoId=${procesoId}`,
-    'modal-movimientos-caja': `procesosPages/est_valija_2resultadosBusqueda?procesoId=${procesoId}`,
-    'modal-nominas': `procesosPages/est_valija_3nominas?procesoId=${procesoId}`,
-    'modal-sistemas': `procesosPages/est_valija_4cargaDocumentosxTurno?procesoId=${procesoId}`,
-    'modal-corte-perifericosxturno': `procesosPages/est_valija_5resultadoVentasxPeriodo?procesoId=${procesoId}`,
-    'modal-recepcion-carburantes': `procesosPages/est_valija_6historicoCarburante?procesoId=${procesoId}`,
-    'modal-listado-remision-perifericos': `procesosPages/est_valija_7remisionPerifericos?procesoId=${procesoId}`,
-    'modal-regularizacion-existencias': `procesosPages/est_valija_8resultadosMermasRegul?procesoId=${procesoId}`,
-    'modal-jarreo': `procesosPages/est_valija_9jarreo?procesoId=${procesoId}`,
-    'modal-vales-empresa': `procesosPages/est_valija_10valesEmpresa?procesoId=${procesoId}`,
-    'modal-corte-terminales-voucher': `procesosPages/est_valija_11terminalesVoucher?procesoId=${procesoId}`,
+    'modal-resumen-liquidacion': `procesosPages/est_valija_1ingresoHojaLiquidacion?Id=${IdProcesoDia}`,
+    'modal-movimientos-caja': `procesosPages/est_valija_2resultadosBusqueda?Id=${IdProcesoDia}`,
+    'modal-nominas': `procesosPages/est_valija_3nominas?Id=${IdProcesoDia}`,
+    'modal-sistemas': `procesosPages/est_valija_4cargaDocumentosxTurno?Id=${IdProcesoDia}`,
+    'modal-corte-perifericosxturno': `procesosPages/est_valija_5resultadoVentasxPeriodo?Id=${IdProcesoDia}`,
+    'modal-recepcion-carburantes': `procesosPages/est_valija_6historicoCarburante?Id=${IdProcesoDia}`,
+    'modal-listado-remision-perifericos': `procesosPages/est_valija_7remisionPerifericos?Id=${IdProcesoDia}`,
+    'modal-regularizacion-existencias': `procesosPages/est_valija_8resultadosMermasRegul?Id=${IdProcesoDia}`,
+    'modal-jarreo': `procesosPages/est_valija_9jarreo?Id=${IdProcesoDia}`,
+    'modal-vales-empresa': `procesosPages/est_valija_10valesEmpresa?Id=${IdProcesoDia}`,
+    'modal-corte-terminales-voucher': `procesosPages/est_valija_11terminalesVoucher?Id=${IdProcesoDia}`,
       'zzzz' : '/zzzz', //12
       };
     // Determinar el ID del modal basado en el título
@@ -281,7 +281,7 @@
           </button>
         {:else}
           <button 
-            on:click={toggleDetails}
+            on:click={handleButtonClick}
             class="respiracion min-w-[63px] max-h-[28px] border border-blue-500 cursor-pointer text-blue-600 hover:text-white bg-blue-50 hover:bg-blue-500 transition-colors p-2 rounded-sm hover:shadow-md flex items-center justify-center"
             aria-label="Ver detalles"
             title="Ver detalles"

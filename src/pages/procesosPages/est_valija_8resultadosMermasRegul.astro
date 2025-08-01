@@ -3,10 +3,11 @@ import Layout from "../../layouts/LayoutRigth.astro";
 import Huella from "../../components/ConfirmHuella.astro";
 export const prerender = false;
 const idsSubprocesos = [23,24]; // IDs de subprocesos a actualizar
+const IdProcesoDia = Astro.url.searchParams.get('Id');
 
 ---
 
-<Layout title="Resultados de Mermas Reguladas" idsSubprocesos={idsSubprocesos}>
+<Layout title="Resultados de Mermas Reguladas" idsSubprocesos={idsSubprocesos} IdProcesoDia={IdProcesoDia}>
   <div class=" p-8 max-w-5xl mx-auto font-sans rounded-lg bg-white">
     {/* Contenedor principal blanco con padding */}
 

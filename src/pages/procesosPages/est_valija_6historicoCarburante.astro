@@ -6,10 +6,13 @@ import DocsRecepcionCombustible from "../../components/DocsRecepcionCombustible.
 export const prerender = false;
 const idsSubprocesos = [18, 19, 20]; // IDs de subprocesos a actualizar
 
+const IdProcesoDia = Astro.url.searchParams.get('Id');
+
+
 import "../../styles/global.css";
 ---
 
-<Layout title={'Histórico de movimientos de carburante'} idsSubprocesos={idsSubprocesos}>
+<Layout title={'Histórico de movimientos de carburante'} idsSubprocesos={idsSubprocesos} IdProcesoDia={IdProcesoDia}>
     <div class="container mx-auto bg-white font-sans p-6 rounded-lg">
 
 

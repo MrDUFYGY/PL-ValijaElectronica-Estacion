@@ -1,9 +1,12 @@
 ---
 import "../styles/global.css";
 import ContenidoAMostrar from "../components/ContenidoAMostrar.astro";
-const { content, station, date, title, idsSubprocesos = [], otro, procesoId } = Astro.props;
+const { content, station, date, title, idsSubprocesos = [], otro, IdProcesoDia } = Astro.props;
 import ScrollPanelButtons from "../components/ScrollPanelButtons.astro";
 import Huella from "../components/ConfirmHuella.astro";
+
+console.log("IdProcesoDia", IdProcesoDia);
+
 
 export const prerender = false;
 // const user = Astro.locals.user;
@@ -41,7 +44,7 @@ export const prerender = false;
 		</main>
 		<br />
 		<div class="flex items-center justify-center">
-			<Huella idsSubprocesos={idsSubprocesos} />
+			<Huella idsSubprocesos={idsSubprocesos} IdProcesoDia={IdProcesoDia}/>
 			<h1 id="subprocesos" data-ids={idsSubprocesos}>{idsSubprocesos}</h1>
 		</div>
 		<div id="button-scroll">

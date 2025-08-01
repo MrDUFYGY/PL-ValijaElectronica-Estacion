@@ -21,7 +21,7 @@ declare global {
     
   };
   
-  export function modalRightArea(station: string, date: string, procesoId: string) {
+  export function modalRightArea(station: string, date: string, IdProcesoDia: string) {
     // Función para abrir el contenido en el panel del modal
     document.addEventListener("click", function (event) {
       const target = (event.target as HTMLElement).closest(
@@ -36,7 +36,8 @@ declare global {
   
       if (!modalContainer || !modalId || !modalUrlMap[modalId]) return;
   
-      const url = modalUrlMap[modalId] + `?station=${station}&date=${date}&procesoId=${procesoId}`;
+      // const url = modalUrlMap[modalId] + `?station=${station}&date=${date}&Id=${IdProcesoDia}`;
+      const url = modalUrlMap[modalId] + `?Id=${IdProcesoDia}`;
   
       // Guardar el contenido original del menú si no está guardado
       if (!window._originalMenuContent) {
@@ -71,7 +72,7 @@ declare global {
       //boton 2
  // Create button to open in new tab
  const newTabButton2 = document.createElement("button");
- newTabButton2.className = "mt-10 bg-blue-500 text-white px-3 py-1 rounded hover:bg-red-600 transition-colors flex items-center";
+ newTabButton2.className = " bg-blue-500 text-white px-3 py-1 rounded hover:bg-red-600 transition-colors flex items-center";
  newTabButton2.innerHTML = `
    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />

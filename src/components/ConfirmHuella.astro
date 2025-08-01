@@ -3,13 +3,17 @@ interface Props {
   procesoConfirmado?: string;
   componentId?: string;
   idsSubprocesos?: number[];
+  IdProcesoDia?: number;
 }
+
+const IdProcesoDia = Astro.props.IdProcesoDia;
 
 // Generar un ID único para este componente si no se proporciona uno
 const { procesoConfirmado = '', componentId = 'huella_' + Math.random().toString(36).substring(2, 10) } = Astro.props;
 
 const idsJson = JSON.stringify(Astro.props.idsSubprocesos);
 console.log("idsJson", idsJson);
+console.log("IdProcesoDia", IdProcesoDia);
 ---
 <div class="mb-[1rem]">
   <!-- Botón para abrir el diálogo de subida -->
@@ -35,10 +39,14 @@ console.log("idsJson", idsJson);
   
   <!-- Modal: Huella digital -->
   <div id="{componentId}_fingerprint-dialog" class="fixed inset-0 bg-[#2d2d2d] bg-opacity-50 hidden flex items-center justify-center z-50">
+    
+    <div id="idsJson" data-ids={idsJson}>{idsJson}</div>
+    <div id="IdProcesoDia" data-id={IdProcesoDia}>{IdProcesoDia}</div>
+  
+    
     <div class="bg-white rounded-lg p-6 max-w-md w-full relative z-50">
-      <h3 class="text-lg font-semibold mb-4">Validación de Huella Digital</h3>
+      <h3 class="text-lg font-semibold mb-4">Validación de Huella Digital IdProcesoDia: {IdProcesoDia}</h3>
       <div class="text-center mb-6">
-        <h1 id="idsJson" data-ids={idsJson}>{idsJson}</h1>
         <button onclick="confirmarHuella()" id="{componentId}_fingerprint-button" class="w-32 h-32 mx-auto border-2 border-dashed border-gray-300 rounded-full flex items-center justify-center hover:bg-gray-100 focus:outline-none transition-colors">
           <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
@@ -76,17 +84,20 @@ console.log("idsJson", idsJson);
     </div>
   </div>
 
+
+
   <script type="text/javascript">
     async function confirmarHuella() {
       // Obtener los IDs desde el dataset
-      const h1 = document.getElementById('idsJson');
-      const idsString = h1?.dataset.ids;
-      
+      const idsJson = document.getElementById('idsJson');
+      const idsString = idsJson?.dataset.ids;
+      const IdProcesoDia = document.getElementById('IdProcesoDia');
+      const IdProcesoDiaString = IdProcesoDia?.dataset.id;
       // Parsear el string JSON a array de números
       let idsArray = [];
       try {
         idsArray = JSON.parse(idsString);
-        console.log('IDs parseados:', idsArray);
+        console.log('IDs parseados:sadasdasd', idsArray);
       } catch (error) {
         console.error('Error parseando IDs:', error);
         alert('Error al procesar los IDs');
@@ -96,7 +107,7 @@ console.log("idsJson", idsJson);
       const response = await fetch('https://localhost:44345/api/Valija/UpdateStateSubProcesos', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ Ids: idsArray, IdEstado: 1 })
+        body: JSON.stringify({ Ids: idsArray, IdEstado: 1, IdProcesoDia: IdProcesoDiaString })
       });
       if (response.ok) {
         // alert('Proceso confirmado con éxito');

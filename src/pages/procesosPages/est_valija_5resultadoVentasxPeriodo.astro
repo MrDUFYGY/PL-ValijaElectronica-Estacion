@@ -5,6 +5,9 @@ const idsSubprocesos = [16, 17]; // IDs de subprocesos a actualizar
 
 export const prerender = false;
 
+const IdProcesoDia = Astro.url.searchParams.get('Id');
+
+
 interface MenuItem {
   title: string;
   description: string;
@@ -82,7 +85,7 @@ const items: MenuItem[] = [
 ];
 ---
 
-<Layout title="Resultados de Ventas por Periodo" idsSubprocesos={idsSubprocesos}>
+<Layout title="Resultados de Ventas por Periodo" idsSubprocesos={idsSubprocesos} IdProcesoDia={IdProcesoDia}>
   <div class="container mx-auto p-6 bg-white shadow-md font-sans rounded-lg">
     <MenuHerramientas items={items} />
 

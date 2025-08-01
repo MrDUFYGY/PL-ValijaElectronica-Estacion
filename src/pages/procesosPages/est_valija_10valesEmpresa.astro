@@ -4,12 +4,13 @@ import Layout from "../../layouts/LayoutRigth.astro";
 export const prerender = false;
 import CustomPdfInput from "../../components/customInput/CustomPdfInput.svelte";
 const idsSubprocesos = [29,30,31]; // IDs de subprocesos a actualizar
+const IdProcesoDia = Astro.url.searchParams.get('Id');
 
 
 
 ---
 
-<Layout title="Vales por Empresa" idsSubprocesos={idsSubprocesos}>
+<Layout title="Vales por Empresa" idsSubprocesos={idsSubprocesos} IdProcesoDia={IdProcesoDia}>
   <!-- Contenedor principal con mejor diseño -->
 
   <div

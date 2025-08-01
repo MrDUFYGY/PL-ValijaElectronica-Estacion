@@ -37,7 +37,7 @@ const formattedDate = date
 let content: any;
 let pageTitle = "Menú de Procesos";
 let data: any;
-let procesoId: any;
+let IdProcesoDia: any;
 
 let resumenProcesos = null;
 
@@ -55,7 +55,7 @@ if (!station || !date || !nickname) {
     } else {
       content = data.Object; // Obtenemos el objeto principal con todos los datos
       resumenProcesos = data.Object.resumenProcesos;
-      procesoId = data.Object.resumenProcesos.procesoDiaId;
+      IdProcesoDia = data.Object.resumenProcesos.procesoDiaId;
       // console.log("procesoId", procesoId);
       pageTitle = `Procesos para Estación ${station} - ${formattedDate}`;
     }
@@ -64,7 +64,7 @@ if (!station || !date || !nickname) {
     content = { error: 'No se pudo conectar con el servidor para obtener los datos.' };
   }
 }
-const queryParams = `?procesoId=${procesoId}`;
+const queryParams = `?IdProcesoDia=${IdProcesoDia}`;
 
 
 
@@ -209,7 +209,7 @@ const items: MenuItem[] = [
                           pasoActual={ultimoCompletado}
                           totalPasos={totalPasos}
                           subprocesos={subprocesos},
-                          procesoId={procesoId},
+                          IdProcesoDia={IdProcesoDia},
                           client:load
                         />
                       </div>
@@ -285,7 +285,7 @@ const items: MenuItem[] = [
         <MenuHerramientas items={items} />
       </div>
     </div>
-    <div id="IdProcesoDiaTempoHidden" data-ids={procesoId}>{procesoId}</h1>
+    <div id="IdProcesoDiaTempoHidden" data-ids={IdProcesoDia}></div>
 
   <style>
     #left-panel{
@@ -300,10 +300,10 @@ const items: MenuItem[] = [
       const station = params.get('station');
       const date = params.get('date');
       const divTempProcesoDiaId = document.getElementById('IdProcesoDiaTempoHidden');
-      const procesoId = divTempProcesoDiaId?.dataset.ids;
+      const IdProcesoDia = divTempProcesoDiaId?.dataset.ids;
 
       document.addEventListener("DOMContentLoaded", () => {
-        modalRightArea(station || '', date || '', procesoId || '');
+        modalRightArea(station || '', date || '', IdProcesoDia || '');
         
         // Inicializar el divisor con las opciones personalizadas
         initializeDivider({
